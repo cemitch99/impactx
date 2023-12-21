@@ -43,7 +43,10 @@ namespace impactx
          * @param phi_in Initial angle of reference trajectory w/r/t z (degrees)
          * @param phi_out Final angle of reference trajectory w/r/t/ z (degrees)
          */
-        PRot( amrex::ParticleReal const phi_in, amrex::ParticleReal const phi_out )
+        PRot (
+            amrex::ParticleReal phi_in,
+            amrex::ParticleReal phi_out
+        )
         : m_phi_in(phi_in * degree2rad), m_phi_out(phi_out * degree2rad)
         {
         }
