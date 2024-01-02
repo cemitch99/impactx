@@ -471,7 +471,7 @@ This module provides elements for the accelerator lattice.
               k < 0 horizontal defocusing
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
-   :param rotation: rotation error around the s axis (in the x-y plane) [degrees]
+   :param rotation: rotation error in the transverse plane [degrees]
    :param nslice: number of slices used for the application of space charge
 
 .. py:class:: impactx.elements.ConstF(ds, kx, ky, kt, dx=0, dy=0, rotation=0, nslice=1)
@@ -484,7 +484,7 @@ This module provides elements for the accelerator lattice.
    :param kt: Focusing strength for t in 1/m.
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
-   :param rotation: rotation error around the s axis (in the x-y plane) [degrees]
+   :param rotation: rotation error in the transverse plane [degrees]
    :param nslice: number of slices used for the application of space charge
 
    .. py:property:: kx
@@ -517,7 +517,7 @@ This module provides elements for the accelerator lattice.
    :param K2: Fringe field integral (unitless)
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
-   :param rotation: rotation error around the s axis (in the x-y plane) [degrees]
+   :param rotation: rotation error in the transverse plane [degrees]
 
 .. py:class:: impactx.elements.Drift(ds, dx=0, dy=0, rotation=0, nslice=1)
 
@@ -535,7 +535,7 @@ This module provides elements for the accelerator lattice.
    :param ds: Segment length in m
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
-   :param rotation: rotation error around the s axis (in the x-y plane) [degrees]
+   :param rotation: rotation error in the transverse plane [degrees]
    :param nslice: number of slices used for the application of space charge
 
 .. py:class:: impactx.elements.ExactDrift(ds, dx=0, dy=0, rotation=0, nslice=1)
@@ -545,7 +545,7 @@ This module provides elements for the accelerator lattice.
    :param ds: Segment length in m
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
-   :param rotation: rotation error around the s axis (in the x-y plane) [degrees]
+   :param rotation: rotation error in the transverse plane [degrees]
    :param nslice: number of slices used for the application of space charge
 
 .. py:class:: impactx.elements.Kicker(xkick, ykick, units, dx=0, dy=0, rotation=0)
@@ -565,7 +565,7 @@ This module provides elements for the accelerator lattice.
    :param K_skew: Integrated skew multipole coefficient (1/meter^m)
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
-   :param rotation: rotation error around the s axis (in the x-y plane) [degrees]
+   :param rotation: rotation error in the transverse plane [degrees]
 
 .. py::class:: impactx.elements.None
 
@@ -584,7 +584,7 @@ This module provides elements for the accelerator lattice.
    :param cnll: distance of singularities from the origin (m)
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
-   :param rotation: rotation error around the s axis (in the x-y plane) [degrees]
+   :param rotation: rotation error in the transverse plane [degrees]
 
 .. py:class:: impactx.elements.BeamMonitor(name, backend="default", encoding="g")
 
@@ -641,7 +641,7 @@ This module provides elements for the accelerator lattice.
               k < 0 horizontal defocusing
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
-   :param rotation: rotation error around the s axis (in the x-y plane) [degrees]
+   :param rotation: rotation error in the transverse plane [degrees]
    :param nslice: number of slices used for the application of space charge
 
 .. py:class:: impactx.elements.ChrQuad(ds, k, units, dx=0, dy=0, rotation=0, nslice=1)
@@ -659,7 +659,7 @@ This module provides elements for the accelerator lattice.
    :param units: specification of units for quadrupole field strength
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
-   :param rotation: rotation error around the s axis (in the x-y plane) [degrees]
+   :param rotation: rotation error in the transverse plane [degrees]
    :param nslice: number of slices used for the application of space charge
 
 .. py:class:: impactx.elements.RFCavity(ds, escale, freq, phase, dx=0, dy=0, rotation=0, mapsteps=1, nslice=1)
@@ -676,7 +676,7 @@ This module provides elements for the accelerator lattice.
    :param cos_coefficients: array of ``float`` sine coefficients in Fourier expansion of on-axis electric field Ez (optional); default is a 9-cell TESLA superconducting cavity model from `DOI:10.1103/PhysRevSTAB.3.092001 <https://doi.org/10.1103/PhysRevSTAB.3.092001>`__
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
-   :param rotation: rotation error around the s axis (in the x-y plane) [degrees]
+   :param rotation: rotation error in the transverse plane [degrees]
    :param mapsteps: number of integration steps per slice used for map and reference particle push in applied fields
    :param nslice: number of slices used for the application of space charge
 
@@ -688,7 +688,7 @@ This module provides elements for the accelerator lattice.
    :param rc: Radius of curvature in m.
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
-   :param rotation: rotation error around the s axis (in the x-y plane) [degrees]
+   :param rotation: rotation error in the transverse plane [degrees]
    :param nslice: number of slices used for the application of space charge
 
 .. py:class:: impactx.elements.ExactSbend(ds, phi, B, dx=0, dy=0, rotation=0, nslice=1)
@@ -706,7 +706,7 @@ This module provides elements for the accelerator lattice.
    :param B: Magnetic field in Tesla; when B = 0 (default), the reference bending radius is defined by r0 = length / (angle in rad),   corresponding to a magnetic field of B = rigidity / r0; otherwise the reference bending radius is defined by r0 = rigidity / B.
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
-   :param rotation: rotation error around the s axis (in the x-y plane) [degrees]
+   :param rotation: rotation error in the transverse plane [degrees]
    :param nslice: number of slices used for the application of space charge
 
 .. py:class:: impactx.elements.Buncher(V, k, dx=0, dy=0, rotation=0)
@@ -717,7 +717,7 @@ This module provides elements for the accelerator lattice.
    :param k: Wavenumber of RF in 1/m
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
-   :param rotation: rotation error around the s axis (in the x-y plane) [degrees]
+   :param rotation: rotation error in the transverse plane [degrees]
 
 .. py:class:: impactx.elements.ShortRF(V, freq, phase, dx=0, dy=0, rotation=0)
 
@@ -728,7 +728,7 @@ This module provides elements for the accelerator lattice.
    :param phase: RF synchronous phase in degrees (phase = 0 corresponds to maximum energy gain, phase = -90 corresponds go zero energy gain for bunching)
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
-   :param rotation: rotation error around the s axis (in the x-y plane) [degrees]
+   :param rotation: rotation error in the transverse plane [degrees]
 
 .. py:class:: impactx.elements.ChrUniformAcc(ds, k, dx=0, dy=0, rotation=0, nslice=1)
 
@@ -743,7 +743,7 @@ This module provides elements for the accelerator lattice.
               = (particle charge in C * field Bz in T) / (particle mass in kg * speed of light in m/s)
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
-   :param rotation: rotation error around the s axis (in the x-y plane) [degrees]
+   :param rotation: rotation error in the transverse plane [degrees]
    :param nslice: number of slices used for the application of space charge
 
 .. py:class:: impactx.elements.SoftSolenoid(ds, bscale, cos_coefficients, sin_coefficients, dx=0, dy=0, rotation=0, mapsteps=1, nslice=1)
@@ -758,7 +758,7 @@ This module provides elements for the accelerator lattice.
             (optional); default is a thin-shell model from `DOI:10.1016/J.NIMA.2022.166706 <https://doi.org/10.1016/j.nima.2022.166706>`__
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
-   :param rotation: rotation error around the s axis (in the x-y plane) [degrees]
+   :param rotation: rotation error in the transverse plane [degrees]
    :param mapsteps: number of integration steps per slice used for map and reference particle push in applied fields
    :param nslice: number of slices used for the application of space charge
 
@@ -770,7 +770,7 @@ This module provides elements for the accelerator lattice.
    :param ks: Solenoid strength in m^(-1) (MADX convention) in (magnetic field Bz in T) / (rigidity in T-m)
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
-   :param rotation: rotation error around the s axis (in the x-y plane) [degrees]
+   :param rotation: rotation error in the transverse plane [degrees]
    :param nslice: number of slices used for the application of space charge
 
 .. py:class:: impactx.elements.PRot(phi_in, phi_out)
@@ -781,7 +781,7 @@ This module provides elements for the accelerator lattice.
    :param phi_out: angle of the reference particle with respect to the longitudinal (z) axis in the rotated frame in degrees
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
-   :param rotation: rotation error around the s axis (in the x-y plane) [degrees]
+   :param rotation: rotation error in the transverse plane [degrees]
 
 .. py:class:: impactx.elements.Aperture(xmax, ymax, shape="rectangular", dx=0, dy=0, rotation=0)
 
@@ -792,7 +792,7 @@ This module provides elements for the accelerator lattice.
    :param shape: aperture boundary shape: ``"rectangular"`` (default) or ``"elliptical"``
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
-   :param rotation: rotation error around the s axis (in the x-y plane) [degrees]
+   :param rotation: rotation error in the transverse plane [degrees]
 
 .. py:class:: impactx.elements.SoftQuadrupole(ds, gscale, cos_coefficients, sin_coefficients, dx=0, dy=0, rotation=0, mapsteps=1, nslice=1)
 
@@ -806,7 +806,7 @@ This module provides elements for the accelerator lattice.
             (optional); default is a tanh fringe field model based on `<http://www.physics.umd.edu/dsat/docs/MaryLieMan.pdf>`__
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
-   :param rotation: rotation error around the s axis (in the x-y plane) [degrees]
+   :param rotation: rotation error in the transverse plane [degrees]
    :param mapsteps: number of integration steps per slice used for map and reference particle push in applied fields
    :param nslice: number of slices used for the application of space charge
 
@@ -818,7 +818,7 @@ This module provides elements for the accelerator lattice.
    :param rc: Effective curvature radius (meters)
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
-   :param rotation: rotation error around the s axis (in the x-y plane) [degrees]
+   :param rotation: rotation error in the transverse plane [degrees]
 
    Reference:
 
