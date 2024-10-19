@@ -99,4 +99,3 @@ We run the following script to analyze correctness:
    .. literalinclude:: analysis_rotation_xy.py
       :language: python3
       :caption: You can copy this file from ``examples/rotation/analysis_rotation_xy.py``.
-
