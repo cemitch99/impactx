@@ -58,7 +58,7 @@ namespace impactx
             std::optional<std::string> name = std::nullopt
         )
         : Named(name),
-          Alignment(dx, dy, rotation_degree),  
+          Alignment(dx, dy, rotation_degree),
           m_phi(phi * degree2rad)
         {
         }
@@ -94,7 +94,7 @@ namespace impactx
 
             // shift due to alignment errors of the element
             shift_in(x, y, px, py);
-            
+
             // intialize output values
             amrex::ParticleReal xout = x;
             amrex::ParticleReal yout = y;
