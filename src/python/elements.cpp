@@ -1491,7 +1491,7 @@ void init_elements(py::module& m)
              }
         )
         .def(py::init([](
-                LinearTransport::Map6x6 R,
+                elements::LinearTransport::Map6x6 R,
                 amrex::ParticleReal dx,
                 amrex::ParticleReal dy,
                 amrex::ParticleReal rotation_degree,
