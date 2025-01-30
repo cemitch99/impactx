@@ -11,6 +11,8 @@
 #define IMPACTX_DIAGNOSTIC_OUTPUT_H
 
 #include "particles/ImpactXParticleContainer.H"
+#include <AMReX_SmallMatrix.H>   // for covariance matrix
+#include "particles/CovarianceMatrix.H"
 
 #include <string>
 
@@ -42,7 +44,9 @@ namespace impactx::diagnostics
                            OutputType otype,
                            std::string file_name,
                            int step = 0,
-                           bool append = false);
+                           bool append = false,
+                           Map6x6 const & cm = Map6x6::Identity()
+);
 
 } // namespace impactx::diagnostics
 

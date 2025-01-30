@@ -17,6 +17,8 @@
 #include <AMReX_REAL.H>       // for ParticleReal
 #include <AMReX_Print.H>      // for PrintToFile
 #include <AMReX_ParticleTile.H>     // for constructor of SoAParticle
+#include <AMReX_SmallMatrix.H>   // for covariance matrix
+#include "particles/CovarianceMatrix.H"
 
 #include <limits>
 #include <utility>
@@ -28,7 +30,9 @@ namespace impactx::diagnostics
                            OutputType const otype,
                            std::string file_name,
                            int step,
-                           bool append)
+                           bool append,
+                           Map6x6 const & cm)
+
     {
         BL_PROFILE("impactx::diagnostics::DiagnosticOutput");
 
@@ -49,7 +53,13 @@ namespace impactx::diagnostics
                 bool compute_eigenemittances = false;
                 pp_diag.queryAdd("eigenemittances", compute_eigenemittances);
 
-                if (compute_eigenemittances) {
+                // determine whether we are in envelope mode
+                amrex::ParmParse pp_algo("algo");
+                bool envelope_mode = false;
+                pp_diag.queryAdd("envelope_mode", envelope_mode);
+
+
+                if (compute_eigenemittances && !envelope_mode) {
                    file_handler << "step" << " " << "s" << " "
                              << "x_mean" << " " << "x_min" << " " << "x_max" << " "
                              << "y_mean" << " " << "y_min" << " " << "y_max" << " "
@@ -68,7 +78,7 @@ namespace impactx::diagnostics
                              << "emittance_1" << " " << "emittance_2" << " " << "emittance_3" << " "
                              << "charge_C" << " "
                              << "\n";
-                } else {
+                } else if (!compute_eigenemittances && !envelope_mode) {
                    file_handler << "step" << " " << "s" << " "
                              << "x_mean" << " " << "x_min" << " " << "x_max" << " "
                              << "y_mean" << " " << "y_min" << " " << "y_max" << " "
@@ -86,8 +96,32 @@ namespace impactx::diagnostics
                              << "emittance_xn" << " " << "emittance_yn" << " " << "emittance_tn" << " "
                              << "charge_C" << " "
                              << "\n";
+                } else if (compute_eigenemittances && envelope_mode) {
+                   file_handler << "step" << " " << "s" << " "
+                             << "sig_x" << " " << "sig_y" << " " << "sig_t" << " "
+                             << "sig_px" << " " << "sig_py" << " " << "sig_pt" << " "
+                             << "emittance_x" << " " << "emittance_y" << " " << "emittance_t" << " "
+                             << "alpha_x" << " " << "alpha_y" << " " << "alpha_t" << " "
+                             << "beta_x" << " " << "beta_y" << " " << "beta_t" << " "
+                             << "dispersion_x" << " " << "dispersion_px" << " "
+                             << "dispersion_y" << " " << "dispersion_py" << " "
+                             << "emittance_xn" << " " << "emittance_yn" << " " << "emittance_tn" << " "
+                             << "emittance_1" << " " << "emittance_2" << " " << "emittance_3" << " "
+                             << "\n";
+                } else {
+                   file_handler << "step" << " " << "s" << " "
+                             << "sig_x" << " " << "sig_y" << " " << "sig_t" << " "
+                             << "sig_px" << " " << "sig_py" << " " << "sig_pt" << " "
+                             << "emittance_x" << " " << "emittance_y" << " " << "emittance_t" << " "
+                             << "alpha_x" << " " << "alpha_y" << " " << "alpha_t" << " "
+                             << "beta_x" << " " << "beta_y" << " " << "beta_t" << " "
+                             << "dispersion_x" << " " << "dispersion_px" << " "
+                             << "dispersion_y" << " " << "dispersion_py" << " "
+                             << "emittance_xn" << " " << "emittance_yn" << " " << "emittance_tn" << " "
+                             << "\n";
                 }
             }
+
         }
 
         if (otype == OutputType::PrintRefParticle) {
@@ -115,17 +149,22 @@ namespace impactx::diagnostics
                     << px << " " << py << " " << pz << " " << pt << "\n";
         } // if( otype == OutputType::PrintRefParticle)
         else if (otype == OutputType::PrintReducedBeamCharacteristics) {
-            std::unordered_map<std::string, amrex::ParticleReal> const rbc =
-                diagnostics::reduced_beam_characteristics(pc);
 
             amrex::ParticleReal const s = pc.GetRefParticle().s;
+
+           // determine whether we are in envelope mode
+            amrex::ParmParse pp_algo("algo");
+            bool envelope_mode = false;
+            pp_algo.queryAdd("envelope_mode", envelope_mode);
 
             // determine whether to output eigenemittances
             amrex::ParmParse pp_diag("diag");
             bool compute_eigenemittances = false;
             pp_diag.queryAdd("eigenemittances", compute_eigenemittances);
 
-            if (compute_eigenemittances) {
+            if (compute_eigenemittances && !envelope_mode) {
+                std::unordered_map<std::string, amrex::ParticleReal> const rbc =
+                    diagnostics::reduced_beam_characteristics(pc);
                file_handler << step << " " << s << " "
                          << rbc.at("x_mean") << " " << rbc.at("x_min") << " " << rbc.at("x_max") << " "
                          << rbc.at("y_mean") << " " << rbc.at("y_min") << " " << rbc.at("y_max") << " "
@@ -143,7 +182,9 @@ namespace impactx::diagnostics
                          << rbc.at("emittance_xn") << " " << rbc.at("emittance_yn") << " " << rbc.at("emittance_tn") << " "
                          << rbc.at("emittance_1") << " " << rbc.at("emittance_2") << " " << rbc.at("emittance_3") << " "
                          << rbc.at("charge_C") << "\n";
-            } else {
+            } else if (!compute_eigenemittances && !envelope_mode) {
+                std::unordered_map<std::string, amrex::ParticleReal> const rbc =
+                    diagnostics::reduced_beam_characteristics(pc);
                file_handler << step << " " << s << " "
                          << rbc.at("x_mean") << " " << rbc.at("x_min") << " " << rbc.at("x_max") << " "
                          << rbc.at("y_mean") << " " << rbc.at("y_min") << " " << rbc.at("y_max") << " "
@@ -160,8 +201,37 @@ namespace impactx::diagnostics
                          << rbc.at("dispersion_y") << " " << rbc.at("dispersion_py") << " "
                          << rbc.at("emittance_xn") << " " << rbc.at("emittance_yn") << " " << rbc.at("emittance_tn") << " "
                          << rbc.at("charge_C") << "\n";
+            } else if (compute_eigenemittances && envelope_mode) {
+                std::unordered_map<std::string, amrex::ParticleReal> const rbc =
+                    diagnostics::reduced_beam_characteristics_cm(cm,pc);
+               file_handler << step << " " << s << " "
+                         << rbc.at("sig_x") << " " << rbc.at("sig_y") << " " << rbc.at("sig_t") << " "
+                         << rbc.at("sig_px") << " " << rbc.at("sig_py") << " " << rbc.at("sig_pt") << " "
+                         << rbc.at("emittance_x") << " " << rbc.at("emittance_y") << " " << rbc.at("emittance_t") << " "
+                         << rbc.at("alpha_x") << " " << rbc.at("alpha_y") << " " << rbc.at("alpha_t") << " "
+                         << rbc.at("beta_x") << " " << rbc.at("beta_y") << " " << rbc.at("beta_t") << " "
+                         << rbc.at("dispersion_x") << " " << rbc.at("dispersion_px") << " "
+                         << rbc.at("dispersion_y") << " " << rbc.at("dispersion_py") << " "
+                         << rbc.at("emittance_xn") << " " << rbc.at("emittance_yn") << " " << rbc.at("emittance_tn") << " "
+                         << rbc.at("emittance_1") << " " << rbc.at("emittance_2") << " " << rbc.at("emittance_3") << " "
+                         << "\n";
+            } else if (!compute_eigenemittances && envelope_mode) {
+                std::unordered_map<std::string, amrex::ParticleReal> const rbc =
+                    diagnostics::reduced_beam_characteristics_cm(cm,pc);
+               file_handler << step << " " << s << " "
+                         << rbc.at("sig_x") << " " << rbc.at("sig_y") << " " << rbc.at("sig_t") << " "
+                         << rbc.at("sig_px") << " " << rbc.at("sig_py") << " " << rbc.at("sig_pt") << " "
+                         << rbc.at("emittance_x") << " " << rbc.at("emittance_y") << " " << rbc.at("emittance_t") << " "
+                         << rbc.at("alpha_x") << " " << rbc.at("alpha_y") << " " << rbc.at("alpha_t") << " "
+                         << rbc.at("beta_x") << " " << rbc.at("beta_y") << " " << rbc.at("beta_t") << " "
+                         << rbc.at("dispersion_x") << " " << rbc.at("dispersion_px") << " "
+                         << rbc.at("dispersion_y") << " " << rbc.at("dispersion_py") << " "
+                         << rbc.at("emittance_xn") << " " << rbc.at("emittance_yn") << " " << rbc.at("emittance_tn") << " "
+                         << "\n";
             }
+
         } // if( otype == OutputType::PrintReducedBeamCharacteristics)
+
 
         // TODO: add as an option to the monitor element
         if (otype == OutputType::PrintNonlinearLensInvariants) {

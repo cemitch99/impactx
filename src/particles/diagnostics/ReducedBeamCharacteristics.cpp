@@ -418,7 +418,7 @@ namespace impactx::diagnostics
     }
 
     std::unordered_map<std::string, amrex::ParticleReal>
-    reduced_beam_characteristics_cm (Map6x6 & cm, ImpactXParticleContainer const & pc)
+    reduced_beam_characteristics_cm (Map6x6 const & cm, ImpactXParticleContainer const & pc)
     {
         BL_PROFILE("impactx::diagnostics::reduced_beam_characteristics_cm");
 
