@@ -11,6 +11,7 @@
 #define IMPACTX_REDUCED_BEAM_CHARACTERISTICS_H
 
 #include "particles/ImpactXParticleContainer.H"
+#include "particles/CovarianceMatrix.H"
 
 #include <AMReX_REAL.H>
 
@@ -20,12 +21,18 @@
 
 namespace impactx::diagnostics
 {
-    /** Compute momenta of the beam distribution
+    /** Compute moments of the beam distribution from particle data
      *
      * This uses an MPI Allreduce and returns a result on all ranks.
      */
     std::unordered_map<std::string, amrex::ParticleReal>
     reduced_beam_characteristics (ImpactXParticleContainer const & pc);
+
+    /** Compute moments of the beam distribution from covariance matrix
+     *
+     */
+    std::unordered_map<std::string, amrex::ParticleReal>
+    reduced_beam_characteristics_cm (Map6x6 & cm, ImpactXParticleContainer const & pc);
 
 } // namespace impactx::diagnostics
 
