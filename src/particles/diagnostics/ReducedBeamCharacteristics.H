@@ -29,10 +29,9 @@ namespace impactx::diagnostics
     reduced_beam_characteristics (ImpactXParticleContainer const & pc);
 
     /** Compute moments of the beam distribution from covariance matrix
-     *
      */
     std::unordered_map<std::string, amrex::ParticleReal>
-    reduced_beam_characteristics_cm (Map6x6 const & cm, ImpactXParticleContainer const & pc);
+    reduced_beam_characteristics (Map6x6 const & cm, RefPart const & ref_part);
 
 } // namespace impactx::diagnostics
 

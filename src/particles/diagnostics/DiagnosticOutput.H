@@ -11,7 +11,6 @@
 #define IMPACTX_DIAGNOSTIC_OUTPUT_H
 
 #include "particles/ImpactXParticleContainer.H"
-#include <AMReX_SmallMatrix.H>   // for covariance matrix
 #include "particles/CovarianceMatrix.H"
 
 #include <string>
@@ -40,13 +39,35 @@ namespace impactx::diagnostics
      * @param step the global step
      * @param append open a new file with a fresh header (false) or append data to an existing file (true)
      */
-    void DiagnosticOutput (ImpactXParticleContainer const & pc,
-                           OutputType otype,
-                           std::string file_name,
-                           int step = 0,
-                           bool append = false,
-                           Map6x6 const & cm = Map6x6::Identity()
-);
+    void DiagnosticOutput (
+        ImpactXParticleContainer const & pc,
+        OutputType otype,
+        std::string file_name,
+        int step = 0,
+        bool append = false
+    );
+
+    /** ASCII output diagnostics associated with the beam.
+     *
+     * This temporary implementation uses ASCII output.
+     * It is intended only for small tests where IO performance is not
+     * a concern. The implementation here serializes IO.
+     *
+     * @param cm covariance matrix
+     * @param ref_part reference particle
+     * @param otype the type of output to produce
+     * @param file_name the file name to write to
+     * @param step the global step
+     * @param append open a new file with a fresh header (false) or append data to an existing file (true)
+     */
+    void DiagnosticOutput (
+        Map6x6 const & cm,
+        RefPart const & ref_part,
+        OutputType otype,
+        std::string file_name,
+        int step = 0,
+        bool append = false
+    );
 
 } // namespace impactx::diagnostics
 

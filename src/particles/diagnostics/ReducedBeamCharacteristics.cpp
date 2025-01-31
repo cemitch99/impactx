@@ -30,7 +30,7 @@ namespace impactx::diagnostics
     std::unordered_map<std::string, amrex::ParticleReal>
     reduced_beam_characteristics (ImpactXParticleContainer const & pc)
     {
-        BL_PROFILE("impactx::diagnostics::reduced_beam_characteristics");
+        BL_PROFILE("impactx::diagnostics::reduced_beam_characteristics(pc)");
 
         // preparing to access reference particle data: RefPart
         RefPart const ref_part = pc.GetRefParticle();
@@ -404,7 +404,6 @@ namespace impactx::diagnostics
         data["dispersion_px"] = dispersion_px;
         data["dispersion_y"] = dispersion_y;
         data["dispersion_py"] = dispersion_py;
-        data["charge_C"] = charge;
         data["emittance_xn"] = emittance_xn;
         data["emittance_yn"] = emittance_yn;
         data["emittance_tn"] = emittance_tn;
@@ -413,17 +412,16 @@ namespace impactx::diagnostics
            data["emittance_2"] = emittance_2;
            data["emittance_3"] = emittance_3;
         }
+        data["charge_C"] = charge;
 
         return data;
     }
 
     std::unordered_map<std::string, amrex::ParticleReal>
-    reduced_beam_characteristics_cm (Map6x6 const & cm, ImpactXParticleContainer const & pc)
+    reduced_beam_characteristics (Map6x6 const & cm, RefPart const & ref_part)
     {
-        BL_PROFILE("impactx::diagnostics::reduced_beam_characteristics_cm");
+        BL_PROFILE("impactx::diagnostics::reduced_beam_characteristics(cm)");
 
-        // preparing to access reference particle data: RefPart
-        RefPart const ref_part = pc.GetRefParticle();
         // reference particle relativistic beta*gamma
         amrex::ParticleReal const bg = ref_part.beta_gamma();
         amrex::ParticleReal const bg2 = bg*bg;
@@ -571,6 +569,7 @@ namespace impactx::diagnostics
            data["emittance_2"] = emittance_2;
            data["emittance_3"] = emittance_3;
         }
+        //data["charge_C"] = 0.0;  // TODO with space charge
 
         return data;
     }
