@@ -55,9 +55,9 @@ namespace impactx::diagnostics
 
                 // determine whether we are in envelope mode
                 amrex::ParmParse pp_algo("algo");
-                bool envelope_mode = false;
-                pp_algo.queryAdd("envelope_mode", envelope_mode);
-
+                std::string mode;
+                pp_algo.queryAdd("mode", mode);
+                bool envelope_mode = (mode == "track_envelopes")? true : false;
 
                 if (compute_eigenemittances && !envelope_mode) {
                    file_handler << "step" << " " << "s" << " "
@@ -152,10 +152,11 @@ namespace impactx::diagnostics
 
             amrex::ParticleReal const s = pc.GetRefParticle().s;
 
-           // determine whether we are in envelope mode
+            // determine whether we are in envelope mode
             amrex::ParmParse pp_algo("algo");
-            bool envelope_mode = false;
-            pp_algo.queryAdd("envelope_mode", envelope_mode);
+            std::string mode;
+            pp_algo.queryAdd("mode", mode);
+            bool envelope_mode = (mode == "track_envelopes")? true : false;
 
             // determine whether to output eigenemittances
             amrex::ParmParse pp_diag("diag");
