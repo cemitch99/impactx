@@ -56,7 +56,7 @@ namespace impactx::diagnostics
                 // determine whether we are in envelope mode
                 amrex::ParmParse pp_algo("algo");
                 bool envelope_mode = false;
-                pp_diag.queryAdd("envelope_mode", envelope_mode);
+                pp_algo.queryAdd("envelope_mode", envelope_mode);
 
 
                 if (compute_eigenemittances && !envelope_mode) {
