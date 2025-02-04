@@ -148,7 +148,7 @@ namespace impactx
             
             // first-order effect of nonzero gap
             auto const [sin_psi, cos_psi] = amrex::Math::sincos(m_psi);
-            vf = (1.0_prt + std::pow(sin_psi, 2))/(std::pow(cos_psi, 3));
+            vf = (1.0_prt + std::pow(sin_psi, 2)) / std::pow(cos_psi, 3);
             vf *= m_g * m_K2/(std::pow(m_rc,2));
             R43 += vf;
          
