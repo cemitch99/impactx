@@ -147,7 +147,8 @@ namespace impactx
             amrex::ParticleReal vf = 0;
             
             // first-order effect of nonzero gap
-            vf = (1.0_prt + std::pow(sin(m_psi),2))/(std::pow(cos(m_psi),3));
+            auto const [sin_psi, cos_psi] = amrex::Math::sincos(m_psi);
+            vf = (1.0_prt + std::pow(sin_psi, 2))/(std::pow(cos_psi, 3));
             vf *= m_g * m_K2/(std::pow(m_rc,2));
             R43 += vf;
          
