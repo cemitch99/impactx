@@ -13,13 +13,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-# options to run this script
-parser = argparse.ArgumentParser(description="Plot the FODO envelope benchmark.")
-parser.add_argument(
-    "--save-png", action="store_true", help="non-interactive run: save to PNGs"
-)
-args = parser.parse_args()
-
 
 def read_file(file_pattern):
     for filename in glob.glob(file_pattern):
