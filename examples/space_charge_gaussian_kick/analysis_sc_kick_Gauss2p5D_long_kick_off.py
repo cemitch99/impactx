@@ -56,7 +56,6 @@ yi = initial_sort["position_y"]
 pyi = initial_sort["momentum_y"]
 ti = initial_sort["position_t"]
 pti = initial_sort["momentum_t"]
-zi = -beta * ti
 
 # Predicted momentum kick, from J. Qiang, Phys. Rev. Accel. Beams 28, 114602 (2025), eqs. (31-32)
 
@@ -66,7 +65,6 @@ gauss_xy_factor = 2.0 * (1.0 - gauss_exp) / ri_2
 gauss_pdf_z = np.exp(-(zi**2) / (2.0 * sigmaz**2)) / (np.sqrt(2.0 * np.pi) * sigmaz)
 px_predicted = L * Kscale * gauss_pdf_z * xi * gauss_xy_factor
 py_predicted = L * Kscale * gauss_pdf_z * yi * gauss_xy_factor
-
 pt_predicted = pti
 
 # Maximum momentum kick
