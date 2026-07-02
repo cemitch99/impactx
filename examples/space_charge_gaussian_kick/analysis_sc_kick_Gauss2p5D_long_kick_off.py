@@ -143,7 +143,7 @@ print()
 print("Difference between predicted and computed final momentum (max), relative:")
 print("dpx_max/px_max", dpx_max / px_max)
 print("dpy_max/py_max", dpy_max / py_max)
-print("dpt_max/pt_max", dpt_max / pt_max)
+print("dpt_max", dpt_max)
 
 # Test maximum error:
 atol = 5.1e-2
