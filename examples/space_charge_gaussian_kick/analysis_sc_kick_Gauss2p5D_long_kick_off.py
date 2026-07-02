@@ -57,6 +57,7 @@ pyi = initial_sort["momentum_y"]
 ti = initial_sort["position_t"]
 pti = initial_sort["momentum_t"]
 zi = -beta * ti
+zi = -beta * ti
 
 # Predicted momentum kick, from J. Qiang, Phys. Rev. Accel. Beams 28, 114602 (2025), eqs. (31-32)
 
