@@ -201,6 +201,9 @@ namespace impactx::particles::spacecharge
         int tp5d_bins = 129;
         pp_algo.queryAddWithParser("gauss_charge_z_bins", tp5d_bins);
 
+        bool apply_longitudinal_kick = true;
+        pp_algo.queryAdd("apply_longitudinal_kick", apply_longitudinal_kick);
+
         // Measure beam size, extract the min, max of particle positions
         [[maybe_unused]] auto const [x_min, y_min, t_min, x_max, y_max, t_max] =
             pc.MinAndMaxPositions();
@@ -287,7 +290,7 @@ namespace impactx::particles::spacecharge
                     }
 #endif
                     amrex::ParticleReal const Fxy = beam_profile[idx] * chargesign;
-                    amrex::ParticleReal const Fz = beam_profile_slope[idx] * charge;
+                    amrex::ParticleReal const Fz = (apply_longitudinal_kick)? beam_profile_slope[idx] * charge : 0_prt;
 
                     // push momentum
                     px += eintx * Fxy * push_consts;
