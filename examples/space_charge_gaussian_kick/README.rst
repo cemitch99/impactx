@@ -61,7 +61,7 @@ We run the following script to analyze correctness:
 
 
 .. _examples-kick-Gauss2p5D-long-kick-off:
-   
+
 Turning Off the Longitudinal Kick in the 2.5D Gaussian Space Charge Model
 =========================================================================
 
