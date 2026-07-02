@@ -2124,7 +2124,7 @@ add_impactx_test(kick-Gauss2p5D-long-kick-off.py
     examples/space_charge_gaussian_kick/run_sc_kick_Gauss2p5D_long_kick_off.py
     ON    # ImpactX MPI-parallel
     examples/space_charge_gaussian_kick/analysis_sc_kick_Gauss2p5D_long_kick_off.py
-    OFF  # no plot script yet 
+    OFF  # no plot script yet
 )
 
 # Scaling Test of Spin in an Exact Bend ###################
