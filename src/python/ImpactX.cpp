@@ -394,9 +394,9 @@ void init_ImpactX (py::module& m)
              [](ImpactX & /* ix */) {
                  return detail::get_or_throw<bool>("algo.space_charge", "apply_longitudinal_kick");
              },
-             [](ImpactX & /* ix */, bool const apply_longitudinal_kick) {
+             [](ImpactX & /* ix */, bool const enable) {
                  amrex::ParmParse pp_algo("algo.space_charge");
-                 pp_algo.add("apply_longitudinal_kick", apply_longitudinal_kick);
+                 pp_algo.add("apply_longitudinal_kick", enable);
              },
              "Enable or disable longitudinal space charge kick in 2.5D space charge solver (default: enabled).\n"
          )
