@@ -169,11 +169,12 @@ namespace impactx::particles::spacecharge
         amrex::ParticleReal const mc_SI = pc.GetRefParticle().mass * c0_SI;
         amrex::ParticleReal const pz_ref_SI = pc.GetRefParticle().beta_gamma() * mc_SI;
         amrex::ParticleReal const gamma = pc.GetRefParticle().gamma();
+        amrex::ParticleReal const beta = pc.GetRefParticle().beta();
         amrex::ParticleReal const beta_gamma = pc.GetRefParticle().beta_gamma();
         amrex::ParticleReal const inv_gamma2 = 1.0_prt / (gamma * gamma);
         amrex::ParticleReal const rfpiepslon = c0_SI * c0_SI * 1.0e-7_prt;
 
-        amrex::ParticleReal const dt = slice_ds / pc.GetRefParticle().beta() / c0_SI;
+        amrex::ParticleReal const dt = slice_ds / beta / c0_SI;
         amrex::ParticleReal const aspect_ratio = std::sqrt(sigx*sigx + sigy*sigy) / (beta_gamma * sigt);
 
         if (aspect_ratio > 1_rt) {
@@ -237,7 +238,8 @@ namespace impactx::particles::spacecharge
         amrex::Real const * const beam_profile = charge_distribution.data();
 
         // group together constants for the momentum push
-        amrex::ParticleReal const push_consts = rfpiepslon * dt * charge * inv_gamma2 / pz_ref_SI;
+        //amrex::ParticleReal const push_consts = rfpiepslon * dt * charge * inv_gamma2 / pz_ref_SI;
+        amrex::ParticleReal const push_consts = rfpiepslon * dt * charge * inv_gamma2 / (beta * pz_ref_SI);
         amrex::ParticleReal const chargesign = charge / std::abs(charge);
         amrex::ParticleReal const log2n = -std::log(2.0_prt);
         amrex::ParticleReal const pz_push_const =
