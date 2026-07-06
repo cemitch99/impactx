@@ -14,9 +14,9 @@ sim = ImpactX()
 sim.particle_shape = 2  # B-spline order
 sim.space_charge = "2p5D"
 sim.poisson_solver = "fft"
-#sim.space_charge_num_longitudinal_bins = 129
+# sim.space_charge_num_longitudinal_bins = 129
 sim.space_charge_num_longitudinal_bins = 51
-#sim.space_charge_apply_longitudinal_kick = False
+# sim.space_charge_apply_longitudinal_kick = False
 sim.space_charge_apply_longitudinal_kick = True
 sim.slice_step_diagnostics = True
 
