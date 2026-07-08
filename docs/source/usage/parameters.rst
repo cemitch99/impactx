@@ -2011,13 +2011,17 @@ This element is defined via ``<solenoid_softedge_name>.type = solenoid_softedge`
 
 
 ``source``
-^^^^^^^^^^^
+^^^^^^^^^^
 
 ``source`` for a particle source,
 e.g. for an element ``<source_name>.type = source``.
 Typically at the beginning of a beam line.
 
 Currently, this only supports openPMD files from our ``beam_monitor``.
+
+In `MPI-parallel <https://www.mpi-forum.org>`__ runs, reading the particles in the source file is distributed over all MPI ranks:
+each of the :math:`N` ranks reads a different contiguous chunk of :math:`1/N`-th of the particles, independent of their position.
+When ImpactX needs to sort particles spatially, it will redistribute them over MPI ranks automatically during tracking.
 
 .. pp:param:: <source_name>.distribution
     :type: ``string``
