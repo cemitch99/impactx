@@ -74,15 +74,15 @@ The initial and final values of pt should agree to within a small tolerance.
 .. _examples-kick-Gauss2p5D-protons:
 
 Momentum Kick in the 2.5D Gaussian Space Charge Model (Protons)
-================================================================
+===============================================================
 
-This test is based on the test examples-kick-Gauss2p5D, except that the electrons bunch is replaced by a proton bunch, resulting in a beam with low relativistic beta.
+This test is based on the test :ref:`examples-kick-Gauss2p5D`, except that the electrons bunch is replaced by a proton bunch, resulting in a beam with low relativistic beta.
 
-The purpose is to validate the Gauss2p5D model for low-energy proton beams.
+The purpose is to validate the ``Gauss2p5D`` model for low-energy proton beams.
 
 The test compares the space charge momentum kick experienced by particles within a long, initially cold, Gaussian bunch against the 2.5D analytical model in:
 
-J. Qiang, Phys. Rev. Accel. Beams 28, 114602 (2025), eqs. (31-32).
+`J. Qiang, Phys. Rev. Accel. Beams 28, 114602 (2025), eqs. (31-32). <https://doi.org/10.1103/npx1-nclt>`__
 
 We use a cold (zero emittance) 100 MeV proton bunch in a drift space, with a single space charge slice.
 
@@ -137,15 +137,15 @@ You can run the following script to visualize the longitudinal kick applied to t
 .. _examples-kick-PIC2p5D-protons:
 
 Momentum Kick in the 2.5D PIC Space Charge Model (Protons)
-================================================================
+==========================================================
 
-This test is based on the test examples-kick-Gauss2p5D-protons, except that the 2.5D FFT-based particle-in-cell solver is used.
+This test is based on the test :ref:`examples-kick-Gauss2p5D-protons`, except that the 2.5D FFT-based particle-in-cell solver is used.
 
-The purpose is to validate the 2p5D model for low-energy proton beams.
+The purpose is to validate the ``2p5D`` model for low-energy proton beams.
 
 The test compares the space charge momentum kick experienced by particles within a long, initially cold, Gaussian bunch against the 2.5D analytical model in:
 
-J. Qiang, Phys. Rev. Accel. Beams 28, 114602 (2025), eqs. (31-32).
+`J. Qiang, Phys. Rev. Accel. Beams 28, 114602 (2025), eqs. (31-32). <https://doi.org/10.1103/npx1-nclt>`__
 
 We use a cold (zero emittance) 100 MeV electron bunch in a drift space, with a single space charge slice.
 
