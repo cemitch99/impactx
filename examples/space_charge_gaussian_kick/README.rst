@@ -122,7 +122,7 @@ We run the following script to analyze correctness:
          :caption: You can copy this file from ``examples/space_charge_gaussian_kick/analysis_sc_kick_Gauss2p5D.py``.
 
 Visualize
---------- 
+---------
 
 You can run the following script to visualize the longitudinal kick applied to the particles in the bunch:
 
@@ -184,7 +184,3 @@ We run the following script to analyze correctness:
       .. literalinclude:: run_sc_kick_PIC2p5D.py
          :language: python3
          :caption: You can copy this file from ``examples/space_charge_gaussian_kick/analysis_sc_kick_PIC2p5D.py``.
-
-
-
-
