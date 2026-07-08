@@ -1098,6 +1098,7 @@ class Config:
     have_gpu: typing.ClassVar[bool] = False
     have_mpi: typing.ClassVar[bool] = True
     have_omp: typing.ClassVar[bool] = True
+    have_openpmd: typing.ClassVar[bool] = True
     have_simd: typing.ClassVar[bool] = False
     precision: typing.ClassVar[str] = "DOUBLE"
     precision_particles: typing.ClassVar[str] = "DOUBLE"
