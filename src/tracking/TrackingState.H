@@ -4,12 +4,14 @@
  *
  * This file is part of ImpactX.
  *
- * Authors: Axel Huebl, Chad Mitchell * License: BSD-3-Clause-LBNL
+ * Authors: Axel Huebl, Chad Mitchell
+ * License: BSD-3-Clause-LBNL
  */
 #ifndef IMPACTX_TRACKING_STATE_H
 #define IMPACTX_TRACKING_STATE_H
 
 #include "elements/All.H"
+#include "tracking/TrackingDirection.H"
 
 #include <optional>
 
@@ -35,9 +37,14 @@ namespace impactx
         /** For tracking hooks/callbacks, the current lattice element */
         std::optional<elements::KnownElements*> m_element;
 
+        /** Tracking direction in the lattice */
+        TrackingDirection m_direction = TrackingDirection::Forward;
+
         void set_no_element () { m_element = std::nullopt; }
+
+        bool forward () const { return m_direction == TrackingDirection::Forward; }
     };
 
 } // namespace impactx
 
-#endif // IMPACT_X_H
+#endif // IMPACTX_TRACKING_STATE_H
