@@ -96,7 +96,7 @@ Run
 
 This example can be run as:
 
-* **Python** script: ``python3 run_sc_kick_Gauss2p5D.py``
+* **Python** script: ``python3 run_sc_kick_Gauss2p5D_protons.py``
 
 For `MPI-parallel <https://www.mpi-forum.org>`__ runs, prefix these lines with ``mpiexec -n 4 ...`` or ``srun -n 4 ...``, depending on the system.
 
@@ -104,9 +104,9 @@ For `MPI-parallel <https://www.mpi-forum.org>`__ runs, prefix these lines with `
 
    .. tab-item:: Gauss2p5D space charge solver
 
-      .. literalinclude:: run_sc_kick_Gauss2p5D.py
+      .. literalinclude:: run_sc_kick_Gauss2p5D_protons.py
          :language: python3
-         :caption: You can copy this file from ``examples/space_charge_gaussian_kick/run_sc_kick_Gauss2p5D.py``.
+         :caption: You can copy this file from ``examples/space_charge_gaussian_kick/run_sc_kick_Gauss2p5D_protons.py``.
 
 Analyze
 -------
@@ -117,20 +117,20 @@ We run the following script to analyze correctness:
 
    .. tab-item:: Gauss2p5D space charge solver
 
-      .. literalinclude:: analysis_sc_kick_Gauss2p5D.py
+      .. literalinclude:: analysis_sc_kick_Gauss2p5D_protons.py
          :language: python3
-         :caption: You can copy this file from ``examples/space_charge_gaussian_kick/analysis_sc_kick_Gauss2p5D.py``.
+         :caption: You can copy this file from ``examples/space_charge_gaussian_kick/analysis_sc_kick_Gauss2p5D_protons.py``.
 
 Visualize
 ---------
 
 You can run the following script to visualize the longitudinal kick applied to the particles in the bunch:
 
-.. dropdown:: Script ``plot__sc_kick_Gauss2p5D_protons.py``
+.. dropdown:: Script ``plot_sc_kick_Gauss2p5D_protons.py``
 
-   .. literalinclude:: plot__sc_kick_Gauss2p5D_protons.py
+   .. literalinclude:: plot_sc_kick_Gauss2p5D_protons.py
       :language: python3
-      :caption: You can copy this file from ``examples/space_charge_gaussian_kick/plot__sc_kick_Gauss2p5D_protons.py``.
+      :caption: You can copy this file from ``examples/space_charge_gaussian_kick/plot_sc_kick_Gauss2p5D_protons.py``.
 
 
 
@@ -159,7 +159,7 @@ Run
 
 This example can be run as:
 
-* **Python** script: ``python3 run_sc_kick_PIC2p5D.py``
+* **Python** script: ``python3 run_sc_kick_PIC2p5D_protons.py``
 
 For `MPI-parallel <https://www.mpi-forum.org>`__ runs, prefix these lines with ``mpiexec -n 4 ...`` or ``srun -n 4 ...``, depending on the system.
 
@@ -167,9 +167,9 @@ For `MPI-parallel <https://www.mpi-forum.org>`__ runs, prefix these lines with `
 
    .. tab-item:: 2p5D (PIC) space charge solver
 
-      .. literalinclude:: run_sc_kick_PIC2p5D.py
+      .. literalinclude:: run_sc_kick_PIC2p5D_protons.py
          :language: python3
-         :caption: You can copy this file from ``examples/space_charge_gaussian_kick/run_sc_kick_PIC2p5D.py``.
+         :caption: You can copy this file from ``examples/space_charge_gaussian_kick/run_sc_kick_PIC2p5D_protons.py``.
 
 Analyze
 -------
@@ -181,6 +181,6 @@ We run the following script to analyze correctness:
 
    .. tab-item:: 2p5D (PIC) space charge solver
 
-      .. literalinclude:: run_sc_kick_PIC2p5D.py
+      .. literalinclude:: run_sc_kick_PIC2p5D_protons.py
          :language: python3
-         :caption: You can copy this file from ``examples/space_charge_gaussian_kick/analysis_sc_kick_PIC2p5D.py``.
+         :caption: You can copy this file from ``examples/space_charge_gaussian_kick/analysis_sc_kick_PIC2p5D_protons.py``.
