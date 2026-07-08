@@ -14,11 +14,10 @@ sim = ImpactX()
 sim.particle_shape = 2  # B-spline order
 sim.space_charge = "Gauss2p5D"
 sim.space_charge_gauss_nint = 101
-# sim.space_charge_gauss_charge_z_bins = 129
 sim.space_charge_gauss_charge_z_bins = 51
 sim.space_charge_gauss_taylor_delta = 0.01
-# sim.space_charge_apply_longitudinal_kick = False
 sim.space_charge_apply_longitudinal_kick = True
+sim.space_charge_gauss_long_scale = 6.0
 sim.slice_step_diagnostics = True
 
 # domain decomposition & space charge mesh
@@ -26,9 +25,8 @@ sim.init_grids()
 
 # beam energy ad bunch charge
 kin_energy_MeV = 100  # reference energy
-# kin_energy_MeV = 10000
 bunch_charge_C = 1.0e-9  # used with space charge
-npart = 10000000  # number of macro particles
+npart = 1000000  # number of macro particles
 
 # intialize reference particle
 ref = sim.beam.ref

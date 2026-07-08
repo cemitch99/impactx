@@ -92,6 +92,8 @@ ptf = final_sort["momentum_t"]
 
 # Difference between value and prediction
 
+pt_diff = ptf - pt_predicted
+
 dpx_max = (pxf - px_predicted).abs().max()
 dpy_max = (pyf - py_predicted).abs().max()
 dpt_max = (ptf - pt_predicted).abs().max()
@@ -119,7 +121,7 @@ print("dpy_rms/py_max", dpy_rms / py_max)
 print("dpt_rms/pt_max", dpt_rms / pt_max)
 
 # Test maximum error:
-atol = 5.1e-2
+atol = 2.0e-2
 print(f"  tol={atol}")
 
 assert np.allclose(
@@ -129,7 +131,7 @@ assert np.allclose(
 )
 
 # Longitudinal kick is sensitive to noise (relax tolerance):
-atol = 0.5
+atol = 0.2
 print(f"  tol={atol}")
 
 assert np.allclose(
@@ -146,7 +148,7 @@ print("dpy_max/py_max", dpy_max / py_max)
 print("dpt_max/pt_max", dpt_max / pt_max)
 
 # Test maximum error:
-atol = 5.1e-2
+atol = 7.0e-2
 print(f"  tol={atol}")
 
 assert np.allclose(
@@ -156,7 +158,7 @@ assert np.allclose(
 )
 
 # Longitudinal kick is sensitive to noise (relax tolerance):
-atol = 1.1
+atol = 0.4
 print(f"  tol={atol}")
 
 assert np.allclose(

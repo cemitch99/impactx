@@ -14,9 +14,7 @@ sim = ImpactX()
 sim.particle_shape = 2  # B-spline order
 sim.space_charge = "2p5D"
 sim.poisson_solver = "fft"
-# sim.space_charge_num_longitudinal_bins = 129
 sim.space_charge_num_longitudinal_bins = 51
-# sim.space_charge_apply_longitudinal_kick = False
 sim.space_charge_apply_longitudinal_kick = True
 sim.slice_step_diagnostics = True
 
@@ -29,8 +27,7 @@ sim.blocking_factor_z = [1]
 sim.prob_relative = [1.1]
 
 # beam diagnostics
-# sim.diagnostics = False  # benchmarking
-sim.slice_step_diagnostics = True
+sim.diagnostics = False  # benchmarking
 
 # domain decomposition & space charge mesh
 sim.init_grids()
@@ -38,7 +35,7 @@ sim.init_grids()
 # beam energy ad bunch charge
 kin_energy_MeV = 100  # reference energy
 bunch_charge_C = 1.0e-9  # used with space charge
-npart = 10000000  # number of macro particles
+npart = 1000000  # number of macro particles
 
 # intialize reference particle
 ref = sim.beam.ref

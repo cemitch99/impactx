@@ -5,6 +5,8 @@
 # License: BSD-3-Clause-LBNL
 #
 
+import matplotlib.pyplot as plt
+
 import numpy as np
 import openpmd_api as io
 import scipy.constants as sc
@@ -76,6 +78,10 @@ d_gauss_pdf_z = -zi / sigmaz**2 * gauss_pdf_z
 pz_predicted = -L * Kscale * potential_xy_factor * d_gauss_pdf_z
 pt_predicted = -beta * pz_predicted
 
+potential_xy_factor00 = np.euler_gamma + np.log(gauss_long_scale**2 / (2.0*sigmax**2))
+
+pt_predicted_onaxis = beta * L * Kscale * potential_xy_factor00 * d_gauss_pdf_z
+
 # Maximum momentum kick
 px_max = px_predicted.abs().max()
 py_max = py_predicted.abs().max()
@@ -120,49 +126,24 @@ print("dpx_rms/px_max", dpx_rms / px_max)
 print("dpy_rms/py_max", dpy_rms / py_max)
 print("dpt_rms/pt_max", dpt_rms / pt_max)
 
-# Test maximum error:
-atol = 2.0e-2
-print(f"  tol={atol}")
-
-assert np.allclose(
-    [dpx_rms / px_max, dpy_rms / py_max],
-    [0.0, 0.0],
-    atol=atol,
-)
-
-# Longitudinal kick is sensitive to noise (relax tolerance):
-atol = 0.2
-print(f"  tol={atol}")
-
-assert np.allclose(
-    [dpt_rms / pt_max],
-    [0.0],
-    atol=atol,
-)
-
-
 print()
 print("Difference between predicted and computed final momentum (max), relative:")
 print("dpx_max/px_max", dpx_max / px_max)
 print("dpy_max/py_max", dpy_max / py_max)
 print("dpt_max/pt_max", dpt_max / pt_max)
 
-# Test maximum error:
-atol = 6.3e-2
-print(f"  tol={atol}")
+# Plotting
+mm_scale = 1.0e-3
+plt.figure(figsize=(10, 6))
+plt.xlabel("initial $ct$ (m)", fontsize=25)
+plt.ylabel("final $p_t/cp_0$", fontsize=25)
+plt.xticks(fontsize=20)
+plt.yticks(fontsize=20)
+plt.grid(True)
 
-assert np.allclose(
-    [dpx_max / px_max, dpy_max / py_max],
-    [0.0, 0.0],
-    atol=atol,
-)
-
-# Longitudinal kick is sensitive to noise (relax tolerance):
-atol = 0.4
-print(f"  tol={atol}")
-
-assert np.allclose(
-    [dpt_max / pt_max],
-    [0.0],
-    atol=atol,
-)
+# Plot the data
+plt.plot(ti, ptf, "bo")
+plt.plot(ti, pt_predicted, "ro", markersize=5)
+plt.plot(ti, pt_predicted_onaxis, "ko", markersize=2)
+plt.tight_layout()
+plt.show()
