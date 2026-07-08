@@ -6,7 +6,6 @@
 #
 
 import matplotlib.pyplot as plt
-
 import numpy as np
 import openpmd_api as io
 import scipy.constants as sc
@@ -78,7 +77,7 @@ d_gauss_pdf_z = -zi / sigmaz**2 * gauss_pdf_z
 pz_predicted = -L * Kscale * potential_xy_factor * d_gauss_pdf_z
 pt_predicted = -beta * pz_predicted
 
-potential_xy_factor00 = np.euler_gamma + np.log(gauss_long_scale**2 / (2.0*sigmax**2))
+potential_xy_factor00 = np.euler_gamma + np.log(gauss_long_scale**2 / (2.0 * sigmax**2))
 
 pt_predicted_onaxis = beta * L * Kscale * potential_xy_factor00 * d_gauss_pdf_z
 
