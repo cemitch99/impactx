@@ -238,7 +238,6 @@ namespace impactx::particles::spacecharge
         amrex::Real const * const beam_profile = charge_distribution.data();
 
         // group together constants for the momentum push
-        //amrex::ParticleReal const push_consts = rfpiepslon * dt * charge * inv_gamma2 / pz_ref_SI;
         amrex::ParticleReal const push_consts = rfpiepslon * dt * charge * inv_gamma2 / (beta * pz_ref_SI);
         amrex::ParticleReal const chargesign = charge / std::abs(charge);
         amrex::ParticleReal const log2n = -std::log(2.0_prt);
