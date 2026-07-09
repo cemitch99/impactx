@@ -5,11 +5,20 @@
 # License: BSD-3-Clause-LBNL
 #
 
+import argparse
+
 import matplotlib.pyplot as plt
 import numpy as np
 import openpmd_api as io
 import scipy.constants as sc
 from scipy.special import expi
+
+# options to run this script
+parser = argparse.ArgumentParser(description="Plot the longitudinal kick in the Gauss2p5D benchmark with protons.")
+parser.add_argument(
+    "--save-png", action="store_true", help="non-interactive run: save to PNGs"
+)
+args = parser.parse_args()
 
 # initial/final beam
 series = io.Series("diags/openPMD/monitor.h5", io.Access.read_only)
@@ -145,4 +154,8 @@ plt.plot(ti, ptf, "bo")
 plt.plot(ti, pt_predicted, "ro", markersize=5)
 plt.plot(ti, pt_predicted_onaxis, "ko", markersize=2)
 plt.tight_layout()
-plt.show()
+if args.save_png:
+    plt.savefig("Gauss2p5D_longitudinal_kick.png")
+else:
+    plt.show()
+
