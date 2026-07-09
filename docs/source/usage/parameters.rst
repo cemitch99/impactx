@@ -613,7 +613,7 @@ This element is defined via ``<cfbend_exact_name>.type = cfbend_exact`` and requ
 
 .. pp:param:: <cfbend_exact_name>.mapsteps
     :type: ``integer``
-    :default: ``5``
+    :default: ``10``
 
     Number of integration steps per slice used for symplectic integration.
 
@@ -1155,7 +1155,7 @@ This element is defined via ``<multipole_exact_name>.type = multipole_exact`` an
 
 .. pp:param:: <multipole_exact_name>.mapsteps
     :type: ``integer``
-    :default: ``5``
+    :default: ``10``
 
     Number of integration steps per slice used for symplectic integration.
 
@@ -1530,7 +1530,7 @@ This element is defined via ``<quad_exact_name>.type = quad_exact`` and requires
 
 .. pp:param:: <quad_exact_name>.mapsteps
     :type: ``integer``
-    :default: ``5``
+    :default: ``10``
 
     Number of integration steps per slice used for symplectic integration.
 
