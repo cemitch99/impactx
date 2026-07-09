@@ -14,7 +14,9 @@ import scipy.constants as sc
 from scipy.special import expi
 
 # options to run this script
-parser = argparse.ArgumentParser(description="Plot the longitudinal kick in the Gauss2p5D benchmark with protons.")
+parser = argparse.ArgumentParser(
+    description="Plot the longitudinal kick in the Gauss2p5D benchmark with protons."
+)
 parser.add_argument(
     "--save-png", action="store_true", help="non-interactive run: save to PNGs"
 )
@@ -158,4 +160,3 @@ if args.save_png:
     plt.savefig("Gauss2p5D_longitudinal_kick.png")
 else:
     plt.show()
-
