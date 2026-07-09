@@ -1,4 +1,4 @@
-/* Copyright 2021-2023 The ImpactX Community
+/* Copyright 2022-2026 The ImpactX Community
  *
  * Authors: Axel Huebl, Chad Mitchell
  * License: BSD-3-Clause-LBNL
@@ -916,6 +916,15 @@ void init_ImpactX (py::module& m)
             "have_fft",
             [](py::object const &){
 #ifdef ImpactX_USE_FFT
+                return true;
+#else
+                return false;
+#endif
+        })
+        .def_property_readonly_static(
+            "have_openpmd",
+            [](py::object const &){
+#ifdef ImpactX_USE_OPENPMD
                 return true;
 #else
                 return false;

@@ -2126,6 +2126,19 @@ add_impactx_test(kick-Gauss2p5D-long-kick-off.py
     examples/space_charge_gaussian_kick/analysis_sc_kick_Gauss2p5D_long_kick_off.py
     OFF  # no plot script yet
 )
+add_impactx_test(kick-Gauss2p5D-protons.py
+    examples/space_charge_gaussian_kick/run_sc_kick_Gauss2p5D_protons.py
+    ON    # ImpactX MPI-parallel
+    examples/space_charge_gaussian_kick/analysis_sc_kick_Gauss2p5D_protons.py
+    examples/space_charge_gaussian_kick/plot_sc_kick_Gauss2p5D_protons.py
+)
+add_impactx_test(kick-PIC2p5D-protons.py
+    examples/space_charge_gaussian_kick/run_sc_kick_PIC2p5D_protons.py
+    ON    # ImpactX MPI-parallel
+    examples/space_charge_gaussian_kick/analysis_sc_kick_PIC2p5D_protons.py
+    OFF  # no plot script yet
+)
+label_impactx_test(kick-Gauss2p5D-protons.py.plot slow)
 
 # Scaling Test of Spin in an Exact Bend ###################
 file(COPY ${ImpactX_SOURCE_DIR}/examples/spin_tracking/initial_coords_sbend.csv

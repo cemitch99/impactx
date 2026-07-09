@@ -1,4 +1,4 @@
-/* Copyright 2022-2025 The Regents of the University of California, through Lawrence
+/* Copyright 2022-2026 The Regents of the University of California, through Lawrence
  *           Berkeley National Laboratory (subject to receipt of any required
  *           approvals from the U.S. Dept. of Energy). All rights reserved.
  *
@@ -15,6 +15,7 @@
 #include <AMReX_REAL.H>
 #include <AMReX_BLProfiler.H>
 #include <AMReX_GpuContainers.H>
+#include <AMReX_GpuParallelReduce.H>
 #include <AMReX_ParmParse.H>
 #include <ablastr/warn_manager/WarnManager.H>
 
@@ -169,11 +170,12 @@ namespace impactx::particles::spacecharge
         amrex::ParticleReal const mc_SI = pc.GetRefParticle().mass * c0_SI;
         amrex::ParticleReal const pz_ref_SI = pc.GetRefParticle().beta_gamma() * mc_SI;
         amrex::ParticleReal const gamma = pc.GetRefParticle().gamma();
+        amrex::ParticleReal const beta = pc.GetRefParticle().beta();
         amrex::ParticleReal const beta_gamma = pc.GetRefParticle().beta_gamma();
         amrex::ParticleReal const inv_gamma2 = 1.0_prt / (gamma * gamma);
         amrex::ParticleReal const rfpiepslon = c0_SI * c0_SI * 1.0e-7_prt;
 
-        amrex::ParticleReal const dt = slice_ds / pc.GetRefParticle().beta() / c0_SI;
+        amrex::ParticleReal const dt = slice_ds / beta / c0_SI;
         amrex::ParticleReal const aspect_ratio = std::sqrt(sigx*sigx + sigy*sigy) / (beta_gamma * sigt);
 
         if (aspect_ratio > 1_rt) {
@@ -224,8 +226,7 @@ namespace impactx::particles::spacecharge
         // Sum up all partial charge histograms to each MPI process to calculate
         // the global charge slope.
         amrex::ParallelAllReduce::Sum(
-            charge_distribution.data(),
-            charge_distribution.size(),
+            charge_distribution,
             amrex::ParallelDescriptor::Communicator()
         );
 
@@ -237,7 +238,7 @@ namespace impactx::particles::spacecharge
         amrex::Real const * const beam_profile = charge_distribution.data();
 
         // group together constants for the momentum push
-        amrex::ParticleReal const push_consts = rfpiepslon * dt * charge * inv_gamma2 / pz_ref_SI;
+        amrex::ParticleReal const push_consts = rfpiepslon * dt * charge * inv_gamma2 / (beta * pz_ref_SI);
         amrex::ParticleReal const chargesign = charge / std::abs(charge);
         amrex::ParticleReal const log2n = -std::log(2.0_prt);
         amrex::ParticleReal const pz_push_const =

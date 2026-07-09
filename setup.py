@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Copyright 2021-2023 The ImpactX Community
+# Copyright 2022-2026 The ImpactX Community
 #
 # Authors: Axel Huebl
 # License: BSD-3-Clause-LBNL
@@ -167,7 +167,10 @@ class CMakeBuild(build_ext):
                     cfg.upper(), os.path.join(extdir, "impactx")
                 ),
             ]
-            if sys.maxsize > 2**32:
+            generator_platform = os.environ.get("CMAKE_GENERATOR_PLATFORM")
+            if generator_platform:
+                cmake_args += ["-A", generator_platform]
+            elif sys.maxsize > 2**32:
                 cmake_args += ["-A", "x64"]
         else:
             cmake_args += ["-DCMAKE_BUILD_TYPE=" + cfg]
