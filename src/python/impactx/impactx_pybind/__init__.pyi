@@ -1100,6 +1100,14 @@ class Config:
     have_omp: typing.ClassVar[bool] = True
     have_openpmd: typing.ClassVar[bool] = True
     have_simd: typing.ClassVar[bool] = False
+    openpmd_backends: typing.ClassVar[dict] = {
+        "adios1": False,
+        "adios2": False,
+        "hdf5": True,
+        "json": True,
+        "mpi": True,
+        "toml": True,
+    }
     precision: typing.ClassVar[str] = "DOUBLE"
     precision_particles: typing.ClassVar[str] = "DOUBLE"
     simd_size: typing.ClassVar[int] = 1
