@@ -98,7 +98,9 @@ rf = elements.ShortRF(name="rf", V=2.3184782e-8, freq=1.0e4, phase=-90.0)
 apert = elements.Aperture(name="apert", aperture_x=0.1, aperture_y=0.1)
 
 # add beam diagnostics
-monitor = elements.BeamMonitor("monitor", backend="h5", particles=False, beam_moments=True)
+monitor = elements.BeamMonitor(
+    "monitor", backend="h5", particles=False, beam_moments=True
+)
 
 # Lines of interest
 cell = [dr1, e1, sbend1, e2, dr2, e1, sbend1, e2, dr3, qs1f, dr4, qs2d, dr5, qs3t, dr6]
