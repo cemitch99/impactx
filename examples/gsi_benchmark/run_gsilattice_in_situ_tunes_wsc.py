@@ -20,12 +20,6 @@ sim = ImpactX()
 # set numerical parameters and IO control
 sim.particle_shape = 2  # B-spline order
 
-# to use 2.5D Gaussian solver
-# sim.space_charge = "Gauss2p5D"
-# sim.space_charge_gauss_nint = 101
-# sim.space_charge_gauss_charge_z_bins = 129
-# sim.space_charge_gauss_taylor_delta = 0.01
-
 # to use 2.5D PIC solver
 sim.max_level = 0
 sim.n_cell = [32, 32, 1]
@@ -36,10 +30,11 @@ sim.space_charge = "2p5D"
 sim.poisson_solver = "fft"
 sim.dynamic_size = True
 sim.prob_relative = [1.1]
+sim.space_charge_num_longitudinal_bins = 64
 sim.space_charge_apply_longitudinal_kick = False
 
 sim.space_charge_apply_longitudinal_kick = False
-sim.slice_step_diagnostics = True
+sim.slice_step_diagnostics = False
 
 # domain decomposition & space charge mesh
 sim.init_grids()
@@ -55,8 +50,8 @@ xmin = 0.01 * sigx
 xmax = 5.0 * sigx  # maximum x-coordinate of test particles sampled
 
 #   particle bunch
-# npart = 100000
-npart = 10000
+npart = 100000
+# npart = 10000
 sim.add_particles(bunch_charge_C, get_distribution(), npart)
 
 # set test particles
@@ -100,18 +95,17 @@ sextupole = elements.Multipole(name="sextupole", multipole=3, K_normal=K2L, K_sk
 rf = elements.ShortRF(name="rf", V=2.3184782e-8, freq=1.0e4, phase=-90.0)
 
 # Aperture to catch large-amplitude particles
-# apert = elements.Aperture(name="apert", aperture_x=1.0, aperture_y=1.0)
 apert = elements.Aperture(name="apert", aperture_x=0.1, aperture_y=0.1)
 
 # add beam diagnostics
-monitor = elements.BeamMonitor("monitor", backend="h5")
+monitor = elements.BeamMonitor("monitor", backend="h5", particles=False, beam_moments=True)
 
 # Lines of interest
 cell = [dr1, e1, sbend1, e2, dr2, e1, sbend1, e2, dr3, qs1f, dr4, qs2d, dr5, qs3t, dr6]
 chain = 11 * cell
 
 # Construct lattice
-# sim.lattice.append(monitor)  # no monitor to reduce I/O
+sim.lattice.append(monitor)  # reduced beam characteristics only, to reduce I/O
 sim.lattice.append(rf)
 sim.lattice.extend(cell)
 # sim.lattice.append(sextupole) # comment this line to track in linear lattice
