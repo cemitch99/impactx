@@ -7,8 +7,6 @@
 
 import numpy as np
 import openpmd_api as io
-import scipy.constants as sc
-from scipy.special import expi
 
 # initial/final beam
 series = io.Series("diags/openPMD/monitor.h5", io.Access.read_only)
@@ -68,11 +66,11 @@ pt_max = pti.abs().max()
 
 print()
 print("Absolute max initial values:")
-print("x_max", x_max)  
+print("x_max", x_max)
 print("px_max", px_max)
-print("y_max", y_max)  
+print("y_max", y_max)
 print("py_max", py_max)
-print("t_max", t_max)  
+print("t_max", t_max)
 print("pt_max", pt_max)
 
 print()
@@ -85,7 +83,9 @@ print("dt_max", dt_max)
 print("dpt_max", dpt_max)
 
 # Test maximum error:
-atol = 5.1e11  # large tolerance here, because orbit reversibility is not yet implemented
+atol = (
+    5.1e11  # large tolerance here, because orbit reversibility is not yet implemented
+)
 print(f"  tol={atol}")
 
 assert np.allclose(
@@ -97,7 +97,7 @@ assert np.allclose(
 print("Change in the spin:")
 print("||delta s||_max", dspinmax)
 
-atol = 2.0  #large tolerance here, because orbit reversiblity is not yet implemented
+atol = 2.0  # large tolerance here, because orbit reversiblity is not yet implemented
 print(f"  atol={atol}")
 
 assert np.allclose(
@@ -107,5 +107,3 @@ assert np.allclose(
     ],
     atol=atol,
 )
-
-
