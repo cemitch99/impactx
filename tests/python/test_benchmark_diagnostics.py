@@ -27,7 +27,7 @@ from impactx import ImpactX, distribution, twiss
 if os.environ.get("IS_CODESPEED_CPU_SIMULATION") == "1":
     # https://codspeed.io/docs/instruments/cpu/index
     rounds = 1
-    npart = 10_000
+    npart = 100_000
 else:
     rounds = 5
     npart = 1_000_000
