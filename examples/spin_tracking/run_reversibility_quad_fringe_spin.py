@@ -79,7 +79,7 @@ sim.lattice.append(quad1)
 sim.lattice.append(quad_edge_out)
 sim.lattice.append(quad_edge_in)
 sim.lattice.append(inv_quad1)
-# Note: Sequence 1 and Sequence 2 each work to high precision (that is, yield the identity). Yet, # their composite in Sequence 3 fails (unless the tolerance is very loose).  This is due to the 
+# Note: Sequence 1 and Sequence 2 each work to high precision (that is, yield the identity). Yet, # their composite in Sequence 3 fails (unless the tolerance is very loose).  This is due to the
 # fact that the orbit in QuadEdge is not reversed simply by taking entry->exit. See Issue #1562 .
 
 # sequence 4 (full sequence):
