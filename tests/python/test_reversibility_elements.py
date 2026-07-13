@@ -667,7 +667,7 @@ def test_RFCavity(sim):
     ],
     ids=["linear-zero-gap", "linear-finite-gap", "nonlinear-finite-gap"],
 )
-# WARNING:  The orbit in QuadEdge is not reversed simply by taking entry->exit. The inverse map needs to be fixed.  See Issue #1562.
+# WARNING:  The orbit in DipEdge is not reversed simply by taking entry->exit. The inverse map needs to be fixed.  See Issue #1562.
 def test_DipEdge(sim, model, g, K2):
     rc = 10.3462283686195526
     psi = 0.048345620280243
