@@ -240,7 +240,7 @@ namespace impactx::elements
             // D. T. Abell et al, "Accurate and efficient spin integration for particle accelerators,"
             // Phys. Rev. Accel. Beams 18, 024001 (2015).
 
-            lambdaz = -(m_flag) * m_g * (1_prt + G) * x * y;
+            lambdaz = -static_cast<amrex::ParticleReal>(m_flag) * m_g * (1_prt + G) * x * y;
 
             // push the spin vector using the generator just determined
             rotate_spin(lambdax,lambday,lambdaz,sx,sy,sz);
