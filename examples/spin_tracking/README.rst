@@ -553,7 +553,7 @@ The analysis can be run using the following script:
 .. _examples-reversibility-quad-fringe-spin:
 
 Reversibility Test for Spin in a Quadrupole with Fringe Fields
-================================================================
+==============================================================
 
 This example tests the reversibility of particle spin and orbit tracking through a quadrupole with nonlinear entry and exit fringe fields.
 
@@ -561,8 +561,10 @@ Particle are tracked forward through a quadrupole with fringe fields, and then b
 
 In this test, the initial and final values of all six phase space variables, as well as the three spin variables, must coincide.
 
-Note:  Because the exact inverse of the quadrupole fringe field map is not yet implemented, the test will pass only if a large tolerance value is specified.
-This value will be tightened once the exact inverse is implemented, and the test input modified accordingly.
+.. note::
+
+   Because the exact inverse of the quadrupole fringe field map is not yet implemented, the test will pass only if a large tolerance value is specified.
+   This value will be tightened once the exact inverse is implemented, and the test input modified accordingly.
 
 
 Run
