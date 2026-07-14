@@ -2167,3 +2167,11 @@ add_impactx_test(sextupole-kick.py
     examples/multipole/analysis_sextupole_kick.py
     OFF  # no plot script yet
 )
+
+# Reversibility Test for Spin in a Quadrupole with Fringe Fields ###########
+add_impactx_test(reversibility-quad-fringe-spin.py
+    examples/spin_tracking/run_reversibility_quad_fringe_spin.py
+    ON    # ImpactX MPI-parallel
+    examples/spin_tracking/analysis_reversibility_quad_fringe_spin.py
+    OFF  # no plot script yet
+)
