@@ -22,8 +22,8 @@ sim.particle_shape = 2  # B-spline order
 
 # to use 2.5D PIC solver
 sim.max_level = 0
-sim.n_cell = [32, 32, 1] #nominal
-#sim.n_cell = [64, 64, 1]
+sim.n_cell = [32, 32, 1]  # nominal
+# sim.n_cell = [64, 64, 1]
 sim.blocking_factor_x = [16]
 sim.blocking_factor_y = [16]
 sim.blocking_factor_z = [1]
@@ -47,13 +47,13 @@ ref.set_species("proton").set_kin_energy_MeV(kin_energy_MeV)
 qm_eev = ref.charge_qe / (ref.mass_MeV * 1.0e6)  # electron charge/mass in e / eV
 
 sigx = 5.0e-3  # rms horizontal/vertical beam size in m
-#xmin = 0.01 * sigx
+# xmin = 0.01 * sigx
 xmin = 0.1 * sigx
 xmax = 5.0 * sigx  # maximum x-coordinate of test particles sampled
 
 #   particle bunch
-#npart = 1000000
-npart = 100000 #nominal
+# npart = 1000000
+npart = 100000  # nominal
 sim.add_particles(bunch_charge_C, get_distribution(), npart)
 
 # set test particles
@@ -61,8 +61,8 @@ pc = sim.particle_container()
 
 #  add test particles
 if amr.ParallelDescriptor.IOProcessor():
-    dx = np.linspace(xmin, xmax, 10)      #dx = np.linspace(xmin, xmax, 50)
-    zero_arr = np.linspace(0, 0.0, 10)    #zero_arr = np.linspace(0, 0.0, 50)
+    dx = np.linspace(xmin, xmax, 10)  # dx = np.linspace(xmin, xmax, 50)
+    zero_arr = np.linspace(0, 0.0, 10)  # zero_arr = np.linspace(0, 0.0, 50)
     pc.add_n_particles(
         dx, zero_arr, zero_arr, zero_arr, zero_arr, zero_arr, qm_eev, bunch_charge=0.0
     )
@@ -100,9 +100,9 @@ rf = elements.ShortRF(name="rf", V=2.3184782e-8, freq=1.0e4, phase=-90.0)
 apert = elements.Aperture(name="apert", aperture_x=0.1, aperture_y=0.1)
 
 # add beam diagnostics
-#monitor = elements.BeamMonitor(
+# monitor = elements.BeamMonitor(
 #    "monitor", backend="h5", particles=False, beam_moments=True
-#)
+# )
 
 # Lines of interest
 cell = [dr1, e1, sbend1, e2, dr2, e1, sbend1, e2, dr3, qs1f, dr4, qs2d, dr5, qs3t, dr6]
@@ -112,13 +112,13 @@ chain = 11 * cell
 # sim.lattice.append(monitor)  # reduced beam characteristics only, to reduce I/O
 sim.lattice.append(rf)
 sim.lattice.extend(cell)
-sim.lattice.append(sextupole) # comment this line to track in linear lattice
+sim.lattice.append(sextupole)  # comment this line to track in linear lattice
 sim.lattice.extend(chain)
 sim.lattice.append(rf)
 sim.lattice.append(apert)
 
 # number of turns in the ring
-#sim.periods = 1024
+# sim.periods = 1024
 sim.periods = 500
 
 turn_arr = []
@@ -182,13 +182,13 @@ for idcpu, track in grouped_by_idcpu:
     plt.scatter(xarr, pxarr, s=4)
 
 
-#plt.scatter(x0_mm, tunes, s=10)  # single draw call (was 1 per particle)
-#plt.xlabel("x [mm]", fontsize=16)
-#plt.ylabel("tune", fontsize=16)
-#plt.title("Tune vs. Horizontal Position")
+# plt.scatter(x0_mm, tunes, s=10)  # single draw call (was 1 per particle)
+# plt.xlabel("x [mm]", fontsize=16)
+# plt.ylabel("tune", fontsize=16)
+# plt.title("Tune vs. Horizontal Position")
 plt.xlabel("x [m]", fontsize=18)
 plt.ylabel("px [rad]", fontsize=18)
-plt.tick_params(axis='both', labelsize=20)
-#plt.ylim(bottom=0.235)
+plt.tick_params(axis="both", labelsize=20)
+# plt.ylim(bottom=0.235)
 plt.tight_layout()
 plt.show()
