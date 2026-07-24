@@ -16,6 +16,7 @@
 #include "mixin/beamoptic.H"
 #include "mixin/thick.H"
 #include "mixin/lineartransport.H"
+#include "mixin/spintransport.H"
 #include "mixin/named.H"
 #include "mixin/nofinalize.H"
 
@@ -36,6 +37,7 @@ namespace impactx::elements
       public mixin::Thick,
       public mixin::Alignment,
       public mixin::PipeAperture,
+      public mixin::SpinTransport,
       public mixin::NoFinalize,
       public amrex::simd::Vectorized<amrex::simd::native_simd_size_particlereal>
     {
@@ -273,6 +275,99 @@ namespace impactx::elements
             // advance integrated path length
             refpart.s = s + slice_ds;
         }
+
+
+        /** This operator pushes the particle spin.
+         *
+         * @param x particle position in x
+         * @param y particle position in y
+         * @param t particle position in t
+         * @param px particle momentum in x
+         * @param py particle momentum in y
+         * @param pt particle momentum in t
+         * @param sx particle spin x-component
+         * @param sy particle spin y-component
+         * @param sz particle spin z-component
+         * @param idcpu particle global index
+         * @param refpart reference particle
+         */
+        template<typename T_Real=amrex::ParticleReal, typename T_IdCpu=uint64_t>
+        AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE
+        void spin_and_phasespace_push (
+            T_Real & AMREX_RESTRICT x,
+            T_Real & AMREX_RESTRICT y,
+            T_Real & AMREX_RESTRICT t,
+            T_Real & AMREX_RESTRICT px,
+            T_Real & AMREX_RESTRICT py,
+            T_Real & AMREX_RESTRICT pt,
+            T_Real & AMREX_RESTRICT sx,
+            T_Real & AMREX_RESTRICT sy,
+            T_Real & AMREX_RESTRICT sz,
+            T_IdCpu & AMREX_RESTRICT idcpu,
+            [[maybe_unused]] RefPart const & AMREX_RESTRICT refpart
+        ) const
+        {
+            using namespace amrex::literals; // for _rt and _prt
+            using namespace std; // for cmath(float)
+            using amrex::Math::powi;
+            namespace stdx = amrex::simd::stdx;
+
+            // initialize the three components of the axis-angle vector
+            T_Real lambdax = 0_prt;
+            T_Real lambday = 0_prt;
+            T_Real lambdaz = 0_prt;
+
+            // initial conversion from static to dynamic units:
+            T_Real px_dyn = px * m_bgi;
+            T_Real py_dyn = py * m_bgi;
+            T_Real pt_dyn = pt * m_bgi;
+
+            // compute intermediate quantities related to acceleration
+            T_Real const pti_tot = m_pti_ref + pt_dyn;
+            T_Real const ptf_tot = m_ptf_ref + pt_dyn;
+            T_Real const pti_tot2 = powi<2>(pti_tot);
+            T_Real const ptf_tot2 = powi<2>(ptf_tot);
+
+            // check whether particle lies within the domain of map definition
+            auto const mask = pti_tot2 <= 1_prt || ptf_tot2 <= 1_prt;
+            amrex::ParticleIDWrapper<T_IdCpu>{idcpu}.make_invalid(mask);
+            {
+                T_Real const pzi_tot = sqrt(powi<2>(pti_tot) - 1_prt);
+                T_Real const pzf_tot = sqrt(powi<2>(ptf_tot) - 1_prt);
+
+                T_Real const numer = -ptf_tot + pzf_tot;
+                T_Real const denom = -pti_tot + pzi_tot;
+
+                // compute focusing constant (1/m) and rotation angle (in rad)
+                T_Real const theta = m_alpha_iez * log(numer / denom);
+                auto const [sin2Gth, cos2Gth] = amrex::Math::sincos(2_prt * refpart.gyromagnetic_anomaly * theta);
+
+                T_Real const mu = 0.5_prt * (pzf_tot / (1_prt - ptf_tot) - pzi_tot / (1_prt - pti_tot));
+
+                T_Real const Ffunc = pzi_tot/(1_prt-pti_tot)*sin2Gth + m_ez*(1_prt-cos2Gth)/m_bz + 2_prt*mu*sin2Gth;
+                T_Real const Gfunc = pzi_tot/(1_prt-pti_tot)*(1_prt-cos2Gth) - m_ez*sin2Gth/m_bz - 2_prt*mu*cos2Gth;
+
+                lambdax = m_alpha*Gfunc*x + Ffunc*px_dyn + m_alpha*Ffunc*y - Gfunc*py_dyn;
+                lambday = -m_alpha*Ffunc*x + Gfunc*px_dyn + m_alpha*Gfunc*y + Ffunc*py_dyn;
+                lambdaz = 0_prt;
+
+                // push the spin vector using the generator just determined
+                rotate_spin(lambdax,lambday,lambdaz,sx,sy,sz);
+
+                // generator determined at the design point
+                lambdax = 0_prt;
+                lambday = 0_prt;
+                lambdaz = -2_prt*theta*(1_prt + refpart.gyromagnetic_anomaly);
+
+                // push the spin vector using the generator just determined
+                rotate_spin(lambdax,lambday,lambdaz,sx,sy,sz);
+            }
+
+            // phase space push
+            (*this)(x, y, t, px, py, pt, idcpu, refpart);
+
+        }
+
 
         /** This pushes the covariance matrix. */
         using LinearTransport::operator();
