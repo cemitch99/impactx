@@ -67,7 +67,9 @@ sol1i = elements.Sol(name="sol1", ds=-ds_value, ks=ks_value, nslice=ns)
 
 bz_value = ks_value * ref.beta_gamma
 ez_value = 1.0e-12  # small but nonzero
-sol_chr = elements.ChrAcc(name="sol_chr", ds=ds_value, ez=ez_value, bz=bz_value, nslice=ns) 
+sol_chr = elements.ChrAcc(
+    name="sol_chr", ds=ds_value, ez=ez_value, bz=bz_value, nslice=ns
+)
 
 # set the lattice
 sim.lattice.append(monitor)
