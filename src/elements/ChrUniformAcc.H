@@ -304,7 +304,7 @@ namespace impactx::elements
             T_Real & AMREX_RESTRICT sy,
             T_Real & AMREX_RESTRICT sz,
             T_IdCpu & AMREX_RESTRICT idcpu,
-            [[maybe_unused]] RefPart const & AMREX_RESTRICT refpart
+            RefPart const & AMREX_RESTRICT refpart
         ) const
         {
             using namespace amrex::literals; // for _rt and _prt
