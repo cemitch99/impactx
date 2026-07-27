@@ -112,6 +112,9 @@ namespace impactx::elements
             // compute focusing constant (1/m) and rotation angle (in rad)
             m_alpha = m_bz * 0.5_prt;
             m_alpha_iez = m_alpha / m_ez;
+
+            // dimensionless acceleration parameter (change in gamma)
+            m_acc = m_ez * m_slice_ds;
         }
 
         /** This is a chracc functor, so that a variable of this type can be used like a chracc function.
@@ -169,7 +172,7 @@ namespace impactx::elements
                 T_Real const denom = -pti_tot + pzi_tot;
 
                 // compute focusing constant (1/m) and rotation angle (in rad)
-                T_Real const theta = m_alpha_iez * log(numer / denom);
+                T_Real const theta = (m_acc == 0_prt)? m_alpha * m_slice_ds / pzi_tot : m_alpha_iez * log(numer / denom);
                 auto const [sin_theta, cos_theta] = amrex::Math::sincos(theta);
 
                 // initialize output values
@@ -188,11 +191,17 @@ namespace impactx::elements
                 pyout = -m_alpha * sin_theta * y + cos_theta * py;
 
                 // the correct symplectic update for t
-                tout = t + (pzf_tot - pzf_ref - pzi_tot + pzi_ref) / m_ez;
-                tout += (1_prt/pzi_tot - 1_prt/pzf_tot)
-                      * (powi<2>(py - m_alpha * x) +
-                         powi<2>(px + m_alpha * y))
-                      / (2_prt * m_ez);
+                T_Real Pxy_mech2 = powi<2>(py - m_alpha * x) + powi<2>(px + m_alpha * y);
+                if (m_acc == 0_prt) {
+                   // In this case, t-update coincides with that of a ChrDrift:
+                   tout = t - (pti_tot/pzi_tot + 0.5_prt 
+                          * pti_tot/powi<3>(pzi_tot) * Pxy_mech2) * m_slice_ds;
+                   tout += m_pti_ref/m_bgi * m_slice_ds;
+                } else {
+                   tout = t + (pzf_tot - pzf_ref - pzi_tot + pzi_ref) / m_ez;
+                   tout  += (1_prt/pzi_tot - 1_prt/pzf_tot)
+                         * Pxy_mech2 / (2_prt * m_ez);
+                }
                 ptout = pt;
 
                 // assign intermediate momenta
@@ -410,7 +419,7 @@ namespace impactx::elements
         // see: compute_constants() to refresh
         amrex::ParticleReal m_slice_ds;  //! m_ds / nslice();
         amrex::ParticleReal m_ptf_ref, m_pti_ref, m_bgf, m_bgi;
-        amrex::ParticleReal m_alpha, m_alpha_iez;
+        amrex::ParticleReal m_alpha, m_alpha_iez, m_acc;
     };
 
 } // namespace impactx
