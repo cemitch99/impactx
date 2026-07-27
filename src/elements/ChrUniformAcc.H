@@ -194,7 +194,7 @@ namespace impactx::elements
                 T_Real Pxy_mech2 = powi<2>(py - m_alpha * x) + powi<2>(px + m_alpha * y);
                 if (m_acc == 0_prt) {
                    // In this case, t-update coincides with that of a ChrDrift:
-                   tout = t - (pti_tot/pzi_tot + 0.5_prt 
+                   tout = t - (pti_tot/pzi_tot + 0.5_prt
                           * pti_tot/powi<3>(pzi_tot) * Pxy_mech2) * m_slice_ds;
                    tout += m_pti_ref/m_bgi * m_slice_ds;
                 } else {
