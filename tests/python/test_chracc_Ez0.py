@@ -7,10 +7,10 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-import pytest
 
 import amrex.space3d as amr
-from impactx import ImpactX, distribution, elements
+from impactx import ImpactX, elements
+
 
 def test_element_push():
     """
@@ -37,18 +37,25 @@ def test_element_push():
     # set test particles
     pc = sim.beam
 
-    #npart = 50
+    # npart = 50
     npart = 20
 
     ptmin = -3.0e-3
     ptmax = 3.0e-3
 
-    #  add test particles   
+    #  add test particles
     if amr.ParallelDescriptor.IOProcessor():
         dpt = np.linspace(ptmin, ptmax, npart)
         zero_arr = np.linspace(0, 0.0, npart)
         pc.add_n_particles(
-            zero_arr, zero_arr, zero_arr, zero_arr, zero_arr, dpt, qm_eev, bunch_charge=0.0
+            zero_arr,
+            zero_arr,
+            zero_arr,
+            zero_arr,
+            zero_arr,
+            dpt,
+            qm_eev,
+            bunch_charge=0.0,
         )
 
     # store initial particles
@@ -70,7 +77,9 @@ def test_element_push():
 
     bz_value = ks_value * ref.beta_gamma
     ez_value = 0.0
-    sol_chr = elements.ChrAcc(name="sol_chr", ds=ds_value, ez=ez_value, bz=bz_value, nslice=ns) 
+    sol_chr = elements.ChrAcc(
+        name="sol_chr", ds=ds_value, ez=ez_value, bz=bz_value, nslice=ns
+    )
 
     # set the lattice
     sim.lattice.append(monitor)
