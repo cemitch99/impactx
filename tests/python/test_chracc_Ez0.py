@@ -27,7 +27,6 @@ def test_element_push():
 
     # basic beam parameters
     kin_energy_MeV = 2000.0  # reference energy (kinetic)
-    bunch_charge_C = 25.0e-12  # used with space charge
 
     # set reference particle
     ref = sim.beam.ref
