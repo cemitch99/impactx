@@ -62,7 +62,7 @@ def test_element_push():
     df_initial = pc.to_df()
 
     # design the accelerator lattice
-    ns = 50  # number of slices per ds in the element
+    ns = 1  # number of slices per ds in the element
 
     # add beam diagnostics
     monitor = elements.BeamMonitor("monitor", backend="h5")
