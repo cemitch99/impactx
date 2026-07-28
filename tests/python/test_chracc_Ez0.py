@@ -36,8 +36,6 @@ def test_element_push():
 
     # set test particles
     pc = sim.beam
-
-    # npart = 50
     npart = 20
 
     ptmin = -3.0e-3
@@ -103,6 +101,12 @@ def test_element_push():
     ]
 
     REF_COLS = ["x", "y", "z", "t", "px", "py", "pz", "pt", "s"]
+
+    print('reference particle:')
+    tref = getattr(sim.beam.ref, "t")
+    ptref = getattr(sim.beam.ref, "pt")
+    pzref = getattr(sim.beam.ref, "pz")
+    print(tref, ptref, pzref)
 
     for c in PHASE_COLS:
         np.testing.assert_allclose(
