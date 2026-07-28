@@ -32,6 +32,7 @@ def test_element_push():
     ref = sim.beam.ref
     ref.set_species("proton").set_kin_energy_MeV(kin_energy_MeV)
     qm_eev = ref.charge_qe / (ref.mass_MeV * 1.0e6)  # electron charge/mass in e / eV
+    initial_ref = ref
 
     # set test particles
     pc = sim.beam
@@ -101,6 +102,8 @@ def test_element_push():
         "momentum_t",
     ]
 
+    REF_COLS = ["x", "y", "z", "t", "px", "py", "pz", "pt", "s"]
+
     for c in PHASE_COLS:
         np.testing.assert_allclose(
             df_final[c].to_numpy(),
@@ -109,6 +112,14 @@ def test_element_push():
             rtol=0,
             err_msg=f"Roundtrip mismatch in {c}",
         )
+    for c in REF_COLS:
+        np.testing.assert_allclose(
+            getattr(sim.beam.ref, c),
+            getattr(initial_ref, c),
+            atol=1.0e-12,
+            rtol=0,
+            err_msg=f"Reference-particle roundtrip mismatch in {c}",
+        )   
 
     # clean shutdown
     sim.finalize()
