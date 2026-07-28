@@ -37,8 +37,10 @@ sigmaPy = 0.2
 sigmaT = 0.0
 
 polarization_x = 0.4
-polarization_y = 0.9
-polarization_z = 0.1
+#polarization_y = 0.9
+#polarization_z = 0.1
+polarization_y = 0.8
+polarization_z = 0.2
 
 distr = distribution.Gaussian(
     lambdaX=sigmaX,
