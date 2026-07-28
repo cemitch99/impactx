@@ -32,9 +32,13 @@ ref.set_species("proton").set_kin_energy_MeV(kin_energy_MeV)
 #   particle bunch
 sigmaX = 0.003
 sigmaY = sigmaX
-sigmaPx = 0.002
-sigmaPy = 0.002
-sigmaT = 1.0e-4
+sigmaPx = 0.0
+sigmaPy = 0.02
+sigmaT = 0.0
+
+P1 = 0.4
+P2 = 0.9
+P3 = 0.1
 
 distr = distribution.Gaussian(
     lambdaX=sigmaX,
@@ -48,9 +52,9 @@ distr = distribution.Gaussian(
     mutpt=0.0,
 )
 spin = distribution.SpinvMF(
-    0.4,
-    0.9,
-    0.1,
+    P1,
+    P2,
+    P3,
 )
 
 sim.add_particles(bunch_charge_C, distr, npart, spin)
@@ -63,24 +67,21 @@ monitor = elements.BeamMonitor("monitor", backend="h5")
 
 gamma = ref.gamma
 beta_gamma = ref.beta_gamma
-lambda_c = 1.30692972
 
 ks_value = 1.0e-7
 bz_value = ks_value * beta_gamma
 
-sigma_p = np.sqrt((sigmaPx * beta_gamma) ** 2 + (bz_value / 2.0) ** 2 * sigmaX**2)
-bracket2 = (lambda_c / sigma_p + beta_gamma / (1 + gamma)) ** 2
+ez_value = 10.0
+ds_value = 50.0
 
-ez_times_z = np.abs((gamma - 1.0 - bracket2 * (gamma + 1.0)) / (bracket2 - 1))
-print("ez_times_z = ")
-print(ez_times_z)
+gamma_f = gamma + ez_value*ds_value
+beta_gamma_f = np.sqrt(gamma_f**2 - 1.0)
+mu = 0.5 * ( beta_gamma_f/gamma_f - beta_gamma/gamma )
+lambda1 = 2.0 * mu * sigmaPy * beta_gamma
 
-ds_value = 5.0
-ez_value = ez_times_z / ds_value
-print("ez = ")
-print(ez_value)
-print("ds = ")
-print(ds_value)
+P1f_pred = P1
+P2f_pred = P2 * np.exp(-lambda1**2/2.0)
+P3f_pred = P3 * np.exp(-lambda1**2/2.0)
 
 sol_chr = elements.ChrAcc(
     name="sol_chr", ds=ds_value, ez=ez_value, bz=bz_value, nslice=ns
