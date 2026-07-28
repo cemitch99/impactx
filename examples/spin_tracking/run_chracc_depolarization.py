@@ -74,14 +74,14 @@ bz_value = ks_value * beta_gamma
 ez_value = 10.0
 ds_value = 50.0
 
-gamma_f = gamma + ez_value*ds_value
+gamma_f = gamma + ez_value * ds_value
 beta_gamma_f = np.sqrt(gamma_f**2 - 1.0)
-mu = 0.5 * ( beta_gamma_f/gamma_f - beta_gamma/gamma )
+mu = 0.5 * (beta_gamma_f / gamma_f - beta_gamma / gamma)
 lambda1 = 2.0 * mu * sigmaPy * beta_gamma
 
 P1f_pred = P1
-P2f_pred = P2 * np.exp(-lambda1**2/2.0)
-P3f_pred = P3 * np.exp(-lambda1**2/2.0)
+P2f_pred = P2 * np.exp(-(lambda1**2) / 2.0)
+P3f_pred = P3 * np.exp(-(lambda1**2) / 2.0)
 
 sol_chr = elements.ChrAcc(
     name="sol_chr", ds=ds_value, ez=ez_value, bz=bz_value, nslice=ns
