@@ -68,9 +68,7 @@ monitor = elements.BeamMonitor("monitor", backend="h5")
 gamma = ref.gamma
 beta_gamma = ref.beta_gamma
 
-# ks_value = 1.0e-7
-ks_value = 1.0e-8
-# ks_value = 0.0
+ks_value = 0.0
 bz_value = ks_value * beta_gamma
 
 ez_value = 10.0
