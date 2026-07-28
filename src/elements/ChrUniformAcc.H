@@ -339,14 +339,15 @@ namespace impactx::elements
                 T_Real const denom = -pti_tot + pzi_tot;
 
                 // compute focusing constant (1/m) and rotation angle (in rad)
-                T_Real const theta = m_alpha_iez * log(numer / denom);
+                T_Real const theta_over_alpha = (m_ez==0_prt)? m_slice_ds/pzi_tot : log(numer / denom);
+                T_Real const theta = m_alpha_iez * theta_over_alpha;
                 auto const [sin2Gth, cos2Gth] = amrex::Math::sincos(2_prt * refpart.gyromagnetic_anomaly * theta);
 
                 T_Real const mu = 0.5_prt * (pzf_tot / (1_prt - ptf_tot) - pzi_tot / (1_prt - pti_tot));
 
-                T_Real const Ffunc = pzi_tot/(1_prt-pti_tot)*sin2Gth + m_ez*(1_prt-cos2Gth)/m_bz + 2_prt*mu*sin2Gth;
-                T_Real const Gfunc = pzi_tot/(1_prt-pti_tot)*(1_prt-cos2Gth) - m_ez*sin2Gth/m_bz - 2_prt*mu*cos2Gth;
-
+                T_Real const Ffunc = (m_bz==0_prt)? 0_prt : pzi_tot/(1_prt-pti_tot)*sin2Gth + m_ez*(1_prt-cos2Gth)/m_bz + 2_prt*mu*sin2Gth;
+                T_Real const Gfunc = (m_bz==0_prt)? -2_prt*mu - m_ez*refpart.gyromagnetic_anomaly*theta_over_alpha : 
+                                      pzi_tot/(1_prt-pti_tot)*(1_prt-cos2Gth) - m_ez*sin2Gth/m_bz - 2_prt*mu*cos2Gth;
                 lambdax = m_alpha*Gfunc*x + Ffunc*px_dyn + m_alpha*Ffunc*y - Gfunc*py_dyn;
                 lambday = -m_alpha*Ffunc*x + Gfunc*px_dyn + m_alpha*Gfunc*y + Ffunc*py_dyn;
                 lambdaz = 0_prt;
