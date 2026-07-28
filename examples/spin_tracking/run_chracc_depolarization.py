@@ -68,18 +68,18 @@ lambda_c = 1.30692972
 ks_value = 1.0e-7
 bz_value = ks_value * beta_gamma
 
-sigma_p = np.sqrt((sigmaPx*beta_gamma)**2 + (bz_value/2.0)**2*sigmaX**2)
-bracket2 = (lambda_c/sigma_p + beta_gamma/(1+gamma))**2
+sigma_p = np.sqrt((sigmaPx * beta_gamma) ** 2 + (bz_value / 2.0) ** 2 * sigmaX**2)
+bracket2 = (lambda_c / sigma_p + beta_gamma / (1 + gamma)) ** 2
 
-ez_times_z = np.abs((gamma-1.0-bracket2*(gamma+1.0)) / (bracket2 - 1))
-print('ez_times_z = ')
+ez_times_z = np.abs((gamma - 1.0 - bracket2 * (gamma + 1.0)) / (bracket2 - 1))
+print("ez_times_z = ")
 print(ez_times_z)
 
 ds_value = 5.0
 ez_value = ez_times_z / ds_value
-print('ez = ')
+print("ez = ")
 print(ez_value)
-print('ds = ')
+print("ds = ")
 print(ds_value)
 
 sol_chr = elements.ChrAcc(
