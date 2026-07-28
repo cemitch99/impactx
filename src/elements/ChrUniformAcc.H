@@ -365,7 +365,7 @@ namespace impactx::elements
             // factor is the integrated drift length in dynamic units and
             // is well-defined even when alpha = 0 (no solenoid).
             amrex::ParticleReal const alpha = 0.5_prt * m_bz;
-            amrex::ParticleReal const drift_log = (m_ez==0_prt)? slice_ds / pzf_ref : 
+            amrex::ParticleReal const drift_log = (m_ez==0_prt)? slice_ds / pzf_ref :
                 std::log((pzf_ref - ptf_ref) / (pzi_ref - pti_ref)) / m_ez;
             amrex::ParticleReal const rbg = bgi / bgf;
 
