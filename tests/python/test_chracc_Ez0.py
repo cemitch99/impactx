@@ -102,7 +102,7 @@ def test_element_push():
 
     REF_COLS = ["x", "y", "z", "t", "px", "py", "pz", "pt", "s"]
 
-    print('reference particle:')
+    print("reference particle:")
     tref = getattr(sim.beam.ref, "t")
     ptref = getattr(sim.beam.ref, "pt")
     pzref = getattr(sim.beam.ref, "pz")
