@@ -68,9 +68,9 @@ monitor = elements.BeamMonitor("monitor", backend="h5")
 gamma = ref.gamma
 beta_gamma = ref.beta_gamma
 
-#ks_value = 1.0e-7
+# ks_value = 1.0e-7
 ks_value = 1.0e-8
-#ks_value = 0.0
+# ks_value = 0.0
 bz_value = ks_value * beta_gamma
 
 ez_value = 10.0
@@ -93,13 +93,13 @@ beta_gamma_f = ref.beta_gamma
 
 G = ref.gyromagnetic_anomaly
 
-muterm = beta_gamma/(1+gamma) - beta_gamma_f/(1+gamma_f)
-Gterm = -G * np.log((beta_gamma_f+gamma_f)/(beta_gamma+gamma))
+muterm = beta_gamma / (1 + gamma) - beta_gamma_f / (1 + gamma_f)
+Gterm = -G * np.log((beta_gamma_f + gamma_f) / (beta_gamma + gamma))
 lambda1 = np.abs(muterm + Gterm) * sigmaPy * beta_gamma
 
 polarization_xf_pred = polarization_x
-polarization_yf_pred = polarization_y * np.exp(-lambda1**2/2.0)
-polarization_zf_pred = polarization_z * np.exp(-lambda1**2/2.0)
+polarization_yf_pred = polarization_y * np.exp(-(lambda1**2) / 2.0)
+polarization_zf_pred = polarization_z * np.exp(-(lambda1**2) / 2.0)
 
 rbc = sim.beam.beam_moments()
 polarization_xf = rbc["mean_sx"]
@@ -126,4 +126,3 @@ assert np.allclose(
     [polarization_xf, polarization_yf, polarization_zf],
     atol=atol,
 )
-
