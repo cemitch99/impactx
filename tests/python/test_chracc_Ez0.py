@@ -119,7 +119,7 @@ def test_element_push():
             atol=1.0e-12,
             rtol=0,
             err_msg=f"Reference-particle roundtrip mismatch in {c}",
-        )   
+        )
 
     # clean shutdown
     sim.finalize()
