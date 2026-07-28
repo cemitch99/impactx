@@ -346,7 +346,7 @@ namespace impactx::elements
                 T_Real const mu = 0.5_prt * (pzf_tot / (1_prt - ptf_tot) - pzi_tot / (1_prt - pti_tot));
 
                 T_Real const Ffunc = (m_bz==0_prt)? 0_prt : pzi_tot/(1_prt-pti_tot)*sin2Gth + m_ez*(1_prt-cos2Gth)/m_bz + 2_prt*mu*sin2Gth;
-                T_Real const Gfunc = (m_bz==0_prt)? -2_prt*mu - m_ez*refpart.gyromagnetic_anomaly*theta_over_alpha : 
+                T_Real const Gfunc = (m_bz==0_prt)? -2_prt*mu - m_ez*refpart.gyromagnetic_anomaly*theta_over_alpha :
                                       pzi_tot/(1_prt-pti_tot)*(1_prt-cos2Gth) - m_ez*sin2Gth/m_bz - 2_prt*mu*cos2Gth;
                 lambdax = m_alpha*Gfunc*x + Ffunc*px_dyn + m_alpha*Ffunc*y - Gfunc*py_dyn;
                 lambday = -m_alpha*Ffunc*x + Gfunc*px_dyn + m_alpha*Gfunc*y + Ffunc*py_dyn;
