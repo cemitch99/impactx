@@ -4684,6 +4684,7 @@ class Source(mixin.Named, mixin.Thin):
         distribution: str,
         openpmd_path: str,
         active_once: bool = True,
+        load_ref_particle: bool = True,
         name: str | None = None,
     ) -> None:
         """
@@ -4794,6 +4795,13 @@ class Source(mixin.Named, mixin.Thin):
         """
     @distribution.setter
     def distribution(self, arg1: str) -> None: ...
+    @property
+    def load_ref_particle(self) -> bool:
+        """
+        Restore the reference particle from the species metadata of the openPMD file (particle tracking only).
+        """
+    @load_ref_particle.setter
+    def load_ref_particle(self, arg1: bool) -> None: ...
     @property
     def series_name(self) -> str:
         """
