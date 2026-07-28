@@ -267,7 +267,7 @@ namespace impactx::elements
             amrex::ParticleReal const bgf = std::sqrt(powi<2>(ptf) - 1.0_prt);
 
             // update t
-            refpart.t = t + (bgf - bgi)/m_ez;
+            refpart.t = (m_acc==0_prt)? t - pt/bgi*slice_ds : t + (bgf - bgi)/m_ez;
 
             // advance position (x,y,z)
             refpart.x = x + slice_ds*px/bgi;
@@ -365,7 +365,7 @@ namespace impactx::elements
             // factor is the integrated drift length in dynamic units and
             // is well-defined even when alpha = 0 (no solenoid).
             amrex::ParticleReal const alpha = 0.5_prt * m_bz;
-            amrex::ParticleReal const drift_log =
+            amrex::ParticleReal const drift_log = (m_ez==0_prt)? slice_ds / pzf_ref : 
                 std::log((pzf_ref - ptf_ref) / (pzi_ref - pti_ref)) / m_ez;
             amrex::ParticleReal const rbg = bgi / bgf;
 
@@ -373,7 +373,7 @@ namespace impactx::elements
 
             // t couples to pt only: symplectic correction to the
             // time-of-flight, linearized at pt = 0.
-            R(5,6) = bgi * (ptf_ref / pzf_ref - pti_ref / pzi_ref) / m_ez;
+            R(5,6) = (m_ez==0_prt)? slice_ds / (bgi*bgi) : bgi * (ptf_ref / pzf_ref - pti_ref / pzi_ref) / m_ez;
             // pt scales by the static<->dynamic unit change bgi/bgf.
             R(6,6) = rbg;
 
