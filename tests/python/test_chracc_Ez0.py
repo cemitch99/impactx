@@ -34,7 +34,7 @@ def test_element_push(bz_scale):
     ref = sim.beam.ref
     ref.set_species("proton").set_kin_energy_MeV(kin_energy_MeV)
     qm_eev = ref.charge_qe / (ref.mass_MeV * 1.0e6)  # electron charge/mass in e / eV
-    initial_ref = ref
+    initial_ref = ref.copy()
 
     # set test particles
     pc = sim.beam
