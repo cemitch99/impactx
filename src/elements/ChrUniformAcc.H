@@ -267,8 +267,7 @@ namespace impactx::elements
             amrex::ParticleReal const bgf = std::sqrt(powi<2>(ptf) - 1.0_prt);
 
             // update t
-            //refpart.t = (m_ez==0_prt)? t - 0.5_prt*(pt/bgi + ptf/bgf)*slice_ds : t + (bgf - bgi)/m_ez;
-            refpart.t = t + (bgf - bgi)/m_ez;
+            refpart.t = (m_ez==0_prt)? t - 0.5_prt*(pt/bgi + ptf/bgf)*slice_ds : t + (bgf - bgi)/m_ez;
 
             // advance position (x,y,z)
             refpart.x = x + slice_ds*px/bgi;
