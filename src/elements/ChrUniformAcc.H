@@ -111,7 +111,7 @@ namespace impactx::elements
 
             // compute focusing constant (1/m) and rotation angle (in rad)
             m_alpha = m_bz * 0.5_prt;
-            m_alpha_iez = m_alpha / m_ez;
+            m_alpha_iez = m_ez == 0_prt ? 0_prt : m_alpha / m_ez;
 
             // dimensionless acceleration parameter (change in gamma)
             m_acc = m_ez * m_slice_ds;
