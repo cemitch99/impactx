@@ -111,7 +111,6 @@ namespace impactx::elements
 
             // compute focusing constant (1/m) and rotation angle (in rad)
             m_alpha = m_bz * 0.5_prt;
-            m_alpha_iez = m_ez == 0_prt ? 0_prt : m_alpha / m_ez;
 
             // dimensionless acceleration parameter (change in gamma)
             m_acc = m_ez * m_slice_ds;
@@ -172,11 +171,13 @@ namespace impactx::elements
                 T_Real const denom = -pti_tot + pzi_tot;
 
                 // compute focusing constant (1/m) and rotation angle (in rad)
-                T_Real const theta = (m_acc == 0_prt)? m_alpha * m_slice_ds / pzi_tot : m_alpha_iez * log(numer / denom);
+                T_Real const theta_ialpha = m_acc == 0_prt
+                    ? m_slice_ds / pzi_tot
+                    : log(numer / denom) / m_ez;
+                T_Real const theta = m_alpha * theta_ialpha;
                 auto const [sin_theta, cos_theta] = amrex::Math::sincos(theta);
                 T_Real const sin_theta_ialpha = m_alpha == 0_prt
-                    ? (m_acc == 0_prt ? m_slice_ds / pzi_tot
-                                      : log(numer / denom) / m_ez)
+                    ? theta_ialpha
                     : sin_theta / m_alpha;
 
                 // initialize output values
@@ -423,7 +424,7 @@ namespace impactx::elements
         // see: compute_constants() to refresh
         amrex::ParticleReal m_slice_ds;  //! m_ds / nslice();
         amrex::ParticleReal m_ptf_ref, m_pti_ref, m_bgf, m_bgi;
-        amrex::ParticleReal m_alpha, m_alpha_iez, m_acc;
+        amrex::ParticleReal m_alpha, m_acc;
     };
 
 } // namespace impactx
