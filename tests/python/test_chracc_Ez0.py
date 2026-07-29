@@ -13,6 +13,46 @@ import amrex.space3d as amr
 from impactx import ImpactX, elements
 
 
+def expected_ez0_transport_map(ds, bz, beta_gamma):
+    """Return the analytic ChrAcc transport map for zero Ez."""
+    alpha = 0.5 * bz
+    drift_factor = ds / beta_gamma
+
+    matrix = np.eye(6)
+    matrix[4, 5] = ds / beta_gamma**2
+
+    if alpha == 0.0:
+        matrix[0, 1] = ds
+        matrix[2, 3] = ds
+        return matrix
+
+    theta = alpha * drift_factor
+    sin_theta = np.sin(theta)
+    cos_theta = np.cos(theta)
+    sin2 = sin_theta**2
+    cos2 = cos_theta**2
+    sin_cos = sin_theta * cos_theta
+
+    matrix[0, 0] = cos2
+    matrix[0, 1] = beta_gamma * sin_cos / alpha
+    matrix[0, 2] = sin_cos
+    matrix[0, 3] = beta_gamma * sin2 / alpha
+    matrix[1, 0] = -alpha * sin_cos / beta_gamma
+    matrix[1, 1] = cos2
+    matrix[1, 2] = -alpha * sin2 / beta_gamma
+    matrix[1, 3] = sin_cos
+    matrix[2, 0] = -sin_cos
+    matrix[2, 1] = -beta_gamma * sin2 / alpha
+    matrix[2, 2] = cos2
+    matrix[2, 3] = beta_gamma * sin_cos / alpha
+    matrix[3, 0] = alpha * sin2 / beta_gamma
+    matrix[3, 1] = -sin_cos
+    matrix[3, 2] = -alpha * sin_cos / beta_gamma
+    matrix[3, 3] = cos2
+
+    return matrix
+
+
 @pytest.mark.parametrize("bz_scale", [0.0, 1.0], ids=["no-bz", "bz"])
 def test_element_push(bz_scale):
     """
@@ -43,16 +83,25 @@ def test_element_push(bz_scale):
     ptmin = -3.0e-3
     ptmax = 3.0e-3
 
-    #  add test particles
+    # Add off-axis particles in the field-free case so that the transverse
+    # contribution to the zero-Ez t update is exercised. The finite-Bz case
+    # remains on axis so that the inverse ChrDrift isolates the t update.
     if amr.ParallelDescriptor.IOProcessor():
         dpt = np.linspace(ptmin, ptmax, npart)
-        zero_arr = np.linspace(0, 0.0, npart)
+        zero_arr = np.zeros(npart)
+        if bz_scale == 0.0:
+            x = np.linspace(-1.0e-3, 1.0e-3, npart)
+            y = np.linspace(0.75e-3, -0.75e-3, npart)
+            px = np.linspace(-2.0e-4, 2.0e-4, npart)
+            py = np.linspace(1.5e-4, -1.5e-4, npart)
+        else:
+            x = y = px = py = zero_arr
         pc.add_n_particles(
+            x,
+            y,
             zero_arr,
-            zero_arr,
-            zero_arr,
-            zero_arr,
-            zero_arr,
+            px,
+            py,
             dpt,
             qm_eev,
             bunch_charge=0.0,
@@ -80,6 +129,12 @@ def test_element_push(bz_scale):
     sol_chr = elements.ChrAcc(
         name="sol_chr", ds=ds_value, ez=ez_value, bz=bz_value, nslice=ns
     )
+    np.testing.assert_allclose(
+        sol_chr.transfer_map(initial_ref).to_numpy(),
+        expected_ez0_transport_map(ds=ds_value, bz=bz_value, beta_gamma=ref.beta_gamma),
+        atol=1.0e-12,
+        rtol=0.0,
+    )
 
     # set the lattice
     sim.lattice.append(monitor)
@@ -103,12 +158,6 @@ def test_element_push(bz_scale):
     ]
 
     REF_COLS = ["x", "y", "z", "t", "px", "py", "pz", "pt", "s"]
-
-    print("reference particle:")
-    tref = getattr(sim.beam.ref, "t")
-    ptref = getattr(sim.beam.ref, "pt")
-    pzref = getattr(sim.beam.ref, "pz")
-    print(tref, ptref, pzref)
 
     for c in PHASE_COLS:
         np.testing.assert_allclose(
