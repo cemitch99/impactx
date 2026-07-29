@@ -174,6 +174,10 @@ namespace impactx::elements
                 // compute focusing constant (1/m) and rotation angle (in rad)
                 T_Real const theta = (m_acc == 0_prt)? m_alpha * m_slice_ds / pzi_tot : m_alpha_iez * log(numer / denom);
                 auto const [sin_theta, cos_theta] = amrex::Math::sincos(theta);
+                T_Real const sin_theta_ialpha = m_alpha == 0_prt
+                    ? (m_acc == 0_prt ? m_slice_ds / pzi_tot
+                                      : log(numer / denom) / m_ez)
+                    : sin_theta / m_alpha;
 
                 // initialize output values
                 T_Real xout = x;
@@ -184,10 +188,10 @@ namespace impactx::elements
                 T_Real ptout = pt;
 
                 // advance positions and momenta using map for focusing
-                xout = cos_theta * x + sin_theta / m_alpha * px;
+                xout = cos_theta * x + sin_theta_ialpha * px;
                 pxout = -m_alpha * sin_theta * x + cos_theta * px;
 
-                yout = cos_theta * y + sin_theta / m_alpha * py;
+                yout = cos_theta * y + sin_theta_ialpha * py;
                 pyout = -m_alpha * sin_theta * y + cos_theta * py;
 
                 // the correct symplectic update for t

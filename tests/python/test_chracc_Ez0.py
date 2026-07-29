@@ -7,12 +7,14 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
+import pytest
 
 import amrex.space3d as amr
 from impactx import ImpactX, elements
 
 
-def test_element_push():
+@pytest.mark.parametrize("bz_scale", [0.0, 1.0], ids=["no-bz", "bz"])
+def test_element_push(bz_scale):
     """
     This tests using ImpactX without a lattice.
     """
@@ -73,7 +75,7 @@ def test_element_push():
 
     idrift_chr = elements.ChrDrift(name="idrift_chr", ds=-ds_value, nslice=ns)
 
-    bz_value = ks_value * ref.beta_gamma
+    bz_value = bz_scale * ks_value * ref.beta_gamma
     ez_value = 0.0
     sol_chr = elements.ChrAcc(
         name="sol_chr", ds=ds_value, ez=ez_value, bz=bz_value, nslice=ns
