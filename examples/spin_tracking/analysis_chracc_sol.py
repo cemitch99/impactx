@@ -39,5 +39,6 @@ assert np.allclose(
     [
         0.0,
     ],
+    rtol=0.0,
     atol=atol,
 )
