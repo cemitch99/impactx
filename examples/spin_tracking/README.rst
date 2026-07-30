@@ -602,7 +602,7 @@ The analysis can be run using:
 .. _examples-chracc-depol:
 
 Spin Depolarization in a Uniform Accelerating Field
-====================================================
+===================================================
 
 This example tests the spin dynamics in a uniform longitudinal electric field, with chromatic effects included, using the :py:class:`~impactx.elements.ChrAcc` element.
 

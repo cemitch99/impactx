@@ -22,7 +22,7 @@ sim.init_grids()
 # basic beam parameters
 kin_energy_MeV = 20.00  # reference energy (kinetic)
 bunch_charge_C = 25.0e-12  # used with space charge
-npart = 1000000  # number of macro particles
+npart = 100000  # number of macro particles
 
 # set reference particle
 ref = sim.beam.ref
