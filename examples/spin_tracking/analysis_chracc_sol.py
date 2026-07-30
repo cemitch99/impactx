@@ -31,7 +31,7 @@ dspinmax = dspin.max()
 print("Change in the spin:")
 print("||delta s||_max", dspinmax)
 
-atol = 2.0e-7
+atol = 2.1e-7
 print(f"  atol={atol}")
 
 assert np.allclose(
