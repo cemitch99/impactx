@@ -8,9 +8,9 @@
 import glob
 import re
 from pathlib import Path
-import openpmd_api as io
 
 import numpy as np
+import openpmd_api as io
 import pandas as pd
 
 
@@ -46,6 +46,7 @@ def data_is_double(file_pattern):
         len(m.replace(".", "") if e else m.replace(".", "").strip("0")) >= 12
         for m, e in re.findall(r"(\d*\.\d+)([eE][+-]?\d+)?", text)
     )
+
 
 # collect reduced beam characteristics
 rbc = read_time_series("diags/reduced_beam_characteristics.*")
@@ -108,9 +109,7 @@ Pzf = damping_factor * Pzi
 
 print("")
 print("Final Predicted Polarization:")
-print(
-    f"  polarization_x={Pxf:e} polarization_y={Pyf:e} polarization_z={Pzf:e}"
-)
+print(f"  polarization_x={Pxf:e} polarization_y={Pyf:e} polarization_z={Pzf:e}")
 
 print("")
 print("Final Beam:")
