@@ -633,9 +633,9 @@ Analyze
 
 The analysis can be run using:
 
-.. dropdown:: Script ``analysis_cfbend_spin.py``
+.. dropdown:: Script ``analysis_chracc_depolarization.py``
 
-   .. literalinclude:: analysis_cfbend_spin.py
+   .. literalinclude:: analysis_chracc_depolarization.py
       :language: python3
       :caption: You can copy this file from ``examples/spin_tracking/analysis_chracc_depolarization.py``.
 
