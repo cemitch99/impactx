@@ -74,7 +74,7 @@ sol_chr = elements.ChrAcc(
 # set the lattice
 sim.lattice.append(monitor)
 sim.lattice.append(sol_chr)
-#sim.lattice.append(sol1)
+# sim.lattice.append(sol1)
 sim.lattice.append(sol1i)
 sim.lattice.append(monitor)
 
