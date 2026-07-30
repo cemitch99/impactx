@@ -2204,3 +2204,4 @@ add_impactx_test(chracc-sol-spin.py
     ON    # ImpactX MPI-parallel
     examples/spin_tracking/analysis_chracc_sol.py
     OFF  # no plot script yet
+)
