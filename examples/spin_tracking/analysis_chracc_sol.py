@@ -12,17 +12,18 @@ import openpmd_api as io
 # initial/final beam
 series = io.Series("diags/openPMD/monitor.h5", io.Access.read_only)
 last_step = list(series.iterations)[-1]
-initial = series.iterations[1].particles["beam"].to_df()
+beam_initial = series.iterations[1].particles["beam"]
+initial_sort = beam_initial.to_df().set_index("id")
 beam_final = series.iterations[last_step].particles["beam"]
-final = beam_final.to_df()
+final_sort = beam_final.to_df().set_index("id")
 
-sxi = initial["spin_x"]
-syi = initial["spin_y"]
-szi = initial["spin_z"]
+sxi = initial_sort["spin_x"]
+syi = initial_sort["spin_y"]
+szi = initial_sort["spin_z"]
 
-sxf = final["spin_x"]
-syf = final["spin_y"]
-szf = final["spin_z"]
+sxf = final_sort["spin_x"]
+syf = final_sort["spin_y"]
+szf = final_sort["spin_z"]
 
 dspin2 = (sxf - sxi) ** 2 + (syf - syi) ** 2 + (szf - szi) ** 2
 dspin = np.sqrt(dspin2)
