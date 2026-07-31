@@ -59,7 +59,7 @@ spin = distribution.SpinvMF(
 sim.add_particles(bunch_charge_C, distr, npart, spin)
 
 # design the accelerator lattice
-ns = 20  # number of slices per ds in the element
+ns = 1  # number of slices per ds in the element
 
 # add beam diagnostics
 monitor = elements.BeamMonitor("monitor", backend="h5")
