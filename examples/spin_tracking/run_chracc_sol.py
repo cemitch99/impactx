@@ -62,7 +62,7 @@ print(f"ks_value={ks_value}")
 # length for this test should be one period
 ds_value = 2.0 * np.pi / (ref.gyromagnetic_anomaly * ks_value)
 
-sol1 = elements.Sol(name="sol1", ds=ds_value, ks=ks_value, nslice=ns)
+# sol1 = elements.Sol(name="sol1", ds=ds_value, ks=ks_value, nslice=ns)
 sol1i = elements.Sol(name="sol1", ds=-ds_value, ks=ks_value, nslice=ns)
 
 bz_value = ks_value * ref.beta_gamma

@@ -353,7 +353,9 @@ namespace impactx::elements
                 T_Real const denom = -pti_tot + pzi_tot;
 
                 // compute focusing constant (1/m) and rotation angle (in rad)
-                T_Real const theta_over_alpha = (m_ez==0_prt)? m_slice_ds/pzi_tot : log(numer / denom)/m_ez;
+                T_Real const theta_over_alpha = (m_ez == 0_prt) ?
+                    m_slice_ds / pzi_tot :
+                    log(numer / denom) / m_ez;
                 T_Real const theta = m_alpha * theta_over_alpha;
                 auto const [sin2Gth, cos2Gth] = amrex::Math::sincos(2_prt * refpart.gyromagnetic_anomaly * theta);
 

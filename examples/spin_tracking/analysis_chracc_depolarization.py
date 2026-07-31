@@ -65,8 +65,6 @@ beta_gamma_f = beam_final.get_attribute("beta_gamma_ref")
 
 # numerical parameters based on input file
 gyro_anomaly = 1.7928473446  # for protons
-ez_value = 10.0  # accelerating field in 1/m (dgamma/dz) from input
-ds_value = 50.0  # accelerating distance in m from input
 sigmaPy = 0.2  # value in rad = lambdaPy from input
 Pxi = 0.4  # polarization_x from input
 Pyi = 0.8  # polarization_y from input
