@@ -14,6 +14,7 @@ import openpmd_api as io
 import pandas as pd
 from scipy import special
 
+
 # Load data from envelope simulation
 def read_time_series(file_pattern):
     """Read in all CSV files from each MPI rank (and potentially OpenMP
@@ -66,10 +67,10 @@ beta_gamma_f = beam_final.get_attribute("beta_gamma_ref")
 # numerical parameters based on input file
 gyro_anomaly = 1.7928473446  # for protons
 ez_value = 10.0  # accelerating field in 1/m (dgamma/dz) from input
-bz_value = 3.0   # longitudinal magnetic field in 1/m from input
+bz_value = 3.0  # longitudinal magnetic field in 1/m from input
 ds_value = 50.0  # accelerating distance in m from input
-sigmaX = 0.003   # value lambdaX from input
-sigmaPx = 0.2    # value lambdaPx from input
+sigmaX = 0.003  # value lambdaX from input
+sigmaPx = 0.2  # value lambdaPx from input
 
 Pxi = 0.4  # polarization_x from input
 Pyi = 0.8  # polarization_y from input
@@ -103,14 +104,22 @@ assert np.allclose(
 # predicted final polarization
 alpha = bz_value / 2.0
 sigmaPx_dyn = sigmaPx * beta_gamma_i
-size_factor = np.sqrt( sigmaPx_dyn**2 + alpha**2*sigmaX**2 )
-theta = alpha/ez_value * np.log((gamma_f + beta_gamma_f)/(gamma_i + beta_gamma_i))
-mu = 0.5 * ( beta_gamma_f / (1 + gamma_f) - beta_gamma_i / (1 + gamma_i) )
-sinG = np.sin(2.0*gyro_anomaly*theta)
-cosG = np.cos(2.0*gyro_anomaly*theta)
-F_func = beta_gamma_i/(1+gamma_i)*sinG + ez_value*(1-cosG)/(2.0*alpha) + 2*mu*sinG
-G_func = beta_gamma_i/(1+gamma_i)*(1-cosG) - ez_value*sinG/(2.0*alpha) - 2*mu*cosG
-damping_eigenvalue = np.sqrt( F_func**2 + G_func**2 ) * size_factor
+size_factor = np.sqrt(sigmaPx_dyn**2 + alpha**2 * sigmaX**2)
+theta = alpha / ez_value * np.log((gamma_f + beta_gamma_f) / (gamma_i + beta_gamma_i))
+mu = 0.5 * (beta_gamma_f / (1 + gamma_f) - beta_gamma_i / (1 + gamma_i))
+sinG = np.sin(2.0 * gyro_anomaly * theta)
+cosG = np.cos(2.0 * gyro_anomaly * theta)
+F_func = (
+    beta_gamma_i / (1 + gamma_i) * sinG
+    + ez_value * (1 - cosG) / (2.0 * alpha)
+    + 2 * mu * sinG
+)
+G_func = (
+    beta_gamma_i / (1 + gamma_i) * (1 - cosG)
+    - ez_value * sinG / (2.0 * alpha)
+    - 2 * mu * cosG
+)
+damping_eigenvalue = np.sqrt(F_func**2 + G_func**2) * size_factor
 
 # DawsonF damping factor
 ev_arg = damping_eigenvalue / np.sqrt(2.0)
@@ -125,7 +134,7 @@ Pz_damped = damping_factor_z * Pzi
 
 # Design rotation
 ref_spin_angle = 2.0 * theta * (1 + gyro_anomaly)
-Pxf =  Px_damped * np.cos(ref_spin_angle) + Py_damped * np.sin(ref_spin_angle)
+Pxf = Px_damped * np.cos(ref_spin_angle) + Py_damped * np.sin(ref_spin_angle)
 Pyf = -Px_damped * np.sin(ref_spin_angle) + Py_damped * np.cos(ref_spin_angle)
 Pzf = Pz_damped
 
