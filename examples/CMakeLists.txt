@@ -2213,4 +2213,3 @@ add_impactx_test(chracc-depol-eb.py
     examples/spin_tracking/analysis_chracc_depolarization_EB.py
     OFF  # no plot script yet
 )
-
