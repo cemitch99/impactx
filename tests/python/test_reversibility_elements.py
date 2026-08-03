@@ -291,6 +291,7 @@ def test_ChrQuad_marylie_unit(sim):
     )
 
 
+@pytest.mark.parametrize("sim", [True, False], indirect=True, ids=["spin", "nospin"])
 def test_ChrAcc(sim):
     roundtrip(
         elements.ChrAcc(
@@ -301,6 +302,7 @@ def test_ChrAcc(sim):
             **PIPE_KWARGS,
         ),
         sim,
+        spin=sim.spin,
     )
 
 
@@ -667,6 +669,7 @@ def test_RFCavity(sim):
     ],
     ids=["linear-zero-gap", "linear-finite-gap", "nonlinear-finite-gap"],
 )
+# WARNING:  The orbit in DipEdge is not reversed simply by taking entry->exit. The inverse map needs to be fixed.  See Issue #1562.
 def test_DipEdge(sim, model, g, K2):
     rc = 10.3462283686195526
     psi = 0.048345620280243
@@ -684,12 +687,15 @@ def test_DipEdge(sim, model, g, K2):
     )
 
 
+@pytest.mark.parametrize("sim", [True, False], indirect=True, ids=["spin", "nospin"])
 @pytest.mark.parametrize(("unit", "k"), [(0, 1.0), (1, 3.5)], ids=["madx", "marylie"])
 @pytest.mark.parametrize("flag", ["entry", "exit"])
+# WARNING:  The orbit in QuadEdge is not reversed simply by taking entry->exit. The inverse map needs to be fixed.  See Issue #1562.
 def test_QuadEdge(sim, flag, unit, k):
     roundtrip(
         elements.QuadEdge(k=k, unit=unit, flag=flag, **ALIGNMENT_KWARGS),
         sim,
+        spin=sim.spin,
     )
 
 

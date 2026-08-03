@@ -16,6 +16,7 @@
 #include "mixin/beamoptic.H"
 #include "mixin/thick.H"
 #include "mixin/lineartransport.H"
+#include "mixin/spintransport.H"
 #include "mixin/named.H"
 #include "mixin/nofinalize.H"
 
@@ -36,6 +37,7 @@ namespace impactx::elements
       public mixin::Thick,
       public mixin::Alignment,
       public mixin::PipeAperture,
+      public mixin::SpinTransport,
       public mixin::NoFinalize,
       public amrex::simd::Vectorized<amrex::simd::native_simd_size_particlereal>
     {
@@ -111,7 +113,9 @@ namespace impactx::elements
 
             // compute focusing constant (1/m) and rotation angle (in rad)
             m_alpha = m_bz * 0.5_prt;
-            m_alpha_iez = m_alpha / m_ez;
+
+            // dimensionless acceleration parameter (change in gamma)
+            m_acc = m_ez * m_slice_ds;
         }
 
         /** This is a chracc functor, so that a variable of this type can be used like a chracc function.
@@ -169,8 +173,14 @@ namespace impactx::elements
                 T_Real const denom = -pti_tot + pzi_tot;
 
                 // compute focusing constant (1/m) and rotation angle (in rad)
-                T_Real const theta = m_alpha_iez * log(numer / denom);
+                T_Real const theta_ialpha = m_acc == 0_prt
+                    ? m_slice_ds / pzi_tot
+                    : log(numer / denom) / m_ez;
+                T_Real const theta = m_alpha * theta_ialpha;
                 auto const [sin_theta, cos_theta] = amrex::Math::sincos(theta);
+                T_Real const sin_theta_ialpha = m_alpha == 0_prt
+                    ? theta_ialpha
+                    : sin_theta / m_alpha;
 
                 // initialize output values
                 T_Real xout = x;
@@ -181,18 +191,24 @@ namespace impactx::elements
                 T_Real ptout = pt;
 
                 // advance positions and momenta using map for focusing
-                xout = cos_theta * x + sin_theta / m_alpha * px;
+                xout = cos_theta * x + sin_theta_ialpha * px;
                 pxout = -m_alpha * sin_theta * x + cos_theta * px;
 
-                yout = cos_theta * y + sin_theta / m_alpha * py;
+                yout = cos_theta * y + sin_theta_ialpha * py;
                 pyout = -m_alpha * sin_theta * y + cos_theta * py;
 
                 // the correct symplectic update for t
-                tout = t + (pzf_tot - pzf_ref - pzi_tot + pzi_ref) / m_ez;
-                tout += (1_prt/pzi_tot - 1_prt/pzf_tot)
-                      * (powi<2>(py - m_alpha * x) +
-                         powi<2>(px + m_alpha * y))
-                      / (2_prt * m_ez);
+                T_Real Pxy_mech2 = powi<2>(py - m_alpha * x) + powi<2>(px + m_alpha * y);
+                if (m_acc == 0_prt) {
+                   // In this case, t-update coincides with that of a ChrDrift:
+                   tout = t - (pti_tot/pzi_tot + 0.5_prt
+                          * pti_tot/powi<3>(pzi_tot) * Pxy_mech2) * m_slice_ds;
+                   tout += m_pti_ref/m_bgi * m_slice_ds;
+                } else {
+                   tout = t + (pzf_tot - pzf_ref - pzi_tot + pzi_ref) / m_ez;
+                   tout  += (1_prt/pzi_tot - 1_prt/pzf_tot)
+                         * Pxy_mech2 / (2_prt * m_ez);
+                }
                 ptout = pt;
 
                 // assign intermediate momenta
@@ -258,7 +274,7 @@ namespace impactx::elements
             amrex::ParticleReal const bgf = std::sqrt(powi<2>(ptf) - 1.0_prt);
 
             // update t
-            refpart.t = t + (bgf - bgi)/m_ez;
+            refpart.t = (m_ez==0_prt)? t - 0.5_prt*(pt/bgi + ptf/bgf)*slice_ds : t + (bgf - bgi)/m_ez;
 
             // advance position (x,y,z)
             refpart.x = x + slice_ds*px/bgi;
@@ -273,6 +289,102 @@ namespace impactx::elements
             // advance integrated path length
             refpart.s = s + slice_ds;
         }
+
+
+        /** This operator pushes the particle spin.
+         *
+         * @param x particle position in x
+         * @param y particle position in y
+         * @param t particle position in t
+         * @param px particle momentum in x
+         * @param py particle momentum in y
+         * @param pt particle momentum in t
+         * @param sx particle spin x-component
+         * @param sy particle spin y-component
+         * @param sz particle spin z-component
+         * @param idcpu particle global index
+         * @param refpart reference particle
+         */
+        template<typename T_Real=amrex::ParticleReal, typename T_IdCpu=uint64_t>
+        AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE
+        void spin_and_phasespace_push (
+            T_Real & AMREX_RESTRICT x,
+            T_Real & AMREX_RESTRICT y,
+            T_Real & AMREX_RESTRICT t,
+            T_Real & AMREX_RESTRICT px,
+            T_Real & AMREX_RESTRICT py,
+            T_Real & AMREX_RESTRICT pt,
+            T_Real & AMREX_RESTRICT sx,
+            T_Real & AMREX_RESTRICT sy,
+            T_Real & AMREX_RESTRICT sz,
+            T_IdCpu & AMREX_RESTRICT idcpu,
+            RefPart const & AMREX_RESTRICT refpart
+        ) const
+        {
+            using namespace amrex::literals; // for _rt and _prt
+            using namespace std; // for cmath(float)
+            using amrex::Math::powi;
+            namespace stdx = amrex::simd::stdx;
+
+            // initialize the three components of the axis-angle vector
+            T_Real lambdax = 0_prt;
+            T_Real lambday = 0_prt;
+            T_Real lambdaz = 0_prt;
+
+            // initial conversion from static to dynamic units:
+            T_Real px_dyn = px * m_bgi;
+            T_Real py_dyn = py * m_bgi;
+            T_Real pt_dyn = pt * m_bgi;
+
+            // compute intermediate quantities related to acceleration
+            T_Real const pti_tot = m_pti_ref + pt_dyn;
+            T_Real const ptf_tot = m_ptf_ref + pt_dyn;
+            T_Real const pti_tot2 = powi<2>(pti_tot);
+            T_Real const ptf_tot2 = powi<2>(ptf_tot);
+
+            // check whether particle lies within the domain of map definition
+            auto const mask = pti_tot2 <= 1_prt || ptf_tot2 <= 1_prt;
+            amrex::ParticleIDWrapper<T_IdCpu>{idcpu}.make_invalid(mask);
+            {
+                T_Real const pzi_tot = sqrt(powi<2>(pti_tot) - 1_prt);
+                T_Real const pzf_tot = sqrt(powi<2>(ptf_tot) - 1_prt);
+
+                T_Real const numer = -ptf_tot + pzf_tot;
+                T_Real const denom = -pti_tot + pzi_tot;
+
+                // compute focusing constant (1/m) and rotation angle (in rad)
+                T_Real const theta_over_alpha = (m_ez == 0_prt) ?
+                    m_slice_ds / pzi_tot :
+                    log(numer / denom) / m_ez;
+                T_Real const theta = m_alpha * theta_over_alpha;
+                auto const [sin2Gth, cos2Gth] = amrex::Math::sincos(2_prt * refpart.gyromagnetic_anomaly * theta);
+
+                T_Real const mu = 0.5_prt * (pzf_tot / (1_prt - ptf_tot) - pzi_tot / (1_prt - pti_tot));
+
+                T_Real const Ffunc = (m_bz==0_prt)? 0_prt : pzi_tot/(1_prt-pti_tot)*sin2Gth + m_ez*(1_prt-cos2Gth)/m_bz + 2_prt*mu*sin2Gth;
+                T_Real const Gfunc = (m_bz==0_prt)? -2_prt*mu - m_ez*refpart.gyromagnetic_anomaly*theta_over_alpha :
+                                      pzi_tot/(1_prt-pti_tot)*(1_prt-cos2Gth) - m_ez*sin2Gth/m_bz - 2_prt*mu*cos2Gth;
+                lambdax = m_alpha*Gfunc*x + Ffunc*px_dyn + m_alpha*Ffunc*y - Gfunc*py_dyn;
+                lambday = -m_alpha*Ffunc*x + Gfunc*px_dyn + m_alpha*Gfunc*y + Ffunc*py_dyn;
+                lambdaz = 0_prt;
+
+                // push the spin vector using the generator just determined
+                rotate_spin(lambdax,lambday,lambdaz,sx,sy,sz);
+
+                // generator determined at the design point
+                lambdax = 0_prt;
+                lambday = 0_prt;
+                lambdaz = -2_prt*theta*(1_prt + refpart.gyromagnetic_anomaly);
+
+                // push the spin vector using the generator just determined
+                rotate_spin(lambdax,lambday,lambdaz,sx,sy,sz);
+            }
+
+            // phase space push
+            (*this)(x, y, t, px, py, pt, idcpu, refpart);
+
+        }
+
 
         /** This pushes the covariance matrix. */
         using LinearTransport::operator();
@@ -356,7 +468,7 @@ namespace impactx::elements
             // factor is the integrated drift length in dynamic units and
             // is well-defined even when alpha = 0 (no solenoid).
             amrex::ParticleReal const alpha = 0.5_prt * m_bz;
-            amrex::ParticleReal const drift_log =
+            amrex::ParticleReal const drift_log = (m_ez==0_prt)? slice_ds / pzf_ref :
                 std::log((pzf_ref - ptf_ref) / (pzi_ref - pti_ref)) / m_ez;
             amrex::ParticleReal const rbg = bgi / bgf;
 
@@ -364,7 +476,7 @@ namespace impactx::elements
 
             // t couples to pt only: symplectic correction to the
             // time-of-flight, linearized at pt = 0.
-            R(5,6) = bgi * (ptf_ref / pzf_ref - pti_ref / pzi_ref) / m_ez;
+            R(5,6) = (m_ez==0_prt)? slice_ds / (bgi*bgi) : bgi * (ptf_ref / pzf_ref - pti_ref / pzi_ref) / m_ez;
             // pt scales by the static<->dynamic unit change bgi/bgf.
             R(6,6) = rbg;
 
@@ -410,7 +522,7 @@ namespace impactx::elements
         // see: compute_constants() to refresh
         amrex::ParticleReal m_slice_ds;  //! m_ds / nslice();
         amrex::ParticleReal m_ptf_ref, m_pti_ref, m_bgf, m_bgi;
-        amrex::ParticleReal m_alpha, m_alpha_iez;
+        amrex::ParticleReal m_alpha, m_acc;
     };
 
 } // namespace impactx
