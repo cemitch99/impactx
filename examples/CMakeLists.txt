@@ -2189,3 +2189,27 @@ add_impactx_test(reversibility-quad-fringe-spin.py
     examples/spin_tracking/analysis_reversibility_quad_fringe_spin.py
     OFF  # no plot script yet
 )
+
+# Spin Depolarization in a Uniform Accelerating Field ###########
+add_impactx_test(chracc-depol.py
+    examples/spin_tracking/run_chracc_depolarization.py
+    ON    # ImpactX MPI-parallel
+    examples/spin_tracking/analysis_chracc_depolarization.py
+    OFF  # no plot script yet
+)
+
+# Comparing Spin Tracking Models in a Uniform Solenoid Field ###########
+add_impactx_test(chracc-sol-spin.py
+    examples/spin_tracking/run_chracc_sol.py
+    ON    # ImpactX MPI-parallel
+    examples/spin_tracking/analysis_chracc_sol.py
+    OFF  # no plot script yet
+)
+
+# Spin Depolarization in a Uniform Accelerating + Magnetic Field ###########
+add_impactx_test(chracc-depol-eb.py
+    examples/spin_tracking/run_chracc_depolarization_EB.py
+    ON    # ImpactX MPI-parallel
+    examples/spin_tracking/analysis_chracc_depolarization_EB.py
+    OFF  # no plot script yet
+)

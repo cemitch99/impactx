@@ -165,6 +165,7 @@ def test_ChrQuad(benchmark, sim):
     benchmark.pedantic(el.push, setup=partial(pc_setup, sim), rounds=rounds)
 
 
+@pytest.mark.parametrize("sim", [True, False], indirect=True, ids=["spin", "nospin"])
 def test_ChrAcc(benchmark, sim):
     el = elements.ChrAcc(
         name="acc", ds=1.8, ez=10871.950994502130424, bz=1.0e-12, nslice=nslice
