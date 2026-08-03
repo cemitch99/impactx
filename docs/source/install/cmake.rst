@@ -202,6 +202,7 @@ Brew can be used to install dependencies on Linux and macOS.
    brew update
    brew tap openpmd/openpmd
    brew install adios2      # for openPMD
+   brew install boost       # for synmadx MAD-X parser
    brew install ccache
    brew install cmake
    brew install fftw        # for IGF space charge, CSR
@@ -231,7 +232,7 @@ The `Advanced Package Tool (APT) <https://en.wikipedia.org/wiki/APT_(software)>`
       .. code-block:: bash
 
          sudo apt update
-         sudo apt install build-essential ccache cmake g++ git libfftw3-mpi-dev libfftw3-dev libhdf5-openmpi-dev libopenmpi-dev pkg-config python3 python3-dev python3-matplotlib python3-mpi4py python3-numpy python3-pandas python3-pip python3-scipy python3-venv
+         sudo apt install build-essential ccache cmake g++ git libboost-dev libfftw3-mpi-dev libfftw3-dev libhdf5-openmpi-dev libopenmpi-dev pkg-config python3 python3-dev python3-matplotlib python3-mpi4py python3-numpy python3-pandas python3-pip python3-scipy python3-venv
 
          # optional:
          # for CUDA, either install
@@ -247,7 +248,7 @@ The `Advanced Package Tool (APT) <https://en.wikipedia.org/wiki/APT_(software)>`
       .. code-block:: bash
 
          sudo apt update
-         sudo apt install build-essential ccache cmake g++ git libfftw3-dev libhdf5-dev pkg-config python3 python3-dev python3-matplotlib python3-numpy python3-pandas python3-pip python3-scipy python3-venv
+         sudo apt install build-essential ccache cmake g++ git libboost-dev libfftw3-dev libhdf5-dev pkg-config python3 python3-dev python3-matplotlib python3-numpy python3-pandas python3-pip python3-scipy python3-venv
 
          # optional:
          # for CUDA, either install
@@ -440,6 +441,7 @@ CMake Option                    Default & Values                             Des
 ``ImpactX_PRECISION``           SINGLE/**DOUBLE**                            Floating point precision (single/double)
 ``ImpactX_PYTHON``              ON/**OFF**                                   Python bindings
 ``ImpactX_SIMD``                ON/**OFF**                                   CPU SIMD acceleration (requires ``vir-simd``)
+``ImpactX_SYNMADX``             ON/**OFF**                                   Custom Synergia migration parser (requires ``Boost``)
 ``Python_EXECUTABLE``           (newest found)                               Path to Python executable
 ``PY_PIP_OPTIONS``              ``-v``                                       Additional options for ``pip``, e.g., ``-vvv;-q``
 ``PY_PIP_INSTALL_OPTIONS``                                                   Additional options for ``pip install``, e.g., ``--user;-q``
@@ -467,6 +469,7 @@ CMake Option                  Default & Values                               Des
 ``ImpactX_amrex_repo``        ``https://github.com/AMReX-Codes/amrex.git``   Repository URI to pull and build AMReX from
 ``ImpactX_amrex_branch``      *we set and maintain a compatible commit*      Repository branch for ``ImpactX_amrex_repo``
 ``ImpactX_amrex_internal``    **ON**/OFF                                     Needs a pre-installed AMReX library if set to ``OFF``
+``ImpactX_catch_internal``     **ON**/OFF                                     Needs a pre-installed Catch2 library if set to ``OFF``
 ``ImpactX_openpmd_src``       *None*                                         Path to openPMD-api source directory (preferred if set)
 ``ImpactX_openpmd_repo``      ``https://github.com/openPMD/openPMD-api.git`` Repository URI to pull and build openPMD-api from
 ``ImpactX_openpmd_branch``    ``0.17.0``                                     Repository branch for ``ImpactX_openpmd_repo``

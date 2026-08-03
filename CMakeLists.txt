@@ -72,6 +72,7 @@ option(ImpactX_MPI           "Multi-node support (message-passing)"         ON)
 option(ImpactX_SIMD          "CPU SIMD Acceleration"                        OFF)
 option(ImpactX_OPENPMD       "openPMD I/O (HDF5, ADIOS)"                    ON)
 option(ImpactX_PYTHON        "Python bindings"                              OFF)
+option(ImpactX_SYNMADX       "Standalone MAD-X lattice parser (needs Boost)" OFF)
 
 # Specialize the particle push into branch-free paths for aligned vs. misaligned
 # elements (selected at runtime). This doubles the compile time of the element
@@ -102,6 +103,7 @@ mark_as_advanced(ImpactX_TEST_CLEANUP)
 
 option(ImpactX_ablastr_internal                  "Download & build ABLASTR" ON)
 option(ImpactX_amrex_internal                    "Download & build AMReX" ON)
+option(ImpactX_catch_internal                    "Download & build Catch2" ON)
 option(ImpactX_openpmd_internal                  "Download & build openPMD-api" ON)
 option(ImpactX_pyamrex_internal                  "Download & build pyAMReX" ON)
 
@@ -149,6 +151,15 @@ include(CTest)
 #     install
 include(${ImpactX_SOURCE_DIR}/cmake/dependencies/ABLASTR.cmake)
 impactx_make_third_party_includes_system(WarpX::ablastr_3d ablastr_3d)
+
+# Boost
+#   header-only libraries (Spirit, Phoenix, Fusion, ...) used by the synmadx
+#   MAD-X lattice parser
+#   CONFIG mode: BoostConfig.cmake ships with Boost 1.70+; CMake's FindBoost
+#   module was removed in CMake 3.30 (policy CMP0167)
+if(ImpactX_SYNMADX)
+    find_package(Boost 1.70.0 CONFIG REQUIRED)
+endif()
 
 # Python
 if(ImpactX_PYTHON)
@@ -479,6 +490,7 @@ if(ImpactX_PYTHON)
             ${ImpactX_BINARY_DIR}
         DEPENDS
             pyImpactX
+            $<$<BOOL:${ImpactX_SYNMADX}>:pysynmadx>
             pyImpactX_python_sources
     )
 
@@ -542,6 +554,9 @@ if(ImpactX_PYTHON)
         VERBATIM
     )
     add_dependencies(pyImpactX_python_sources pyImpactX)
+    if(ImpactX_SYNMADX)
+        add_dependencies(pyImpactX_python_sources pysynmadx)
+    endif()
 endif()
 
 
