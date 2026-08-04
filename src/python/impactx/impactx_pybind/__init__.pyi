@@ -1111,6 +1111,11 @@ class Config:
     precision: typing.ClassVar[str] = "DOUBLE"
     precision_particles: typing.ClassVar[str] = "DOUBLE"
     simd_size: typing.ClassVar[int] = 1
+    @staticmethod
+    def to_dict() -> dict:
+        """
+        Return the ImpactX build configuration as a dictionary.
+        """
 
 def coordinate_transformation(
     pc: ImpactXParticleContainer, direction: CoordSystem
