@@ -54,6 +54,12 @@ def _check_element_match(element, kind, name):
 def _clone_element(template):
     """
     Deep-clone a lattice element via ``to_dict`` (pybind elements are not copy.copy-able).
+
+    Goes through ``_element_to_dict`` and ``_element_from_dict`` so that the dict is
+    one the constructor accepts: ``_filter_kwargs`` drops keys that ``to_dict``
+    reports but the constructor rejects (thin elements such as ``Marker`` report
+    ``ds=0.0`` yet take only a name), and angles are converted to the degrees the
+    constructor expects.
     """
 
 def _commit_lattice_rebuild(original, new_elements) -> None:
@@ -82,6 +88,14 @@ def _element_from_dict(d: dict):
     Raises:
         KeyError: If 'type' key is missing
         AttributeError: If element type is not found in elements module
+    """
+
+def _element_to_dict(element) -> dict:
+    """
+    Serialize an element to a dict that its constructor can consume again.
+
+    Applies the radians/degrees work-around for the element types whose
+    ``to_dict()`` disagrees with their constructor.
     """
 
 def _filter_kwargs(d: dict) -> dict:
@@ -478,6 +492,7 @@ def to_py(self) -> str:
     """
 
 FILTERED_ELEMENTS_LIST_INVALID_MSG: str = "This lattice selection is no longer valid because the lattice was modified; call select() again on the lattice."
+_DEGREE_ELEMENTS: tuple = ("ExactSbend", "PlaneXYRot", "PRot", "ThinDipole")
 _DRIFT_MODEL_CLASSES: dict = {
     "linear": impactx.impactx_pybind.elements.Drift,
     "paraxial": impactx.impactx_pybind.elements.ChrDrift,
