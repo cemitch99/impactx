@@ -388,12 +388,12 @@ namespace impactx::elements
 
             // The required momentum components in the coordinate frame defined by the pole-face:
             T_Real pz = std::sqrt(1_prt - 2_prt*pt*m_ibeta + pt*pt - px*px - py*py);
-            amrex::ParticleReal px_face = px * cos_psi - pz * sin_psi;
+            T_Real px_face = px * cos_psi - pz * sin_psi;
 
             // The axis-angle vector in the coordinate frame defined by the pole-face.
             // This expression is taken from D. Abell, PRAB 18, 024001 (2015), eqs (41-42):
-            amrex::ParticleReal lambdaz_face = - loc/m_rc * (1_prt + m_gyro_const) * y;
-            amrex::ParticleReal lambdax_face = loc/m_rc * m_gyro_const * m_gamma_minus_1 * px_face;
+            T_Real lambdaz_face = - loc/m_rc * (1_prt + m_gyro_const) * y;
+            T_Real lambdax_face = loc/m_rc * m_gyro_const * m_gamma_minus_1 * px_face;
 
             // the axis-angle vector in the local coordinate frame defined by the reference particle
             T_Real const lambdax = lambdax_face * cos_psi + lambdaz_face * sin_psi;
