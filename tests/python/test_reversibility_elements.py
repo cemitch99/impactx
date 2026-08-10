@@ -547,6 +547,7 @@ def test_Kicker(sim, unit, xkick, ykick):
     roundtrip(
         elements.Kicker(xkick=xkick, ykick=ykick, unit=unit, **ALIGNMENT_KWARGS),
         sim,
+        spin=sim.spin,   
     )
 
 
