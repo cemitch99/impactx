@@ -612,10 +612,13 @@ def test_PRot(sim):
 # RF / energy-changing elements
 # =============================================================================
 
+
 @pytest.mark.parametrize("sim", [True, False], indirect=True, ids=["spin", "nospin"])
 def test_ShortRF(sim):
     roundtrip(
-        elements.ShortRF(V=1000.0, freq=1.3e9, phase=-89.5, **ALIGNMENT_KWARGS), sim, spin=sim.spin
+        elements.ShortRF(V=1000.0, freq=1.3e9, phase=-89.5, **ALIGNMENT_KWARGS),
+        sim,
+        spin=sim.spin,
     )
 
 
