@@ -531,10 +531,12 @@ def test_Sol(sim):
 # =============================================================================
 
 
+@pytest.mark.parametrize("sim", [True, False], indirect=True, ids=["spin", "nospin"])
 def test_Buncher(sim):
-    roundtrip(elements.Buncher(V=0.01, k=15.0, **ALIGNMENT_KWARGS), sim)
+    roundtrip(elements.Buncher(V=0.01, k=15.0, **ALIGNMENT_KWARGS), sim, spin=sim.spin)
 
 
+@pytest.mark.parametrize("sim", [True, False], indirect=True, ids=["spin", "nospin"])
 @pytest.mark.parametrize(
     ("unit", "xkick", "ykick"),
     [
@@ -560,8 +562,13 @@ def test_Multipole(sim):
     )
 
 
+@pytest.mark.parametrize("sim", [True, False], indirect=True, ids=["spin", "nospin"])
 def test_NonlinearLens(sim):
-    roundtrip(elements.NonlinearLens(knll=4.0e-6, cnll=0.01, **ALIGNMENT_KWARGS), sim)
+    roundtrip(
+        elements.NonlinearLens(knll=4.0e-6, cnll=0.01, **ALIGNMENT_KWARGS),
+        sim,
+        spin=sim.spin,
+    )
 
 
 @pytest.mark.parametrize("sim", [True, False], indirect=True, ids=["spin", "nospin"])
@@ -579,8 +586,13 @@ def test_TaperedPL(sim, unit, k):
     )
 
 
+@pytest.mark.parametrize("sim", [True, False], indirect=True, ids=["spin", "nospin"])
 def test_ThinDipole(sim):
-    roundtrip(elements.ThinDipole(theta=0.45, rc=1.0, **ALIGNMENT_KWARGS), sim)
+    roundtrip(
+        elements.ThinDipole(theta=0.45, rc=1.0, **ALIGNMENT_KWARGS),
+        sim,
+        spin=sim.spin,
+    )
 
 
 # =============================================================================
@@ -600,10 +612,10 @@ def test_PRot(sim):
 # RF / energy-changing elements
 # =============================================================================
 
-
+@pytest.mark.parametrize("sim", [True, False], indirect=True, ids=["spin", "nospin"])
 def test_ShortRF(sim):
     roundtrip(
-        elements.ShortRF(V=1000.0, freq=1.3e9, phase=-89.5, **ALIGNMENT_KWARGS), sim
+        elements.ShortRF(V=1000.0, freq=1.3e9, phase=-89.5, **ALIGNMENT_KWARGS), sim, spin=sim.spin
     )
 
 
