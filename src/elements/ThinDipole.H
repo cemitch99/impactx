@@ -245,10 +245,13 @@ namespace impactx::elements
             T_Real uz = Ps * iPnorm;
 
             // Integrated curvature = bend angle in rad (half-step):
-            amrex::ParticleReal const h = 0.5_prt * m_theta;
+            amrex::ParticleReal const h = 0.5_prt * m_kx;
 
             // Evaluation of the full Thomas-BMT precession vector.
             tbmt_precession_vector(x,ux,uy,uz,gamma,h,gyro_anomaly,Bx,By,Bz,Ex,Ey,Ez,lambdax,lambday,lambdaz);
+            lambdax *= m_ds;
+            lambday *= m_ds;
+            lambdaz *= m_ds;
 
             // push the spin vector using the generator just determined (half spin-kick)
             rotate_spin(lambdax, lambday, lambdaz, sx, sy, sz);
@@ -264,6 +267,9 @@ namespace impactx::elements
 
             // Evaluation of the full Thomas-BMT precession vector.
             tbmt_precession_vector(x,ux,uy,uz,gamma,h,gyro_anomaly,Bx,By,Bz,Ex,Ey,Ez,lambdax,lambday,lambdaz);
+            lambdax *= m_ds;
+            lambday *= m_ds;
+            lambdaz *= m_ds;
 
             // push the spin vector using the generator just determined (half spin-kick)
             rotate_spin(lambdax, lambday, lambdaz, sx, sy, sz);
