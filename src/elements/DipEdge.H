@@ -174,7 +174,7 @@ public amrex::simd::Vectorized<amrex::simd::native_simd_size_particlereal>
 
             // access reference particle values to find beta
             m_beta = refpart.beta();
-            m_ibeta = 1_prt/m_beta;
+            m_ibeta = 1_prt / m_beta;
             m_gamma_minus_1 = refpart.gamma() - 1_prt;
 
             // expressions from eq (14) of Mitchell and Hwang, NAPAC2025
@@ -202,7 +202,6 @@ public amrex::simd::Vectorized<amrex::simd::native_simd_size_particlereal>
 
             // gyromagnetic constant (used during spin push)
             m_gyro_const = refpart.gyromagnetic_anomaly;
-
         }
 
         /** This is a dipedge functor, so that a variable of this type can be used like a
@@ -394,8 +393,8 @@ public amrex::simd::Vectorized<amrex::simd::native_simd_size_particlereal>
 
             // The axis-angle vector in the coordinate frame defined by the pole-face.
             // This expression is taken from D. Abell, PRAB 18, 024001 (2015), eqs (41-42):
-            T_Real lambdaz_face = - loc/m_rc * (1_prt + m_gyro_const) * y;
-            T_Real lambdax_face = loc/m_rc * m_gyro_const * m_gamma_minus_1 * px_face;
+            T_Real lambdaz_face = -loc / m_rc * (1_prt + m_gyro_const) * y;
+            T_Real lambdax_face =  loc / m_rc * m_gyro_const * m_gamma_minus_1 * px_face;
 
             // the axis-angle vector in the local coordinate frame defined by the reference particle
             T_Real const lambdax = lambdax_face * cos_psi + lambdaz_face * sin_psi;
