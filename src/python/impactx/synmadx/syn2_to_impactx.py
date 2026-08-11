@@ -177,7 +177,7 @@ def cnv_sbend(elem, order):
             # CF bend
             if k2 == 0.0:
                 knormal = [1 / radius_of_curvature, k1]
-                kskew = [0.0, k1s, 0.0]
+                kskew = [0.0, k1s]
             else:
                 knormal = [1 / radius_of_curvature, k1, k2]
                 kskew = [0.0, k1s, 0.0]
@@ -552,7 +552,7 @@ def cnv_octupole(elem, order):
             ds=L,
             k_normal=knorm,
             k_skew=kskew,
-            order=4,
+            int_order=4,
             nslice=nslice_by_elem_type["octupole"],
             name=nm,
         )
