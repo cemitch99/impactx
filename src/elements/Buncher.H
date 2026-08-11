@@ -181,6 +181,7 @@ namespace impactx::elements
         {
             using namespace amrex::literals; // for _rt and _prt
             using amrex::Math::powi;
+            using namespace std; // for cmath(float)
 
             // reference particle relativistic factors
             amrex::ParticleReal const gamma_ref = refpart.gamma();
@@ -236,7 +237,6 @@ namespace impactx::elements
 
             // push the spin vector using the generator just determined (half spin-kick)
             rotate_spin(lambdax, lambday, lambdaz, sx, sy, sz);
-
         }
 
 
