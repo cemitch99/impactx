@@ -395,7 +395,7 @@ namespace impactx::elements
             // the axis-angle vector in the local coordinate frame defined by the reference particle
             T_Real const lambdax = lambdax_face * cos_psi + lambdaz_face * sin_psi;
             T_Real const lambday = 0_prt;
-            T_Real const lambdaz = lambdaz_face * cos_psi - lambdax_face * cos_psi;
+            T_Real const lambdaz = lambdaz_face * cos_psi - lambdax_face * sin_psi;
 
             // push the spin vector using the generator just determined
             rotate_spin(lambdax, lambday, lambdaz, sx, sy, sz);
