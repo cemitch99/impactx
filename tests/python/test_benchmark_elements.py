@@ -179,6 +179,7 @@ def test_ConstF(benchmark, sim):
     benchmark.pedantic(el.push, setup=partial(pc_setup, sim), rounds=rounds)
 
 
+@pytest.mark.parametrize("sim", [True, False], indirect=True, ids=["spin", "nospin"])
 def test_DipEdge(benchmark, sim):
     rc = 10.3462283686195526  # bend radius (meters)
     psi = 0.048345620280243  # pole face rotation angle (radians)
