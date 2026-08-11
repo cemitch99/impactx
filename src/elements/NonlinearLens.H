@@ -15,6 +15,7 @@
 #include "mixin/beamoptic.H"
 #include "mixin/thin.H"
 #include "mixin/lineartransport.H"
+#include "mixin/spintransport.H"
 #include "mixin/named.H"
 #include "mixin/nofinalize.H"
 
@@ -37,6 +38,7 @@ namespace impactx::elements
       public mixin::LinearTransport<NonlinearLens>,
       public mixin::Thin,
       public mixin::Alignment,
+      public mixin::SpinTransport,
       public mixin::NoFinalize
       // TODO: public amrex::simd::Vectorized<amrex::simd::native_simd_size_particlereal>
     {
@@ -92,6 +94,9 @@ namespace impactx::elements
 
             m_inv_cnll = 1.0_prt / m_cnll;
             m_kick = -m_knll * m_inv_cnll;
+
+            m_beta = refpart.beta();
+            m_ibeta = 1_prt / m_beta;
         }
 
         /** This is a nonlinear lens functor, so that a variable of this type
@@ -184,6 +189,117 @@ namespace impactx::elements
         /** This pushes the reference particle. */
         using Thin::operator();
 
+
+        /** This operator pushes the particle spin.
+         *
+         * @param x particle position in x
+         * @param y particle position in y
+         * @param t particle position in t
+         * @param px particle momentum in x
+         * @param py particle momentum in y
+         * @param pt particle momentum in t
+         * @param sx particle spin x-component
+         * @param sy particle spin y-component
+         * @param sz particle spin z-component
+         * @param idcpu particle global index
+         * @param refpart reference particle (unused)
+         */
+        template<typename T_Real=amrex::ParticleReal, typename T_IdCpu=uint64_t>
+        AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE
+        void spin_and_phasespace_push (
+            T_Real const & AMREX_RESTRICT x,
+            T_Real const & AMREX_RESTRICT y,
+            [[maybe_unused]] T_Real const & AMREX_RESTRICT t,
+            T_Real & AMREX_RESTRICT px,
+            T_Real & AMREX_RESTRICT py,
+            [[maybe_unused]] T_Real const & AMREX_RESTRICT pt,
+            T_Real & AMREX_RESTRICT sx,
+            T_Real & AMREX_RESTRICT sy,
+            T_Real & AMREX_RESTRICT sz,
+            [[maybe_unused]] T_IdCpu const & AMREX_RESTRICT idcpu,
+            [[maybe_unused]] RefPart const & AMREX_RESTRICT refpart
+        ) const
+        {
+            using namespace amrex::literals; // for _rt and _prt
+            using amrex::Math::powi;
+
+            // reference particle relativistic factors
+            amrex::ParticleReal const gamma_ref = refpart.gamma();
+            amrex::ParticleReal const gyro_anomaly = refpart.gyromagnetic_anomaly;
+
+            // initialize the three components of the axis-angle vector
+            T_Real lambdax = 0_prt;
+            T_Real lambday = 0_prt;
+            T_Real lambdaz = 0_prt;
+
+            // a complex type with two T_Real
+            using Complex = amrex::GpuComplex<T_Real>;
+
+            // assign complex position zeta = (x + iy)/cnll
+            Complex zeta(x, y);
+            zeta = zeta * m_inv_cnll;
+            Complex const re1(1.0_prt, 0.0_prt);
+            Complex const im1(0.0_prt, 1.0_prt);
+
+            // compute croot = sqrt(1-zeta**2)
+            Complex croot = powi<2>(zeta);
+            croot = re1 - croot;
+            croot = amrex::sqrt(croot);
+
+            // compute carcsin = arcsin(zeta)
+            Complex carcsin = im1 * zeta + croot;
+            carcsin = -im1 * amrex::log(carcsin);
+
+            // compute complex function F'(zeta)
+            Complex dF = zeta / powi<2>(croot);
+            dF = dF + carcsin / powi<3>(croot);
+
+            // Integrated magnetic field normalized by q/mc (half-step):
+            T_Real const Bx = -0.5_prt * m_kick * dF.m_imag * m_beta * gamma_ref;
+            T_Real const By = -0.5_prt * m_kick * dF.m_real * m_beta * gamma_ref;
+            T_Real const Bz = 0_prt;
+
+            // Integrated electric field normalized by q/mc^2 (half-step):
+            T_Real const Ex = 0.0_prt;
+            T_Real const Ey = 0.0_prt;
+            T_Real const Ez = 0.0_prt;
+
+            // Quantities required to evaluate the full Thomas-BMT precession vector (before phase space kick).
+            T_Real const Pnorm = sqrt(1_prt - 2_prt * pt * m_ibeta + pt*pt);
+            T_Real const iPnorm = 1_prt/Pnorm;
+            T_Real const gamma = gamma_ref * (1_prt - pt*m_beta);
+            T_Real Ps = sqrt(Pnorm*Pnorm - px*px - py*py);
+            T_Real ux = px * iPnorm;
+            T_Real uy = py * iPnorm;
+            T_Real uz = Ps * iPnorm;
+
+            // Zero curvature in a quadrupole
+            amrex::ParticleReal const h = 0.0_prt;
+
+            // Evaluation of the full Thomas-BMT precession vector.
+            tbmt_precession_vector(x,ux,uy,uz,gamma,h,gyro_anomaly,Bx,By,Bz,Ex,Ey,Ez,lambdax,lambday,lambdaz);
+
+            // push the spin vector using the generator just determined (half spin-kick)
+            rotate_spin(lambdax, lambday, lambdaz, sx, sy, sz);
+
+            // phase space push
+            (*this)(x, y, t, px, py, pt, idcpu, refpart);
+
+            // Quantities required to evaluate the full Thomas-BMT precession vector (after phase space kick).
+            Ps = sqrt(Pnorm*Pnorm - px*px - py*py);
+            ux = px * iPnorm;
+            uy = py * iPnorm;
+            uz = Ps * iPnorm;
+
+            // Evaluation of the full Thomas-BMT precession vector.
+            tbmt_precession_vector(x,ux,uy,uz,gamma,h,gyro_anomaly,Bx,By,Bz,Ex,Ey,Ez,lambdax,lambday,lambdaz);
+
+            // push the spin vector using the generator just determined (half spin-kick)
+            rotate_spin(lambdax, lambday, lambdaz, sx, sy, sz);
+
+        }
+
+
         /** This pushes the covariance matrix. */
         using LinearTransport::operator();
 
@@ -240,6 +356,7 @@ namespace impactx::elements
         // see: compute_constants() to refresh
         amrex::ParticleReal m_inv_cnll;  //! 1 / m_cnll
         amrex::ParticleReal m_kick;
+        amrex::ParticleReal m_beta, m_ibeta;
     };
 
 } // namespace impactx
