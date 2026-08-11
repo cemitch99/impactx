@@ -43,7 +43,8 @@ namespace impactx::elements
       // At least on Intel AVX512, there is a small overhead to vectorize this element, see
       // https://github.com/BLAST-ImpactX/impactx/pull/1002
       // verify again after https://github.com/BLAST-ImpactX/impactx/pull/1158
-      // public amrex::simd::Vectorized<amrex::simd::native_simd_size_particlereal>
+public mixin::NoFinalize,
+public amrex::simd::Vectorized<amrex::simd::native_simd_size_particlereal>
     {
         static constexpr auto type = "DipEdge";
         using PType = ImpactXParticleContainer::ParticleType;
@@ -381,13 +382,14 @@ namespace impactx::elements
         ) const
         {
             using namespace amrex::literals; // for _rt and _prt
+            using namespace std; // for cmath(float)
 
             // additional constants required
             amrex::ParticleReal const loc = m_location == Location::entry ? 1_prt : -1_prt;
             auto const [sin_psi, cos_psi] = amrex::Math::sincos(m_psi);
 
             // The required momentum components in the coordinate frame defined by the pole-face:
-            T_Real pz = std::sqrt(1_prt - 2_prt*pt*m_ibeta + pt*pt - px*px - py*py);
+            T_Real pz = sqrt(1_prt - 2_prt*pt*m_ibeta + pt*pt - px*px - py*py);
             T_Real px_face = px * cos_psi - pz * sin_psi;
 
             // The axis-angle vector in the coordinate frame defined by the pole-face.
