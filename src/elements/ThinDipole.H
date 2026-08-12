@@ -234,46 +234,39 @@ namespace impactx::elements
             T_Real const Ey = 0.0_prt;
             T_Real const Ez = 0.0_prt;
 
-            // Quantities required to evaluate the full Thomas-BMT precession vector (before phase space kick).
-            T_Real const Pnorm = sqrt(1_prt - 2_prt * pt / m_beta + pt*pt);
-            T_Real const iPnorm = 1_prt/Pnorm;
-            T_Real const gamma = gamma_ref * (1_prt - pt*m_beta);
-            T_Real Ps = sqrt(Pnorm*Pnorm - px*px - py*py);
-            T_Real ux = px * iPnorm;
-            T_Real uy = py * iPnorm;
-            T_Real uz = Ps * iPnorm;
-
-            // Design-orbit curvature [1/m]
-            amrex::ParticleReal const h = m_kx;
-
-            // generator over half of the effective (equivalent) arc length
-            amrex::ParticleReal const half_ds = 0.5_prt * m_ds;
-
-            // Evaluation of the full Thomas-BMT precession vector.
-            tbmt_precession_vector(x,ux,uy,uz,gamma,h,gyro_anomaly,Bx,By,Bz,Ex,Ey,Ez,lambdax,lambday,lambdaz);
-            lambdax *= half_ds;
-            lambday *= half_ds;
-            lambdaz *= half_ds;
-
-            // push the spin vector using the generator just determined (half spin-kick)
-            rotate_spin(lambdax, lambday, lambdaz, sx, sy, sz);
+            // The Thomas-BMT generator is evaluated at the horizontal momentum
+            // halfway through the kick, so that reversing the element (negating
+            // the bend angle) produces the exact inverse rotation.
+            T_Real const px_in = px;
 
             // phase space push
             (*this)(x, y, t, px, py, pt, idcpu, refpart);
 
-            // Quantities required to evaluate the full Thomas-BMT precession vector (after phase space kick).
-            Ps = sqrt(Pnorm*Pnorm - px*px - py*py);
-            ux = px * iPnorm;
-            uy = py * iPnorm;
-            uz = Ps * iPnorm;
+            // horizontal momentum at the kick midpoint
+            T_Real const px_mid = 0.5_prt * (px_in + px);
+
+            // Quantities required to evaluate the full Thomas-BMT precession
+            // vector, at the midpoint horizontal momentum.
+            T_Real const Pnorm = sqrt(1_prt - 2_prt * pt / m_beta + pt*pt);
+            T_Real const iPnorm = 1_prt/Pnorm;
+            T_Real const gamma = gamma_ref * (1_prt - pt*m_beta);
+            T_Real const Ps = sqrt(Pnorm*Pnorm - px_mid*px_mid - py*py);
+            T_Real const ux = px_mid * iPnorm;
+            T_Real const uy = py * iPnorm;
+            T_Real const uz = Ps * iPnorm;
+
+            // Design-orbit curvature [1/m]
+            amrex::ParticleReal const h = m_kx;
 
             // Evaluation of the full Thomas-BMT precession vector.
             tbmt_precession_vector(x,ux,uy,uz,gamma,h,gyro_anomaly,Bx,By,Bz,Ex,Ey,Ez,lambdax,lambday,lambdaz);
-            lambdax *= half_ds;
-            lambday *= half_ds;
-            lambdaz *= half_ds;
 
-            // push the spin vector using the generator just determined (half spin-kick)
+            // generator over the effective (equivalent) arc length
+            lambdax *= m_ds;
+            lambday *= m_ds;
+            lambdaz *= m_ds;
+
+            // push the spin vector using the generator just determined
             rotate_spin(lambdax, lambday, lambdaz, sx, sy, sz);
         }
 
