@@ -660,7 +660,7 @@ class ImpactX:
     @property
     def blocking_factor_x(self) -> list[int]:
         """
-        AMReX blocking factor for a direction, per MR level.
+        AMReX blocking factor for a direction, per MR level. Also sets max_grid_size_x/_y/_z in this direction to the same value; assign that property afterwards to overwrite. The all-direction max_grid_size does not overwrite it, since per-direction values always take precedence.
         """
     @blocking_factor_x.setter
     def blocking_factor_x(
@@ -669,7 +669,7 @@ class ImpactX:
     @property
     def blocking_factor_y(self) -> list[int]:
         """
-        AMReX blocking factor for a direction, per MR level.
+        AMReX blocking factor for a direction, per MR level. Also sets max_grid_size_x/_y/_z in this direction to the same value; assign that property afterwards to overwrite. The all-direction max_grid_size does not overwrite it, since per-direction values always take precedence.
         """
     @blocking_factor_y.setter
     def blocking_factor_y(
@@ -678,7 +678,7 @@ class ImpactX:
     @property
     def blocking_factor_z(self) -> list[int]:
         """
-        AMReX blocking factor for a direction, per MR level.
+        AMReX blocking factor for a direction, per MR level. Also sets max_grid_size_x/_y/_z in this direction to the same value; assign that property afterwards to overwrite. The all-direction max_grid_size does not overwrite it, since per-direction values always take precedence.
         """
     @blocking_factor_z.setter
     def blocking_factor_z(
@@ -790,6 +790,42 @@ class ImpactX:
         """
     @lattice.setter
     def lattice(self, arg0: elements.KnownElementsList) -> None: ...
+    @property
+    def max_grid_size(self) -> list[int]:
+        """
+        AMReX maximum box size along all directions, per MR level. Boxes larger than this are chopped; aim for one box per parallel process. Per-direction values (max_grid_size_x/_y/_z, also set by blocking_factor_x/_y/_z) take precedence, no matter in which order they are assigned; assign those to change a direction that is already set.
+        """
+    @max_grid_size.setter
+    def max_grid_size(
+        self, arg1: collections.abc.Sequence[typing.SupportsInt | typing.SupportsIndex]
+    ) -> None: ...
+    @property
+    def max_grid_size_x(self) -> list[int]:
+        """
+        AMReX maximum box size for a direction, per MR level. Boxes larger than this are chopped, aim for one box per parallel process. Takes precedence over the all-direction max_grid_size, no matter in which order they are assigned.
+        """
+    @max_grid_size_x.setter
+    def max_grid_size_x(
+        self, arg1: collections.abc.Sequence[typing.SupportsInt | typing.SupportsIndex]
+    ) -> None: ...
+    @property
+    def max_grid_size_y(self) -> list[int]:
+        """
+        AMReX maximum box size for a direction, per MR level. Boxes larger than this are chopped, aim for one box per parallel process. Takes precedence over the all-direction max_grid_size, no matter in which order they are assigned.
+        """
+    @max_grid_size_y.setter
+    def max_grid_size_y(
+        self, arg1: collections.abc.Sequence[typing.SupportsInt | typing.SupportsIndex]
+    ) -> None: ...
+    @property
+    def max_grid_size_z(self) -> list[int]:
+        """
+        AMReX maximum box size for a direction, per MR level. Boxes larger than this are chopped, aim for one box per parallel process. Takes precedence over the all-direction max_grid_size, no matter in which order they are assigned.
+        """
+    @max_grid_size_z.setter
+    def max_grid_size_z(
+        self, arg1: collections.abc.Sequence[typing.SupportsInt | typing.SupportsIndex]
+    ) -> None: ...
     @property
     def max_level(self) -> int:
         """
