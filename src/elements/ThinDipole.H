@@ -225,12 +225,12 @@ namespace impactx::elements
             T_Real lambday = 0_prt;
             T_Real lambdaz = 0_prt;
 
-            // Integrated magnetic field normalized by q/mc (half-step):
+            // Magnetic field normalized by q/mc [1/m]:
             T_Real const Bx = 0_prt;
-            T_Real const By = 0.5_prt * m_kx * m_beta * gamma_ref;
+            T_Real const By = m_kx * m_beta * gamma_ref;
             T_Real const Bz = 0_prt;
 
-            // Integrated electric field normalized by q/mc^2 (half-step):
+            // Electric field normalized by q/mc^2 [1/m]:
             T_Real const Ex = 0.0_prt;
             T_Real const Ey = 0.0_prt;
             T_Real const Ez = 0.0_prt;
@@ -244,14 +244,17 @@ namespace impactx::elements
             T_Real uy = py * iPnorm;
             T_Real uz = Ps * iPnorm;
 
-            // Integrated curvature = bend angle in rad (half-step):
-            amrex::ParticleReal const h = 0.5_prt * m_kx;
+            // Design-orbit curvature [1/m]
+            amrex::ParticleReal const h = m_kx;
+
+            // generator over half of the effective (equivalent) arc length
+            amrex::ParticleReal const half_ds = 0.5_prt * m_ds;
 
             // Evaluation of the full Thomas-BMT precession vector.
             tbmt_precession_vector(x,ux,uy,uz,gamma,h,gyro_anomaly,Bx,By,Bz,Ex,Ey,Ez,lambdax,lambday,lambdaz);
-            lambdax *= m_ds;
-            lambday *= m_ds;
-            lambdaz *= m_ds;
+            lambdax *= half_ds;
+            lambday *= half_ds;
+            lambdaz *= half_ds;
 
             // push the spin vector using the generator just determined (half spin-kick)
             rotate_spin(lambdax, lambday, lambdaz, sx, sy, sz);
@@ -267,9 +270,9 @@ namespace impactx::elements
 
             // Evaluation of the full Thomas-BMT precession vector.
             tbmt_precession_vector(x,ux,uy,uz,gamma,h,gyro_anomaly,Bx,By,Bz,Ex,Ey,Ez,lambdax,lambday,lambdaz);
-            lambdax *= m_ds;
-            lambday *= m_ds;
-            lambdaz *= m_ds;
+            lambdax *= half_ds;
+            lambday *= half_ds;
+            lambdaz *= half_ds;
 
             // push the spin vector using the generator just determined (half spin-kick)
             rotate_spin(lambdax, lambday, lambdaz, sx, sy, sz);
