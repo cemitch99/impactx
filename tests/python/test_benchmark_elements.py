@@ -134,6 +134,7 @@ def test_Aperture(benchmark, sim):
     benchmark.pedantic(el.push, setup=partial(pc_setup, sim), rounds=rounds)
 
 
+@pytest.mark.parametrize("sim", [True, False], indirect=True, ids=["spin", "nospin"])
 def test_Buncher(benchmark, sim):
     el = elements.Buncher(name="shortrf1", V=0.01, k=15.0)
     benchmark.pedantic(el.push, setup=partial(pc_setup, sim), rounds=rounds)
@@ -252,6 +253,7 @@ def test_ExactSbend(benchmark, sim):
     benchmark.pedantic(el.push, setup=partial(pc_setup, sim), rounds=rounds)
 
 
+@pytest.mark.parametrize("sim", [True, False], indirect=True, ids=["spin", "nospin"])
 def test_Kicker(benchmark, sim):
     el = elements.Kicker(name="kick1", xkick=2.0e-3, ykick=0.0, unit="dimensionless")
     benchmark.pedantic(el.push, setup=partial(pc_setup, sim), rounds=rounds)
@@ -282,6 +284,7 @@ def test_Multipole(benchmark, sim):
     benchmark.pedantic(el.push, setup=partial(pc_setup, sim), rounds=rounds)
 
 
+@pytest.mark.parametrize("sim", [True, False], indirect=True, ids=["spin", "nospin"])
 def test_NonlinearLens(benchmark, sim):
     el = elements.NonlinearLens(name="nllens", knll=4.0e-6, cnll=0.01)
     benchmark.pedantic(el.push, setup=partial(pc_setup, sim), rounds=rounds)
@@ -413,6 +416,7 @@ def test_Sbend(benchmark, sim):
     benchmark.pedantic(el.push, setup=partial(pc_setup, sim), rounds=rounds)
 
 
+@pytest.mark.parametrize("sim", [True, False], indirect=True, ids=["spin", "nospin"])
 def test_ShortRF(benchmark, sim):
     el = elements.ShortRF(name="shortrf1", V=1000.0, freq=1.3e9, phase=-89.5)
     benchmark.pedantic(el.push, setup=partial(pc_setup, sim), rounds=rounds)
@@ -540,6 +544,7 @@ def test_TaperedPL(benchmark, sim):
     benchmark.pedantic(el.push, setup=partial(pc_setup, sim), rounds=rounds)
 
 
+@pytest.mark.parametrize("sim", [True, False], indirect=True, ids=["spin", "nospin"])
 def test_ThinDipole(benchmark, sim):
     el = elements.ThinDipole(name="kick", theta=0.45, rc=1.0)
     benchmark.pedantic(el.push, setup=partial(pc_setup, sim), rounds=rounds)
