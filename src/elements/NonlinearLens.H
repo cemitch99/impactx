@@ -99,6 +99,76 @@ namespace impactx::elements
             m_ibeta = 1_prt / m_beta;
         }
 
+        /** Evaluate the complex function F'(zeta) of the nonlinear lens.
+         *
+         * With zeta = (x + i*y)/cnll and croot = sqrt(1 - zeta^2),
+         *   F'(zeta) = zeta/croot^2 + arcsin(zeta)/croot^3 .
+         *
+         * This is by far the most expensive part of the element (a complex
+         * square root and logarithm), and both the phase space kick and the
+         * spin push are expressed through it, so it is evaluated only once
+         * per particle.
+         *
+         * The @see compute_constants method must be called before this is used.
+         *
+         * @param x particle position in x
+         * @param y particle position in y
+         * @returns the value of F'(zeta)
+         */
+        template<typename T_Real=amrex::ParticleReal>
+        AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE
+        amrex::GpuComplex<T_Real> dF_dzeta (
+            T_Real const & AMREX_RESTRICT x,
+            T_Real const & AMREX_RESTRICT y
+        ) const
+        {
+            using namespace amrex::literals; // for _rt and _prt
+            using amrex::Math::powi;
+
+            // a complex type with two T_Real
+            using Complex = amrex::GpuComplex<T_Real>;
+
+            // assign complex position zeta = (x + iy)/cnll
+            Complex zeta(x, y);
+            zeta = zeta * m_inv_cnll;
+            Complex const re1(1.0_prt, 0.0_prt);
+            Complex const im1(0.0_prt, 1.0_prt);
+
+            // compute croot = sqrt(1-zeta**2)
+            Complex croot = powi<2>(zeta);
+            croot = re1 - croot;
+            croot = amrex::sqrt(croot);
+
+            // compute carcsin = arcsin(zeta)
+            Complex carcsin = im1 * zeta + croot;
+            carcsin = -im1 * amrex::log(carcsin);
+
+            // compute complex function F'(zeta)
+            Complex dF = zeta / powi<2>(croot);
+            dF = dF + carcsin / powi<3>(croot);
+
+            return dF;
+        }
+
+        /** Apply the thin momentum kick of the nonlinear lens.
+         *
+         * @param dF the value of F'(zeta), @see dF_dzeta
+         * @param px particle momentum in x
+         * @param py particle momentum in y
+         */
+        template<typename T_Real=amrex::ParticleReal>
+        AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE
+        void apply_kick (
+            amrex::GpuComplex<T_Real> const & AMREX_RESTRICT dF,
+            T_Real & AMREX_RESTRICT px,
+            T_Real & AMREX_RESTRICT py
+        ) const
+        {
+            // the position and the energy deviation are unchanged
+            px = px + m_kick * dF.m_real;
+            py = py - m_kick * dF.m_imag;
+        }
+
         /** This is a nonlinear lens functor, so that a variable of this type
          *  can be used like a nonlinear lens function.
          *
@@ -126,64 +196,7 @@ namespace impactx::elements
             [[maybe_unused]] RefPart const & AMREX_RESTRICT refpart
         ) const
         {
-            using namespace amrex::literals; // for _rt and _prt
-            using amrex::Math::powi;
-
-            // a complex type with two T_Real
-            using Complex = amrex::GpuComplex<T_Real>;
-
-            // access reference particle values to find (beta*gamma)^2
-            //amrex::ParticleReal const pt_ref = refpart.pt;
-            //amrex::ParticleReal const betgam2 = powi<2>(pt_ref) - 1.0_prt;
-
-            // initialize output values
-            // T_Real xout = x;
-            // T_Real yout = y;
-            // T_Real tout = t;
-            T_Real pxout = px;
-            T_Real pyout = py;
-            // T_Real ptout = pt;
-
-            // assign complex position zeta = (x + iy)/cnll
-            Complex zeta(x, y);
-            zeta = zeta * m_inv_cnll;
-            Complex const re1(1.0_prt, 0.0_prt);
-            Complex const im1(0.0_prt, 1.0_prt);
-
-            // compute croot = sqrt(1-zeta**2)
-            Complex croot = powi<2>(zeta);
-            croot = re1 - croot;
-            croot = amrex::sqrt(croot);
-
-            // compute carcsin = arcsin(zeta)
-            Complex carcsin = im1 * zeta + croot;
-            carcsin = -im1 * amrex::log(carcsin);
-
-            // compute complex function F'(zeta)
-            Complex dF = zeta / powi<2>(croot);
-            dF = dF + carcsin / powi<3>(croot);
-
-            // compute momentum kick
-            T_Real const dpx = +m_kick * dF.m_real;
-            T_Real const dpy = -m_kick * dF.m_imag;
-
-            // advance position and momentum
-            // xout = x;
-            pxout = px + dpx;
-
-            // yout = y;
-            pyout = py + dpy;
-
-            // tout = t;
-            // ptout = pt;
-
-            // assign updated values
-            // x = xout;
-            // y = yout;
-            // t = tout;
-            px = pxout;
-            py = pyout;
-            // pt = ptout;
+            apply_kick(dF_dzeta(x, y), px, py);
         }
 
         /** This pushes the reference particle. */
@@ -209,19 +222,18 @@ namespace impactx::elements
         void spin_and_phasespace_push (
             T_Real const & AMREX_RESTRICT x,
             T_Real const & AMREX_RESTRICT y,
-            T_Real const & AMREX_RESTRICT t,
+            [[maybe_unused]] T_Real const & AMREX_RESTRICT t,
             T_Real & AMREX_RESTRICT px,
             T_Real & AMREX_RESTRICT py,
             T_Real const & AMREX_RESTRICT pt,
             T_Real & AMREX_RESTRICT sx,
             T_Real & AMREX_RESTRICT sy,
             T_Real & AMREX_RESTRICT sz,
-            T_IdCpu const & AMREX_RESTRICT idcpu,
+            [[maybe_unused]] T_IdCpu const & AMREX_RESTRICT idcpu,
             RefPart const & AMREX_RESTRICT refpart
         ) const
         {
             using namespace amrex::literals; // for _rt and _prt
-            using amrex::Math::powi;
             using namespace std; // for cmath(float)
 
             // reference particle relativistic factors
@@ -233,27 +245,9 @@ namespace impactx::elements
             T_Real lambday = 0_prt;
             T_Real lambdaz = 0_prt;
 
-            // a complex type with two T_Real
-            using Complex = amrex::GpuComplex<T_Real>;
-
-            // assign complex position zeta = (x + iy)/cnll
-            Complex zeta(x, y);
-            zeta = zeta * m_inv_cnll;
-            Complex const re1(1.0_prt, 0.0_prt);
-            Complex const im1(0.0_prt, 1.0_prt);
-
-            // compute croot = sqrt(1-zeta**2)
-            Complex croot = powi<2>(zeta);
-            croot = re1 - croot;
-            croot = amrex::sqrt(croot);
-
-            // compute carcsin = arcsin(zeta)
-            Complex carcsin = im1 * zeta + croot;
-            carcsin = -im1 * amrex::log(carcsin);
-
-            // compute complex function F'(zeta)
-            Complex dF = zeta / powi<2>(croot);
-            dF = dF + carcsin / powi<3>(croot);
+            // the field and the phase space kick share this expensive term,
+            // which does not change over the kick: evaluate it only once
+            amrex::GpuComplex<T_Real> const dF = dF_dzeta(x, y);
 
             // Integrated magnetic field normalized by q/mc (half-step):
             T_Real const Bx = -0.5_prt * m_kick * dF.m_imag * m_beta * gamma_ref;
@@ -283,8 +277,8 @@ namespace impactx::elements
             // push the spin vector using the generator just determined (half spin-kick)
             rotate_spin(lambdax, lambday, lambdaz, sx, sy, sz);
 
-            // phase space push
-            (*this)(x, y, t, px, py, pt, idcpu, refpart);
+            // phase space push, reusing F'(zeta) from above
+            apply_kick(dF, px, py);
 
             // Quantities required to evaluate the full Thomas-BMT precession vector (after phase space kick).
             Ps = sqrt(Pnorm*Pnorm - px*px - py*py);
