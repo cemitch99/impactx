@@ -193,9 +193,6 @@ namespace impactx::elements
             m_c13 = powi<2>(sin_psi) / (2_prt*powi<3>(cos_psi)) * powi<2>(m_g)/(m_rc*m_R) * m_K4;
             m_c14 = 0.5_prt * sin_psi/(powi<3>(cos_psi)) * m_g/(m_rc*m_R) * m_K5;
             m_c15 = (m_K6 / (m_rc*m_R)) / (powi<3>(cos_psi));
-
-            // gyromagnetic constant (used during spin push)
-            m_gyro_const = refpart.gyromagnetic_anomaly;
         }
 
         /** This is a dipedge functor, so that a variable of this type can be used like a
@@ -381,8 +378,9 @@ namespace impactx::elements
             amrex::ParticleReal const loc = m_location == Location::entry ? 1_prt : -1_prt;
             auto const [sin_psi, cos_psi] = amrex::Math::sincos(m_psi);
 
-            // reference particle relativistic factor
+            // reference particle relativistic factor and gyromagnetic anomaly
             amrex::ParticleReal const gamma_minus_1 = refpart.gamma() - 1_prt;
+            amrex::ParticleReal const gyro_anomaly = refpart.gyromagnetic_anomaly;
 
             // The required momentum components in the coordinate frame defined by the pole-face:
             T_Real pz = sqrt(1_prt - 2_prt*pt/m_beta + pt*pt - px*px - py*py);
@@ -390,8 +388,8 @@ namespace impactx::elements
 
             // The axis-angle vector in the coordinate frame defined by the pole-face.
             // This expression is taken from D. Abell, PRAB 18, 024001 (2015), eqs (41-42):
-            T_Real lambdaz_face = -loc / m_rc * (1_prt + m_gyro_const) * y;
-            T_Real lambdax_face =  loc / m_rc * m_gyro_const * gamma_minus_1 * px_face;
+            T_Real lambdaz_face = -loc / m_rc * (1_prt + gyro_anomaly) * y;
+            T_Real lambdax_face =  loc / m_rc * gyro_anomaly * gamma_minus_1 * px_face;
 
             // the axis-angle vector in the local coordinate frame defined by the reference particle
             T_Real const lambdax = lambdax_face * cos_psi + lambdaz_face * sin_psi;
@@ -466,7 +464,6 @@ namespace impactx::elements
         amrex::ParticleReal m_c2_times_1plusdelta, m_c3_times_1plusdelta, m_c4_times_1plusdelta, m_c6_times_1plusdelta;
         amrex::ParticleReal m_c7_times_1plusdelta, m_c8_times_1plusdelta, m_c9_times_1plusdelta, m_c10_times_1plusdelta;
         amrex::ParticleReal m_c11_times_1plusdelta, m_c12_times_1plusdelta;
-        amrex::ParticleReal m_gyro_const;
     };
 
 } // namespace impactx
