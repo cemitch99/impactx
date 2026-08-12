@@ -195,7 +195,7 @@ namespace impactx::elements
          * @param sy particle spin y-component
          * @param sz particle spin z-component
          * @param idcpu particle global index
-         * @param refpart reference particle (unused)
+         * @param refpart reference particle
          */
         template<typename T_Real=amrex::ParticleReal, typename T_IdCpu=uint64_t>
         AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE
@@ -214,7 +214,6 @@ namespace impactx::elements
         ) const
         {
             using namespace amrex::literals; // for _rt and _prt
-            using amrex::Math::powi;
             using namespace std; // for cmath(float)
 
             // reference particle relativistic factors
