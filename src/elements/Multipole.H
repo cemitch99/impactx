@@ -191,6 +191,9 @@ namespace impactx::elements
 
         /** This operator pushes the particle spin.
          *
+         * The push is s-symmetric: the map is second-order accurate in the
+         * kick strength and an exact inverse of the reversed element.
+         *
          * @param x particle position in x
          * @param y particle position in y
          * @param t particle position in t
@@ -250,16 +253,30 @@ namespace impactx::elements
             T_Real const Ey = 0.0_prt;
             T_Real const Ez = 0.0_prt;
 
-            // Quantities required to evaluate the full Thomas-BMT precession vector.
+            // The Thomas-BMT generator is evaluated at the transverse momentum
+            // halfway through the kick, so that reversing the element (negating
+            // the strengths) produces the exact inverse rotation.
+            T_Real const px_in = px;
+            T_Real const py_in = py;
+
+            // phase space push
+            (*this)(x, y, t, px, py, pt, idcpu, refpart);
+
+            // transverse momenta at the kick midpoint
+            T_Real const px_mid = 0.5_prt * (px_in + px);
+            T_Real const py_mid = 0.5_prt * (py_in + py);
+
+            // Quantities required to evaluate the full Thomas-BMT precession
+            // vector, at the midpoint transverse momentum.
             T_Real const Pnorm = sqrt(1_prt - 2_prt * pt * m_ibeta + pt*pt);
             T_Real const iPnorm = 1_prt/Pnorm;
-            T_Real const Ps = sqrt(Pnorm*Pnorm - px*px - py*py);
+            T_Real const Ps = sqrt(Pnorm*Pnorm - px_mid*px_mid - py_mid*py_mid);
             T_Real const gamma = gamma_ref * (1_prt - pt*m_beta);
-            T_Real const ux = px * iPnorm;
-            T_Real const uy = py * iPnorm;
+            T_Real const ux = px_mid * iPnorm;
+            T_Real const uy = py_mid * iPnorm;
             T_Real const uz = Ps * iPnorm;
 
-            // Zero curvature in a quadrupole
+            // Zero curvature in a multipole
             amrex::ParticleReal const h = 0.0_prt;
 
             // Evaluation of the full Thomas-BMT precession vector.
@@ -267,10 +284,6 @@ namespace impactx::elements
 
             // push the spin vector using the generator just determined
             rotate_spin(lambdax,lambday,lambdaz,sx,sy,sz);
-
-            // phase space push
-            (*this)(x, y, t, px, py, pt, idcpu, refpart);
-
         }
 
         /** This pushes the covariance matrix. */
