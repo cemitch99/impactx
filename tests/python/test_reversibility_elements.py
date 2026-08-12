@@ -670,6 +670,9 @@ def test_RFCavity(sim):
     ids=["linear-zero-gap", "linear-finite-gap", "nonlinear-finite-gap"],
 )
 # WARNING:  The orbit in DipEdge is not reversed simply by taking entry->exit. The inverse map needs to be fixed.  See Issue #1562.
+# Spin reversibility is not validated here either: it inherits the same
+# entry->exit inverse-map problem and leaves an O(1e-4) residual in all three
+# models. Keep nospin-only (the benchmark covers the forward spin push).
 def test_DipEdge(sim, model, g, K2):
     rc = 10.3462283686195526
     psi = 0.048345620280243

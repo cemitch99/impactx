@@ -17,6 +17,7 @@
 #include "mixin/lineartransport.H"
 #include "mixin/named.H"
 #include "mixin/nofinalize.H"
+#include "mixin/spintransport.H"
 
 #include <ablastr/constant.H>
 
@@ -37,11 +38,9 @@ namespace impactx::elements
       public mixin::LinearTransport<DipEdge>,
       public mixin::Thin,
       public mixin::Alignment,
-      public mixin::NoFinalize
-      // At least on Intel AVX512, there is a small overhead to vectorize this element, see
-      // https://github.com/BLAST-ImpactX/impactx/pull/1002
-      // verify again after https://github.com/BLAST-ImpactX/impactx/pull/1158
-      // public amrex::simd::Vectorized<amrex::simd::native_simd_size_particlereal>
+      public mixin::SpinTransport,
+      public mixin::NoFinalize,
+      public amrex::simd::Vectorized<amrex::simd::native_simd_size_particlereal>
     {
         static constexpr auto type = "DipEdge";
         using PType = ImpactXParticleContainer::ParticleType;
@@ -341,6 +340,69 @@ namespace impactx::elements
             }
 
         }
+
+        /** This operator pushes the particle spin.
+         *
+         * @param x particle position in x
+         * @param y particle position in y
+         * @param t particle position in t
+         * @param px particle momentum in x
+         * @param py particle momentum in y
+         * @param pt particle momentum in t
+         * @param sx particle spin x-component
+         * @param sy particle spin y-component
+         * @param sz particle spin z-component
+         * @param idcpu particle global index
+         * @param refpart reference particle
+         */
+        template<typename T_Real=amrex::ParticleReal, typename T_IdCpu=uint64_t>
+        AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE
+        void spin_and_phasespace_push (
+            T_Real & AMREX_RESTRICT x,
+            T_Real & AMREX_RESTRICT y,
+            T_Real & AMREX_RESTRICT t,
+            T_Real & AMREX_RESTRICT px,
+            T_Real & AMREX_RESTRICT py,
+            T_Real const & AMREX_RESTRICT pt,
+            T_Real & AMREX_RESTRICT sx,
+            T_Real & AMREX_RESTRICT sy,
+            T_Real & AMREX_RESTRICT sz,
+            T_IdCpu const & AMREX_RESTRICT idcpu,
+            RefPart const & AMREX_RESTRICT refpart
+        ) const
+        {
+            using namespace amrex::literals; // for _rt and _prt
+            using namespace std; // for cmath(float)
+
+            // additional constants required
+            amrex::ParticleReal const loc = m_location == Location::entry ? 1_prt : -1_prt;
+            auto const [sin_psi, cos_psi] = amrex::Math::sincos(m_psi);
+
+            // reference particle relativistic factor and gyromagnetic anomaly
+            amrex::ParticleReal const gamma_minus_1 = refpart.gamma() - 1_prt;
+            amrex::ParticleReal const gyro_anomaly = refpart.gyromagnetic_anomaly;
+
+            // The required momentum components in the coordinate frame defined by the pole-face:
+            T_Real pz = sqrt(1_prt - 2_prt*pt/m_beta + pt*pt - px*px - py*py);
+            T_Real px_face = px * cos_psi - pz * sin_psi;
+
+            // The axis-angle vector in the coordinate frame defined by the pole-face.
+            // This expression is taken from D. Abell, PRAB 18, 024001 (2015), eqs (41-42):
+            T_Real lambdaz_face = -loc / m_rc * (1_prt + gyro_anomaly) * y;
+            T_Real lambdax_face =  loc / m_rc * gyro_anomaly * gamma_minus_1 * px_face;
+
+            // the axis-angle vector in the local coordinate frame defined by the reference particle
+            T_Real const lambdax = lambdax_face * cos_psi + lambdaz_face * sin_psi;
+            T_Real const lambday = 0_prt;
+            T_Real const lambdaz = lambdaz_face * cos_psi - lambdax_face * sin_psi;
+
+            // push the spin vector using the generator just determined
+            rotate_spin(lambdax, lambday, lambdaz, sx, sy, sz);
+
+            // phase space push
+            (*this)(x, y, t, px, py, pt, idcpu, refpart);
+        }
+
 
         /** This pushes the covariance matrix. */
         using LinearTransport::operator();
