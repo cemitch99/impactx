@@ -96,7 +96,6 @@ namespace impactx::elements
             m_kick = -m_knll * m_inv_cnll;
 
             m_beta = refpart.beta();
-            m_ibeta = 1_prt / m_beta;
         }
 
         /** Evaluate the complex function F'(zeta) of the nonlinear lens.
@@ -260,7 +259,7 @@ namespace impactx::elements
             T_Real const Ez = 0.0_prt;
 
             // Quantities required to evaluate the full Thomas-BMT precession vector (before phase space kick).
-            T_Real const Pnorm = sqrt(1_prt - 2_prt * pt * m_ibeta + pt*pt);
+            T_Real const Pnorm = sqrt(1_prt - 2_prt * pt / m_beta + pt*pt);
             T_Real const iPnorm = 1_prt/Pnorm;
             T_Real const gamma = gamma_ref * (1_prt - pt*m_beta);
             T_Real Ps = sqrt(Pnorm*Pnorm - px*px - py*py);
@@ -350,7 +349,7 @@ namespace impactx::elements
         // see: compute_constants() to refresh
         amrex::ParticleReal m_inv_cnll;  //! 1 / m_cnll
         amrex::ParticleReal m_kick;
-        amrex::ParticleReal m_beta, m_ibeta;
+        amrex::ParticleReal m_beta;
     };
 
 } // namespace impactx

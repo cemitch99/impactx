@@ -113,7 +113,6 @@ namespace impactx::elements
             m_p_scale = m_unit == UnitSystem::Tm ? 1.0_prt / refpart.rigidity_Tm() : 1.0_prt;
 
             m_beta = refpart.beta();
-            m_ibeta = 1.0_prt / m_beta;
         }
 
         /** This is a transverse kicker functor, so that a variable of this type can be
@@ -232,7 +231,7 @@ namespace impactx::elements
             T_Real const Ez = 0.0_prt;
 
             // Quantities required to evaluate the full Thomas-BMT precession vector (before phase space kick).
-            T_Real const Pnorm = sqrt(1_prt - 2_prt * pt * m_ibeta + pt*pt);
+            T_Real const Pnorm = sqrt(1_prt - 2_prt * pt / m_beta + pt*pt);
             T_Real const iPnorm = 1_prt/Pnorm;
             T_Real const gamma = gamma_ref * (1_prt - pt*m_beta);
             T_Real Ps = sqrt(Pnorm*Pnorm - px*px - py*py);
@@ -293,7 +292,7 @@ namespace impactx::elements
         // constants that are independent of the individually tracked particle,
         // see: compute_constants() to refresh
         amrex::ParticleReal m_p_scale;  // either 1 or the inverse rigidity
-        amrex::ParticleReal m_beta, m_ibeta;
+        amrex::ParticleReal m_beta;
     };
 
 } // namespace impactx

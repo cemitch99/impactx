@@ -94,7 +94,6 @@ namespace impactx::elements
             m_kV_r2bg2 = -m_neg_kV / (2.0_prt * betgam2);
 
             m_beta = refpart.beta();
-            m_ibeta = 1.0_prt / m_beta;
         }
 
         /** This is a buncher functor, so that a variable of this type can be used like a
@@ -202,7 +201,7 @@ namespace impactx::elements
             T_Real const Ez = -0.5_prt * m_neg_kV * t * m_beta * gamma_ref;
 
             // Quantities required to evaluate the full Thomas-BMT precession vector (before phase space kick).
-            T_Real Pnorm = sqrt(1_prt - 2_prt * pt * m_ibeta + pt*pt);
+            T_Real Pnorm = sqrt(1_prt - 2_prt * pt / m_beta + pt*pt);
             T_Real iPnorm = 1_prt/Pnorm;
             T_Real gamma = gamma_ref * (1_prt - pt*m_beta);
             T_Real Ps = sqrt(Pnorm*Pnorm - px*px - py*py);
@@ -223,7 +222,7 @@ namespace impactx::elements
             (*this)(x, y, t, px, py, pt, idcpu, refpart);
 
             // Quantities required to evaluate the full Thomas-BMT precession vector (after phase space kick).
-            Pnorm = sqrt(1_prt - 2_prt * pt * m_ibeta + pt*pt);
+            Pnorm = sqrt(1_prt - 2_prt * pt / m_beta + pt*pt);
             iPnorm = 1_prt/Pnorm;
             gamma = gamma_ref * (1_prt - pt*m_beta);
             Ps = sqrt(Pnorm*Pnorm - px*px - py*py);
@@ -280,7 +279,7 @@ namespace impactx::elements
         // see: compute_constants() to refresh
         amrex::ParticleReal m_neg_kV;    //! -m_k*m_V
         amrex::ParticleReal m_kV_r2bg2;  //! m_k*m_V/(2.0_prt*betgam2)
-        amrex::ParticleReal m_beta, m_ibeta;  // relativistic factors
+        amrex::ParticleReal m_beta;  // relativistic factor
     };
 
 } // namespace impactx

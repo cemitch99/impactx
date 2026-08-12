@@ -92,7 +92,6 @@ namespace impactx::elements
 
             // access reference particle to find relativistic beta
             m_beta = refpart.beta();
-            m_ibeta = 1_prt / m_beta;
 
             // compute the effective (equivalent) arc length and curvature
             m_ds = m_theta * m_rc;
@@ -236,7 +235,7 @@ namespace impactx::elements
             T_Real const Ez = 0.0_prt;
 
             // Quantities required to evaluate the full Thomas-BMT precession vector (before phase space kick).
-            T_Real const Pnorm = sqrt(1_prt - 2_prt * pt * m_ibeta + pt*pt);
+            T_Real const Pnorm = sqrt(1_prt - 2_prt * pt / m_beta + pt*pt);
             T_Real const iPnorm = 1_prt/Pnorm;
             T_Real const gamma = gamma_ref * (1_prt - pt*m_beta);
             T_Real Ps = sqrt(Pnorm*Pnorm - px*px - py*py);
@@ -330,7 +329,7 @@ namespace impactx::elements
       private:
         // constants that are independent of the individually tracked particle,
         // see: compute_constants() to refresh
-        amrex::ParticleReal m_beta, m_ibeta;  //! beta of the reference particle
+        amrex::ParticleReal m_beta;  //! beta of the reference particle
         amrex::ParticleReal m_ds;    //! effective (equivalent) arc length
         amrex::ParticleReal m_kx;    //! effective (equivalent) curvature
     };

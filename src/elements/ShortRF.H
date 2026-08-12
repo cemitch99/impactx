@@ -103,8 +103,6 @@ namespace impactx::elements
             amrex::ParticleReal const pti_ref = ptf_ref + m_V_cos_phi;
             m_bgf = std::sqrt(powi<2>(ptf_ref) - 1.0_prt);
             m_bgi = std::sqrt(powi<2>(pti_ref) - 1.0_prt);
-            m_gamf = -ptf_ref;
-            m_gami = -pti_ref;
         }
 
         /** This is a shortrf functor, so that a variable of this type can be used like a
@@ -259,8 +257,12 @@ namespace impactx::elements
             using namespace amrex::literals; // for _rt and _prt
             using namespace std; // for cmath(float)
 
-            // reference particle relativistic factors
+            // reference particle relativistic factors, before and after the
+            // cavity: the reference particle carries pt = -gamma of the final
+            // state, and gained m_V_cos_phi passing through
             amrex::ParticleReal const gyro_anomaly = refpart.gyromagnetic_anomaly;
+            amrex::ParticleReal const gamf = -refpart.pt;
+            amrex::ParticleReal const gami = gamf - m_V_cos_phi;
 
             // initialize the three components of the axis-angle vector
             T_Real lambdax = 0_prt;
@@ -282,11 +284,11 @@ namespace impactx::elements
             T_Real const Ez = 0.5_prt * m_V * cos(m_k * t + m_phi);
 
             // Quantities required to evaluate the full Thomas-BMT precession vector (before phase space kick).
-            amrex::ParticleReal beta = m_bgi / m_gami;
-            amrex::ParticleReal ibeta = m_gami / m_bgi;
+            amrex::ParticleReal beta = m_bgi / gami;
+            amrex::ParticleReal ibeta = gami / m_bgi;
             T_Real Pnorm = sqrt(1_prt - 2_prt * pt * ibeta + pt*pt);
             T_Real iPnorm = 1_prt/Pnorm;
-            T_Real gamma = m_gami * (1_prt - pt*beta);
+            T_Real gamma = gami * (1_prt - pt*beta);
             T_Real Ps = sqrt(Pnorm*Pnorm - px*px - py*py);
             T_Real ux = px * iPnorm;
             T_Real uy = py * iPnorm;
@@ -305,11 +307,11 @@ namespace impactx::elements
             (*this)(x, y, t, px, py, pt, idcpu, refpart);
 
             // Quantities required to evaluate the full Thomas-BMT precession vector (after phase space kick).
-            beta = m_bgf / m_gamf;
-            ibeta = m_gamf / m_bgf;
+            beta = m_bgf / gamf;
+            ibeta = gamf / m_bgf;
             Pnorm = sqrt(1_prt - 2_prt * pt * ibeta + pt*pt);
             iPnorm = 1_prt/Pnorm;
-            gamma = m_gamf * (1_prt - pt*beta);
+            gamma = gamf * (1_prt - pt*beta);
             Ps = sqrt(Pnorm*Pnorm - px*px - py*py);
             ux = px * iPnorm;
             uy = py * iPnorm;
@@ -371,7 +373,7 @@ namespace impactx::elements
       private:
         // constants that are independent of the individually tracked particle,
         // see: compute_constants() to refresh
-        amrex::ParticleReal m_k, m_phi, m_V_cos_phi, m_bgi, m_bgf, m_gamf, m_gami;
+        amrex::ParticleReal m_k, m_phi, m_V_cos_phi, m_bgi, m_bgf;
     };
 
 } // namespace impactx
