@@ -213,6 +213,11 @@ jobs:
         GLIBC_TUNABLES: glibc.cpu.hwcaps=-AVX2,-AVX_Fast_Unaligned_Load,-ERMS,-Prefer_FSRM
       with:
         mode: simulation
+        # v5 enabled cycle estimation by default, which re-weights the simulated
+        # cache/memory terms until they are ~90% of the reported number. Those terms
+        # are code/data-layout sensitive, so unrelated commits swing the result by
+        # tens of percent while the instruction count moves by less than 0.1%.
+        cycle-estimation: false
         exclude-allocations: true
         run: pytest tests/python/test_benchmark_elements.py tests/python/test_benchmark_space_charge.py tests/python/test_benchmark_diagnostics.py --codspeed
 
