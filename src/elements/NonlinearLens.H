@@ -248,24 +248,38 @@ namespace impactx::elements
             // which does not change over the kick: evaluate it only once
             amrex::GpuComplex<T_Real> const dF = dF_dzeta(x, y);
 
-            // Integrated magnetic field normalized by q/mc (half-step):
-            T_Real const Bx = -0.5_prt * m_kick * dF.m_imag * m_beta * gamma_ref;
-            T_Real const By = -0.5_prt * m_kick * dF.m_real * m_beta * gamma_ref;
+            // Integrated magnetic field normalized by q/mc:
+            T_Real const Bx = -m_kick * dF.m_imag * m_beta * gamma_ref;
+            T_Real const By = -m_kick * dF.m_real * m_beta * gamma_ref;
             T_Real const Bz = 0_prt;
 
-            // Integrated electric field normalized by q/mc^2 (half-step):
+            // Integrated electric field normalized by q/mc^2:
             T_Real const Ex = 0.0_prt;
             T_Real const Ey = 0.0_prt;
             T_Real const Ez = 0.0_prt;
 
-            // Quantities required to evaluate the full Thomas-BMT precession vector (before phase space kick).
+            // The Thomas-BMT generator is evaluated at the transverse momentum
+            // halfway through the kick, so that reversing the element (negating
+            // knll) produces the exact inverse rotation.
+            T_Real const px_in = px;
+            T_Real const py_in = py;
+
+            // phase space push, reusing F'(zeta) from above
+            apply_kick(dF, px, py);
+
+            // transverse momenta at the kick midpoint
+            T_Real const px_mid = 0.5_prt * (px_in + px);
+            T_Real const py_mid = 0.5_prt * (py_in + py);
+
+            // Quantities required to evaluate the full Thomas-BMT precession
+            // vector, at the midpoint transverse momentum.
             T_Real const Pnorm = sqrt(1_prt - 2_prt * pt / m_beta + pt*pt);
             T_Real const iPnorm = 1_prt/Pnorm;
             T_Real const gamma = gamma_ref * (1_prt - pt*m_beta);
-            T_Real Ps = sqrt(Pnorm*Pnorm - px*px - py*py);
-            T_Real ux = px * iPnorm;
-            T_Real uy = py * iPnorm;
-            T_Real uz = Ps * iPnorm;
+            T_Real const Ps = sqrt(Pnorm*Pnorm - px_mid*px_mid - py_mid*py_mid);
+            T_Real const ux = px_mid * iPnorm;
+            T_Real const uy = py_mid * iPnorm;
+            T_Real const uz = Ps * iPnorm;
 
             // Zero curvature in a nonlinear lens
             amrex::ParticleReal const h = 0.0_prt;
@@ -273,22 +287,7 @@ namespace impactx::elements
             // Evaluation of the full Thomas-BMT precession vector.
             tbmt_precession_vector(x,ux,uy,uz,gamma,h,gyro_anomaly,Bx,By,Bz,Ex,Ey,Ez,lambdax,lambday,lambdaz);
 
-            // push the spin vector using the generator just determined (half spin-kick)
-            rotate_spin(lambdax, lambday, lambdaz, sx, sy, sz);
-
-            // phase space push, reusing F'(zeta) from above
-            apply_kick(dF, px, py);
-
-            // Quantities required to evaluate the full Thomas-BMT precession vector (after phase space kick).
-            Ps = sqrt(Pnorm*Pnorm - px*px - py*py);
-            ux = px * iPnorm;
-            uy = py * iPnorm;
-            uz = Ps * iPnorm;
-
-            // Evaluation of the full Thomas-BMT precession vector.
-            tbmt_precession_vector(x,ux,uy,uz,gamma,h,gyro_anomaly,Bx,By,Bz,Ex,Ey,Ez,lambdax,lambday,lambdaz);
-
-            // push the spin vector using the generator just determined (half spin-kick)
+            // push the spin vector using the generator just determined
             rotate_spin(lambdax, lambday, lambdaz, sx, sy, sz);
         }
 
