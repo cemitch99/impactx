@@ -25,7 +25,6 @@ namespace impactx::elements
     : public mixin::Named,
       public mixin::LinearTransport<Source>,
       public mixin::Thin,
-      public mixin::SpinTransport,
       public mixin::NoFinalize
     {
         static constexpr auto type = "Source";
