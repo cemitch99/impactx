@@ -13,6 +13,7 @@
 #include "particles/ImpactXParticleContainer.H"
 #include "mixin/thin.H"
 #include "mixin/lineartransport.H"
+#include "mixin/spintransport.H"
 #include "mixin/named.H"
 #include "mixin/nofinalize.H"
 
@@ -26,6 +27,7 @@ namespace impactx::elements
     : public mixin::Named,
       public mixin::LinearTransport<Marker>,
       public mixin::Thin,
+      public mixin::SpinTransport,
       public mixin::NoFinalize,
       public amrex::simd::Vectorized<amrex::simd::native_simd_size_particlereal>
     {
@@ -96,6 +98,46 @@ namespace impactx::elements
 
         /** This pushes the reference particle. */
         using Thin::operator();
+
+
+        /** This operator pushes the particle spin.
+         *
+         * An aperture is field-free, so the spin is unaffected.
+         *
+         * @param x particle position in x
+         * @param y particle position in y
+         * @param t particle position in t
+         * @param px particle momentum in x
+         * @param py particle momentum in y
+         * @param pt particle momentum in t
+         * @param sx particle spin x-component (unused)
+         * @param sy particle spin y-component (unused)
+         * @param sz particle spin z-component (unused)
+         * @param idcpu particle global index
+         * @param refpart reference particle (unused)
+         */
+        template<typename T_Real=amrex::ParticleReal, typename T_IdCpu=uint64_t>
+        AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE
+        void spin_and_phasespace_push (
+            T_Real const & AMREX_RESTRICT x,
+            T_Real const & AMREX_RESTRICT y,
+            T_Real const & AMREX_RESTRICT t,
+            T_Real const & AMREX_RESTRICT px,
+            T_Real const & AMREX_RESTRICT py,
+            T_Real const & AMREX_RESTRICT pt,
+            [[maybe_unused]] T_Real const & AMREX_RESTRICT sx,
+            [[maybe_unused]] T_Real const & AMREX_RESTRICT sy,
+            [[maybe_unused]] T_Real const & AMREX_RESTRICT sz,
+            T_IdCpu & AMREX_RESTRICT idcpu,
+            RefPart const & AMREX_RESTRICT refpart
+        ) const
+        {
+            // spin is unaffected
+
+            // phase space push
+            (*this)(x, y, t, px, py, pt, idcpu, refpart);
+        }
+
 
         /** This pushes the covariance matrix. */
         using LinearTransport::operator();

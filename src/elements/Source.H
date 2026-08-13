@@ -12,6 +12,7 @@
 
 #include "particles/ImpactXParticleContainer.H"
 #include "mixin/lineartransport.H"
+#include "mixin/spintransport.H"
 #include "mixin/named.H"
 #include "mixin/nofinalize.H"
 #include "mixin/thin.H"
@@ -25,6 +26,7 @@ namespace impactx::elements
     : public mixin::Named,
       public mixin::LinearTransport<Source>,
       public mixin::Thin,
+      public mixin::SpinTransport,
       public mixin::NoFinalize
     {
         static constexpr auto type = "Source";
