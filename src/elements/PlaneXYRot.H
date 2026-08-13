@@ -149,19 +149,18 @@ namespace impactx::elements
         /** This pushes the reference particle. */
         using Thin::operator();
 
-
         /** This operator pushes the particle spin.
          *
          * @param x particle position in x
          * @param y particle position in y
-         * @param t particle position in t
+         * @param t particle position in t (unused)
          * @param px particle momentum in x
          * @param py particle momentum in y
-         * @param pt particle momentum in t
+         * @param pt particle momentum in t (unused)
          * @param sx particle spin x-component
          * @param sy particle spin y-component
          * @param sz particle spin z-component
-         * @param idcpu particle global index
+         * @param idcpu particle global index (unused)
          * @param refpart reference particle (unused)
          */
         template<typename T_Real=amrex::ParticleReal, typename T_IdCpu=uint64_t>
@@ -169,15 +168,15 @@ namespace impactx::elements
         void spin_and_phasespace_push (
             T_Real & AMREX_RESTRICT x,
             T_Real & AMREX_RESTRICT y,
-            T_Real & AMREX_RESTRICT t,
+            [[maybe_unused]] T_Real const & AMREX_RESTRICT t,
             T_Real & AMREX_RESTRICT px,
             T_Real & AMREX_RESTRICT py,
-            T_Real const & AMREX_RESTRICT pt,
+            [[maybe_unused]] T_Real const & AMREX_RESTRICT pt,
             T_Real & AMREX_RESTRICT sx,
             T_Real & AMREX_RESTRICT sy,
             T_Real & AMREX_RESTRICT sz,
-            T_IdCpu const & AMREX_RESTRICT idcpu,
-            RefPart const & AMREX_RESTRICT refpart
+            [[maybe_unused]] T_IdCpu const & AMREX_RESTRICT idcpu,
+            [[maybe_unused]] RefPart const & AMREX_RESTRICT refpart
         ) const
         {
             using namespace amrex::literals; // for _rt and _prt
@@ -193,7 +192,6 @@ namespace impactx::elements
             // phase space push
             (*this)(x, y, t, px, py, pt, idcpu, refpart);
         }
-
 
         /** This pushes the covariance matrix. */
         using LinearTransport::operator();

@@ -71,14 +71,14 @@ namespace impactx::elements
 
         /** Does nothing to a particle.
          *
-         * @param x particle position in x
-         * @param y particle position in y
-         * @param t particle position in t
-         * @param px particle momentum in x
-         * @param py particle momentum in y
-         * @param pt particle momentum in t
+         * @param x particle position in x (unused)
+         * @param y particle position in y (unused)
+         * @param t particle position in t (unused)
+         * @param px particle momentum in x (unused)
+         * @param py particle momentum in y (unused)
+         * @param pt particle momentum in t (unused)
          * @param idcpu particle global index (unused)
-         * @param refpart reference particle
+         * @param refpart reference particle (unused)
          */
         template<typename T_Real=amrex::ParticleReal, typename T_IdCpu=uint64_t>
         AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE
@@ -99,37 +99,36 @@ namespace impactx::elements
         /** This pushes the reference particle. */
         using Thin::operator();
 
-
         /** This operator pushes the particle spin.
          *
-         * An aperture is field-free, so the spin is unaffected.
+         * A marker does nothing, so the spin is unaffected.
          *
-         * @param x particle position in x
-         * @param y particle position in y
-         * @param t particle position in t
-         * @param px particle momentum in x
-         * @param py particle momentum in y
-         * @param pt particle momentum in t
+         * @param x particle position in x (unused)
+         * @param y particle position in y (unused)
+         * @param t particle position in t (unused)
+         * @param px particle momentum in x (unused)
+         * @param py particle momentum in y (unused)
+         * @param pt particle momentum in t (unused)
          * @param sx particle spin x-component (unused)
          * @param sy particle spin y-component (unused)
          * @param sz particle spin z-component (unused)
-         * @param idcpu particle global index
+         * @param idcpu particle global index (unused)
          * @param refpart reference particle (unused)
          */
         template<typename T_Real=amrex::ParticleReal, typename T_IdCpu=uint64_t>
         AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE
         void spin_and_phasespace_push (
-            T_Real const & AMREX_RESTRICT x,
-            T_Real const & AMREX_RESTRICT y,
-            T_Real const & AMREX_RESTRICT t,
-            T_Real const & AMREX_RESTRICT px,
-            T_Real const & AMREX_RESTRICT py,
-            T_Real const & AMREX_RESTRICT pt,
+            [[maybe_unused]] T_Real const & AMREX_RESTRICT x,
+            [[maybe_unused]] T_Real const & AMREX_RESTRICT y,
+            [[maybe_unused]] T_Real const & AMREX_RESTRICT t,
+            [[maybe_unused]] T_Real const & AMREX_RESTRICT px,
+            [[maybe_unused]] T_Real const & AMREX_RESTRICT py,
+            [[maybe_unused]] T_Real const & AMREX_RESTRICT pt,
             [[maybe_unused]] T_Real const & AMREX_RESTRICT sx,
             [[maybe_unused]] T_Real const & AMREX_RESTRICT sy,
             [[maybe_unused]] T_Real const & AMREX_RESTRICT sz,
-            T_IdCpu & AMREX_RESTRICT idcpu,
-            RefPart const & AMREX_RESTRICT refpart
+            [[maybe_unused]] T_IdCpu const & AMREX_RESTRICT idcpu,
+            [[maybe_unused]] RefPart const & AMREX_RESTRICT refpart
         ) const
         {
             // spin is unaffected
@@ -137,7 +136,6 @@ namespace impactx::elements
             // phase space push
             (*this)(x, y, t, px, py, pt, idcpu, refpart);
         }
-
 
         /** This pushes the covariance matrix. */
         using LinearTransport::operator();
