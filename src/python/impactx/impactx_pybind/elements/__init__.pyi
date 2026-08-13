@@ -3562,12 +3562,7 @@ class Programmable(mixin.Named):
     def push(
         self,
         arg1: collections.abc.Callable[
-            [
-                impactx.impactx_pybind.ImpactXParticleContainer,
-                typing.SupportsInt | typing.SupportsIndex,
-                typing.SupportsInt | typing.SupportsIndex,
-            ],
-            None,
+            [impactx.impactx_pybind.ImpactXParticleContainer, int, int], None
         ],
     ) -> None: ...
     @property
