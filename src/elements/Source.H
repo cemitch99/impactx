@@ -12,7 +12,6 @@
 
 #include "particles/ImpactXParticleContainer.H"
 #include "mixin/lineartransport.H"
-#include "mixin/spintransport.H"
 #include "mixin/named.H"
 #include "mixin/nofinalize.H"
 #include "mixin/thin.H"
