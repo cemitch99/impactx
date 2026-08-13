@@ -73,7 +73,7 @@ namespace impactx::elements
          * the species metadata of the file before the particles are added.
          *
          * @param[in,out] pc particle container to push
-         * @param[in] step global step for diagnostics
+         * @param[in] step global step for diagnostics (unused)
          * @param[in] period for periodic lattices, this is the current period (turn or cycle)
          */
         void operator() (

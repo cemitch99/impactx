@@ -290,6 +290,7 @@ def test_NonlinearLens(benchmark, sim):
     benchmark.pedantic(el.push, setup=partial(pc_setup, sim), rounds=rounds)
 
 
+@pytest.mark.parametrize("sim", [True, False], indirect=True, ids=["spin", "nospin"])
 def test_PlaneXYRot(benchmark, sim):
     el = elements.PlaneXYRot(name="rotation1", angle=90.0)
     benchmark.pedantic(el.push, setup=partial(pc_setup, sim), rounds=rounds)
@@ -323,6 +324,7 @@ def test_PolygonAperture(benchmark, sim):
 #    benchmark.pedantic(el.push, setup=partial(pc_setup, sim), rounds=rounds)
 
 
+@pytest.mark.parametrize("sim", [True, False], indirect=True, ids=["spin", "nospin"])
 def test_PRot(benchmark, sim):
     el = elements.PRot(name="rotation1", phi_in=0.0, phi_out=-5.0)
     benchmark.pedantic(el.push, setup=partial(pc_setup, sim), rounds=rounds)

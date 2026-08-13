@@ -187,6 +187,40 @@ def check_roundtrip(
         )
 
 
+def check_spin_rotation(axis, angle_deg):
+    """Build a check that the forward push rotated every spin by ``angle_deg``
+    about ``axis``, in the convention of the C++ ``rotate_spin()`` helper.
+
+    The roundtrip alone cannot see this: a spin map that is the identity, or one
+    that uses the wrong axis or the wrong sign, is still cancelled exactly by its
+    own reverse. This pins down the forward map.
+    """
+
+    def check(beam, initial):
+        c = np.cos(np.radians(angle_deg))
+        s = np.sin(np.radians(angle_deg))
+        sx, sy, sz = (initial[col] for col in SPIN_COLS)
+        if axis == "y":
+            expected = (c * sx + s * sz, sy, -s * sx + c * sz)
+        elif axis == "z":
+            expected = (c * sx - s * sy, s * sx + c * sy, sz)
+        else:
+            raise ValueError(f"unsupported rotation axis: {axis}")
+
+        df = beam.to_df()
+        for col, exp in zip(SPIN_COLS, expected):
+            np.testing.assert_allclose(
+                df[col].to_numpy(),
+                exp,
+                atol=spin_atol,
+                rtol=0,
+                err_msg=f"Forward spin map is not a {angle_deg} deg rotation "
+                f"about {axis}: mismatch in {col}",
+            )
+
+    return check
+
+
 def roundtrip(
     el,
     sim,
@@ -194,8 +228,14 @@ def roundtrip(
     spin_atol=spin_atol,
     ref_atol=ref_atol,
     spin=False,
+    after_forward=None,
 ):
-    """Run forward + reverse + forward and verify roundtrip."""
+    """Run forward + reverse + forward and verify roundtrip.
+
+    ``after_forward`` is an optional ``check(beam, initial)`` callback applied to
+    the state after the forward push only, for element-specific assertions that
+    the reverse push would otherwise cancel (@see check_spin_rotation).
+    """
     beam = sim.beam
 
     initial = save_state(beam, spin=spin)
@@ -206,6 +246,10 @@ def roundtrip(
 
     # verify something changed
     check_changed(beam, initial, spin=spin)
+
+    # verify the forward map itself, before the reverse push cancels it
+    if spin and after_forward is not None:
+        after_forward(beam, initial)
 
     # reverse and push again
     el.reverse()
@@ -615,12 +659,31 @@ def test_ThinDipole(sim):
 # =============================================================================
 
 
+@pytest.mark.parametrize("sim", [True, False], indirect=True, ids=["spin", "nospin"])
 def test_PlaneXYRot(sim):
-    roundtrip(elements.PlaneXYRot(angle=90.0, **ALIGNMENT_KWARGS), sim)
+    angle = 90.0
+    roundtrip(
+        elements.PlaneXYRot(angle=angle, **ALIGNMENT_KWARGS),
+        sim,
+        spin=sim.spin,
+        # A rotation in the x-y plane rotates the spin about z by the same
+        # angle. The roll alignment error is a z-rotation as well, so it
+        # commutes with the element and cancels between entry and exit.
+        after_forward=check_spin_rotation("z", angle),
+    )
 
 
+@pytest.mark.parametrize("sim", [True, False], indirect=True, ids=["spin", "nospin"])
 def test_PRot(sim):
-    roundtrip(elements.PRot(phi_in=0.0, phi_out=-5.0), sim)
+    phi_in, phi_out = 0.0, -5.0
+    roundtrip(
+        elements.PRot(phi_in=phi_in, phi_out=phi_out),
+        sim,
+        spin=sim.spin,
+        # A pole face rotation in the x-z plane rotates the spin about y by the
+        # net angle phi_out - phi_in.
+        after_forward=check_spin_rotation("y", phi_out - phi_in),
+    )
 
 
 # =============================================================================
