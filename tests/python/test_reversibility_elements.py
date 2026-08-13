@@ -615,12 +615,22 @@ def test_ThinDipole(sim):
 # =============================================================================
 
 
+@pytest.mark.parametrize("sim", [True, False], indirect=True, ids=["spin", "nospin"])
 def test_PlaneXYRot(sim):
-    roundtrip(elements.PlaneXYRot(angle=90.0, **ALIGNMENT_KWARGS), sim)
+    roundtrip(
+        elements.PlaneXYRot(angle=90.0, **ALIGNMENT_KWARGS),
+        sim,
+        spin=sim.spin,
+    )
 
 
+@pytest.mark.parametrize("sim", [True, False], indirect=True, ids=["spin", "nospin"])
 def test_PRot(sim):
-    roundtrip(elements.PRot(phi_in=0.0, phi_out=-5.0), sim)
+    roundtrip(
+        elements.PRot(phi_in=0.0, phi_out=-5.0),
+        sim,
+        spin=sim.spin,
+    )
 
 
 # =============================================================================
