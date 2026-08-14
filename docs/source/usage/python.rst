@@ -1028,9 +1028,88 @@ This module provides elements and methods for the accelerator lattice.
 
       Add a single element to the list.
 
-   .. py:method:: load_file(filename, nslice=1)
+   .. py:method:: load_file(filename, nslice=1, *, min_model="linear")
 
       Load and append a lattice file from MAD-X (.madx) or PALS (e.g., .pals.yaml) formats.
+
+      The reader picks the *cheapest* ImpactX element that represents each imported
+      element.
+      ``min_model`` raises the lower gate of that choice, so that an imported lattice
+      starts out with at least the requested level of physical fidelity
+      (see :ref:`theory-assumptions`):
+
+      * ``"linear"`` (default) uses the linear model
+      * ``"paraxial"`` requires at least the chromatic ``Chr*`` models
+      * ``"exact"`` requires at least the exact-Hamiltonian ``Exact*`` models
+
+      A floor never *lowers* a model.
+      An element that already requires a richer model, such as a thick octupole
+      that only exists as ``ExactMultipole``, keeps it.
+      Where a tier is not implemented for an element family, the next higher one is
+      used.
+      Where no model reaches the requested tier at all, the most faithful model
+      available is used and a warning is emitted:
+
+      .. list-table::
+         :header-rows: 1
+         :widths: 20 25 25 30
+
+         * - MAD-X element
+           - ``"linear"``
+           - ``"paraxial"``
+           - ``"exact"``
+         * - ``DRIFT``
+           - ``Drift``
+           - ``ChrDrift``
+           - ``ExactDrift``
+         * - ``QUADRUPOLE``
+           - ``Quad``
+           - ``ChrQuad``
+           - ``ExactQuad``
+         * - ``SBEND``, ``RBEND``
+           - ``Sbend`` / ``CFbend``
+           - ``ExactSbend`` / ``ExactCFbend``
+           - ``ExactSbend`` / ``ExactCFbend``
+         * - ``DIPEDGE`` (and bend edges)
+           - ``DipEdge(model="linear")``
+           - ``DipEdge(model="nonlinear")``
+           - ``DipEdge(model="nonlinear")``
+         * - ``SOLENOID``
+           - ``Sol``
+           - ``ChrAcc(ez=0)``
+           - ``ChrAcc(ez=0)`` (warns)
+         * - ``SEXTUPOLE``, ``OCTUPOLE``, skew ``QUADRUPOLE``
+           - ``ExactMultipole``
+           - ``ExactMultipole``
+           - ``ExactMultipole``
+
+      A skew ``QUADRUPOLE`` reaches ``ExactMultipole`` at every floor because the
+      reader translates a combined normal and skew quadrupole as one multipole,
+      not because the cheaper tiers could not express it: a pure skew quadrupole
+      is also a ``Quad`` or ``ChrQuad`` under a 45 degree ``rotation``.
+
+      The paraxial ``SOLENOID`` is ``ChrAcc`` with ``ez=0``, which is the same
+      hard-edge solenoid map for the reference particle and adds the chromatic
+      dependence.
+      ``Sol`` takes its strength per unit rigidity, as ``ks``, while ``ChrAcc``
+      takes ``bz = ks * beta_gamma``, so the paraxial solenoid is pinned to the
+      reference energy that the MAD-X ``BEAM`` command declares.
+      Changing the reference energy after the import does not rescale it, and the
+      reader warns when it applies this translation.
+      Only an ``ENERGY`` that the file actually states is used for this: MAD-X
+      defaults it to 1 GeV, so a lattice whose ``BEAM`` command omits it keeps
+      ``Sol`` at every floor rather than converting against an assumed energy.
+
+      Elements that MAD-X itself defines as thin (``MULTIPOLE``, ``KICKER``,
+      ``RFCAVITY``, ``NLLENS``) and structural elements (``MARKER``, apertures,
+      monitors) have no model tiers, so the kick or map they translate into is
+      the same at every floor.
+      Their *length*, however, is carried by drifts that the reader adds around
+      that kick, and those follow ``min_model`` like any other drift.
+      A finite-length ``RFCAVITY`` is a thin kick model, for example, becomes
+      ``ExactDrift`` + ``ShortRF`` + ``ExactDrift`` at ``min_model="exact"``.
+      The same applies to the drifts emitted for ``COLLIMATOR``, ``INSTRUMENT``,
+      ``PLACEHOLDER`` and for a ``MONITOR`` with ``L > 0``.
 
       .. warning::
 
@@ -1042,15 +1121,30 @@ This module provides elements and methods for the accelerator lattice.
 
          *synmadx*, our :ref:`alternative MAD-X parser <usage-python-synmadx>` ported from Synergia.
 
+         :py:meth:`impactx.elements.FilteredElementsList.replace_with_drifts` uses the
+         same ``"linear"``/``"paraxial"``/``"exact"`` vocabulary for its ``model``
+         parameter.
+
       :param filename: filename to file with beamline elements
       :param nslice: number of slices used for the application of collective effects
+      :param min_model: lowest element model to translate into, one of ``"linear"``
+         (default), ``"paraxial"`` or ``"exact"``
 
-   .. py:method:: from_pals(pals_line, nslice=1)
+      **Example:**
+
+      .. code-block:: python
+
+         # import a lattice with at least exact-Hamiltonian element models
+         sim.lattice.load_file("fodo.madx", nslice=25, min_model="exact")
+
+   .. py:method:: from_pals(pals_line, nslice=1, *, min_model="linear")
 
       Load and append a lattice from a Particle Accelerator Lattice Standard (PALS) Python Line.
 
       :param pals_line: PALS Python Line with beamline elements
       :param nslice: number of slices used for the application of collective effects
+      :param min_model: lowest element model to translate into, see
+         :py:meth:`~impactx.elements.KnownElementsList.load_file`
 
    .. py:method:: select(kind=None, name=None)
 
