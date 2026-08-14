@@ -504,6 +504,7 @@ class Beam:
     __match_args__: typing.ClassVar[tuple] = (
         "particle",
         "energy",
+        "energy_is_explicit",
         "pc",
         "mass",
         "charge",
@@ -513,6 +514,7 @@ class Beam:
     bv: typing.ClassVar[float] = 1.0
     charge: typing.ClassVar[float] = 0.0
     energy: typing.ClassVar[float] = 1.0
+    energy_is_explicit: typing.ClassVar[bool] = False
     freq0: typing.ClassVar[float] = 0.0
     mass: typing.ClassVar[float] = 0.0
     particle: typing.ClassVar[str] = ""
@@ -522,6 +524,7 @@ class Beam:
         self,
         particle: str = "",
         energy: float = 1.0,
+        energy_is_explicit: bool = False,
         pc: float = 0.0,
         mass: float = 0.0,
         charge: float = 0.0,

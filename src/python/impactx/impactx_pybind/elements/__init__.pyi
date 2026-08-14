@@ -6126,9 +6126,11 @@ class KnownElementsList:
             :func:`impactx.extensions.matrix_hook` as a JSON object_hook
             when loading such elements.
         """
-    def from_pals(self, pals_beamline, nslice=1):
+    def from_pals(self, pals_beamline, nslice=1, *, min_model="linear"):
         """
         Load and append a lattice from a Particle Accelerator Lattice Standard (PALS) object.
+
+        ``min_model`` is the element model floor, see :py:func:`load_file`.
 
         https://github.com/campa-consortium/pals-python
         """
@@ -6175,9 +6177,16 @@ class KnownElementsList:
             variants (e.g., ``Drift`` vs ``ExactDrift``). Forwarded to each
             element's ``isclose``.
         """
-    def load_file(self, filename, nslice=1):
+    def load_file(self, filename, nslice=1, *, min_model="linear"):
         """
         Load and append a lattice file from MAD-X (.madx) or PALS (e.g., .pals.yaml) formats.
+
+        ``min_model`` raises the lower gate of the element model selection: the reader
+        still picks the cheapest ImpactX element that represents the imported element,
+        but never one below the requested tier (``"linear"``, ``"paraxial"`` or
+        ``"exact"``). Where a tier is not implemented for an element family, the next
+        higher one is used. Where no model reaches the requested tier at all, as for a
+        solenoid, which has no exact model, a warning is emitted.
 
         .. warning::
 

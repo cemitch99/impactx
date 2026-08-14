@@ -14,11 +14,13 @@ import re as re
 import weakref as weakref
 
 import impactx.impactx_pybind.elements
+from impactx.element_models import tier_of_class, validate_model
 from impactx.impactx_pybind import Config, elements
 from impactx.impactx_pybind.elements import FilteredElementsList
 
 __all__: list[str] = [
     "Config",
+    "DRIFT_MODEL_CLASSES",
     "FILTERED_ELEMENTS_LIST_INVALID_MSG",
     "FilteredElementsList",
     "count_by_kind",
@@ -33,8 +35,10 @@ __all__: list[str] = [
     "re",
     "register_KnownElementsList_extension",
     "select",
+    "tier_of_class",
     "to_dicts",
     "to_py",
+    "validate_model",
     "weakref",
 ]
 
@@ -71,8 +75,9 @@ def _drift_class_for_replace_with_drifts(model: str, old_el) -> type:
     """
     Map ``model`` and ``old_el`` to the Drift / ChrDrift / ExactDrift class to insert.
 
-    For ``model=="match"``, the class follows ``_model_key_from_element_typename``; otherwise
-    ``model`` must already be validated against ``_DRIFT_MODEL_CLASSES``.
+    For ``model=="match"``, the class follows the replaced element's own tier (see
+    ``impactx.element_models.tier_of_class``). Otherwise ``model`` must already be
+    validated against :data:`impactx.element_models.MODEL_TIERS`.
     """
 
 def _element_from_dict(d: dict):
@@ -209,11 +214,6 @@ def _matches_string(text: str, string_pattern: str) -> bool:
     Check if text matches a string pattern (exact match or regex).
     """
 
-def _model_key_from_element_typename(type_name: str) -> str:
-    """
-    Return the drift-model key for an element class name (linear / paraxial / exact).
-    """
-
 def _rad2deg(radians: float) -> float:
     """
     Convert radians to degrees.
@@ -280,9 +280,11 @@ def from_dicts(self, dicts: list[dict]):
         when loading such elements.
     """
 
-def from_pals(self, pals_beamline, nslice=1):
+def from_pals(self, pals_beamline, nslice=1, *, min_model="linear"):
     """
     Load and append a lattice from a Particle Accelerator Lattice Standard (PALS) object.
+
+    ``min_model`` is the element model floor, see :py:func:`load_file`.
 
     https://github.com/campa-consortium/pals-python
     """
@@ -309,9 +311,16 @@ def has_kind(self, kind_pattern) -> bool:
         bool: True if at least one element of the specified kind exists.
     """
 
-def load_file(self, filename, nslice=1):
+def load_file(self, filename, nslice=1, *, min_model="linear"):
     """
     Load and append a lattice file from MAD-X (.madx) or PALS (e.g., .pals.yaml) formats.
+
+    ``min_model`` raises the lower gate of the element model selection: the reader
+    still picks the cheapest ImpactX element that represents the imported element,
+    but never one below the requested tier (``"linear"``, ``"paraxial"`` or
+    ``"exact"``). Where a tier is not implemented for an element family, the next
+    higher one is used. Where no model reaches the requested tier at all, as for a
+    solenoid, which has no exact model, a warning is emitted.
 
     .. warning::
 
@@ -491,11 +500,11 @@ def to_py(self) -> str:
             # lattice = get_lattice()
     """
 
-FILTERED_ELEMENTS_LIST_INVALID_MSG: str = "This lattice selection is no longer valid because the lattice was modified; call select() again on the lattice."
-_DEGREE_ELEMENTS: tuple = ("ExactSbend", "PlaneXYRot", "PRot", "ThinDipole")
-_DRIFT_MODEL_CLASSES: dict = {
+DRIFT_MODEL_CLASSES: dict = {
     "linear": impactx.impactx_pybind.elements.Drift,
     "paraxial": impactx.impactx_pybind.elements.ChrDrift,
     "exact": impactx.impactx_pybind.elements.ExactDrift,
 }
+FILTERED_ELEMENTS_LIST_INVALID_MSG: str = "This lattice selection is no longer valid because the lattice was modified; call select() again on the lattice."
+_DEGREE_ELEMENTS: tuple = ("ExactSbend", "PlaneXYRot", "PRot", "ThinDipole")
 _filtered_views_by_lattice: weakref.WeakKeyDictionary

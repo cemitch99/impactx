@@ -57,6 +57,7 @@ from impactx.madx_to_impactx import read_beam
 from . import (
     MADXParser,
     distribution_input_helpers,
+    element_models,
     extensions,
     fourier,
     impactx_pybind,
@@ -87,6 +88,7 @@ __all__: list[str] = [
     "create_envelope",
     "distribution",
     "distribution_input_helpers",
+    "element_models",
     "elements",
     "extensions",
     "flatten_charge_to_2D",
