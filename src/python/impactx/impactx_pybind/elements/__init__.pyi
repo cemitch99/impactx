@@ -185,6 +185,11 @@ class BeamMonitor(mixin.Thin):
         map composes). Raises for an element whose linear transport map is
         not implemented.
 
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
+
         :param ref: reference particle at the element entrance
         """
     @property
@@ -392,6 +397,11 @@ class Aperture(mixin.Named, mixin.Thin, mixin.Alignment):
         map composes). Raises for an element whose linear transport map is
         not implemented.
 
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
+
         :param ref: reference particle at the element entrance
         """
     @property
@@ -572,6 +582,11 @@ class ChrDrift(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
         map composes). Raises for an element whose linear transport map is
         not implemented.
 
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
+
         :param ref: reference particle at the element entrance
         """
 
@@ -704,6 +719,11 @@ class ChrQuad(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
         ``ds/nslice`` slice (the building block that the lattice transfer
         map composes). Raises for an element whose linear transport map is
         not implemented.
+
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
 
         :param ref: reference particle at the element entrance
         """
@@ -852,6 +872,11 @@ class ChrPlasmaLens(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeApertur
         map composes). Raises for an element whose linear transport map is
         not implemented.
 
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
+
         :param ref: reference particle at the element entrance
         """
     @property
@@ -998,6 +1023,11 @@ class ChrAcc(mixin.Named, mixin.Thick, mixin.Alignment):
         ``ds/nslice`` slice (the building block that the lattice transfer
         map composes). Raises for an element whose linear transport map is
         not implemented.
+
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
 
         :param ref: reference particle at the element entrance
         """
@@ -1146,6 +1176,11 @@ class ConstF(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
         ``ds/nslice`` slice (the building block that the lattice transfer
         map composes). Raises for an element whose linear transport map is
         not implemented.
+
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
 
         :param ref: reference particle at the element entrance
         """
@@ -1308,6 +1343,11 @@ class DipEdge(mixin.Named, mixin.Thin, mixin.Alignment):
         ``ds/nslice`` slice (the building block that the lattice transfer
         map composes). Raises for an element whose linear transport map is
         not implemented.
+
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
 
         :param ref: reference particle at the element entrance
         """
@@ -1537,6 +1577,11 @@ class QuadEdge(mixin.Named, mixin.Thin, mixin.Alignment):
         map composes). Raises for an element whose linear transport map is
         not implemented.
 
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
+
         :param ref: reference particle at the element entrance
         """
     @property
@@ -1682,6 +1727,11 @@ class Drift(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
         map composes). Raises for an element whose linear transport map is
         not implemented.
 
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
+
         :param ref: reference particle at the element entrance
         """
 
@@ -1812,6 +1862,11 @@ class ExactDrift(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
         ``ds/nslice`` slice (the building block that the lattice transfer
         map composes). Raises for an element whose linear transport map is
         not implemented.
+
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
 
         :param ref: reference particle at the element entrance
         """
@@ -1948,6 +2003,11 @@ class ExactMultipole(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeApertu
         ``ds/nslice`` slice (the building block that the lattice transfer
         map composes). Raises for an element whose linear transport map is
         not implemented.
+
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
 
         :param ref: reference particle at the element entrance
         """
@@ -2106,6 +2166,11 @@ class ExactCFbend(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture)
         map composes). Raises for an element whose linear transport map is
         not implemented.
 
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
+
         :param ref: reference particle at the element entrance
         """
     @property
@@ -2261,6 +2326,11 @@ class ExactQuad(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
         ``ds/nslice`` slice (the building block that the lattice transfer
         map composes). Raises for an element whose linear transport map is
         not implemented.
+
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
 
         :param ref: reference particle at the element entrance
         """
@@ -2427,6 +2497,11 @@ class ExactSbend(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
         map composes). Raises for an element whose linear transport map is
         not implemented.
 
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
+
         :param ref: reference particle at the element entrance
         """
     @property
@@ -2570,6 +2645,11 @@ class Kicker(mixin.Named, mixin.Thin, mixin.Alignment):
         ``ds/nslice`` slice (the building block that the lattice transfer
         map composes). Raises for an element whose linear transport map is
         not implemented.
+
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
 
         :param ref: reference particle at the element entrance
         """
@@ -2715,6 +2795,11 @@ class Multipole(mixin.Named, mixin.Thin, mixin.Alignment):
         map composes). Raises for an element whose linear transport map is
         not implemented.
 
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
+
         :param ref: reference particle at the element entrance
         """
     @property
@@ -2857,6 +2942,11 @@ class Empty(mixin.Named, mixin.Thin):
         map composes). Raises for an element whose linear transport map is
         not implemented.
 
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
+
         :param ref: reference particle at the element entrance
         """
 
@@ -2977,6 +3067,11 @@ class Marker(mixin.Named, mixin.Thin):
         ``ds/nslice`` slice (the building block that the lattice transfer
         map composes). Raises for an element whose linear transport map is
         not implemented.
+
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
 
         :param ref: reference particle at the element entrance
         """
@@ -3106,6 +3201,11 @@ class NonlinearLens(mixin.Named, mixin.Thin, mixin.Alignment):
         ``ds/nslice`` slice (the building block that the lattice transfer
         map composes). Raises for an element whose linear transport map is
         not implemented.
+
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
 
         :param ref: reference particle at the element entrance
         """
@@ -3248,6 +3348,11 @@ class PlaneXYRot(mixin.Named, mixin.Thin, mixin.Alignment):
         ``ds/nslice`` slice (the building block that the lattice transfer
         map composes). Raises for an element whose linear transport map is
         not implemented.
+
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
 
         :param ref: reference particle at the element entrance
         """
@@ -3393,6 +3498,11 @@ class PolygonAperture(mixin.Named, mixin.Thin, mixin.Alignment):
         ``ds/nslice`` slice (the building block that the lattice transfer
         map composes). Raises for an element whose linear transport map is
         not implemented.
+
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
 
         :param ref: reference particle at the element entrance
         """
@@ -3713,6 +3823,11 @@ class Quad(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
         map composes). Raises for an element whose linear transport map is
         not implemented.
 
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
+
         :param ref: reference particle at the element entrance
         """
     @property
@@ -3862,6 +3977,11 @@ class RFCavity(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
         ``ds/nslice`` slice (the building block that the lattice transfer
         map composes). Raises for an element whose linear transport map is
         not implemented.
+
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
 
         :param ref: reference particle at the element entrance
         """
@@ -4039,6 +4159,11 @@ class Sbend(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
         map composes). Raises for an element whose linear transport map is
         not implemented.
 
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
+
         :param ref: reference particle at the element entrance
         """
 
@@ -4171,6 +4296,11 @@ class CFbend(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
         ``ds/nslice`` slice (the building block that the lattice transfer
         map composes). Raises for an element whose linear transport map is
         not implemented.
+
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
 
         :param ref: reference particle at the element entrance
         """
@@ -4315,6 +4445,11 @@ class Buncher(mixin.Named, mixin.Thin, mixin.Alignment):
         map composes). Raises for an element whose linear transport map is
         not implemented.
 
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
+
         :param ref: reference particle at the element entrance
         """
     @property
@@ -4458,6 +4593,11 @@ class ShortRF(mixin.Named, mixin.Thin, mixin.Alignment):
         ``ds/nslice`` slice (the building block that the lattice transfer
         map composes). Raises for an element whose linear transport map is
         not implemented.
+
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
 
         :param ref: reference particle at the element entrance
         """
@@ -4621,6 +4761,11 @@ class SoftSolenoid(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture
         ``ds/nslice`` slice (the building block that the lattice transfer
         map composes). Raises for an element whose linear transport map is
         not implemented.
+
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
 
         :param ref: reference particle at the element entrance
         """
@@ -4790,6 +4935,11 @@ class Source(mixin.Named, mixin.Thin):
         map composes). Raises for an element whose linear transport map is
         not implemented.
 
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
+
         :param ref: reference particle at the element entrance
         """
     @property
@@ -4950,6 +5100,11 @@ class Sol(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
         map composes). Raises for an element whose linear transport map is
         not implemented.
 
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
+
         :param ref: reference particle at the element entrance
         """
     @property
@@ -5082,6 +5237,11 @@ class PRot(mixin.Named, mixin.Thin):
         ``ds/nslice`` slice (the building block that the lattice transfer
         map composes). Raises for an element whose linear transport map is
         not implemented.
+
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
 
         :param ref: reference particle at the element entrance
         """
@@ -5238,6 +5398,11 @@ class SoftQuadrupole(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeApertu
         map composes). Raises for an element whose linear transport map is
         not implemented.
 
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
+
         :param ref: reference particle at the element entrance
         """
     @property
@@ -5393,6 +5558,11 @@ class ThinDipole(mixin.Named, mixin.Thin, mixin.Alignment):
         map composes). Raises for an element whose linear transport map is
         not implemented.
 
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
+
         :param ref: reference particle at the element entrance
         """
     @property
@@ -5535,6 +5705,11 @@ class TaperedPL(mixin.Named, mixin.Thin, mixin.Alignment):
         ``ds/nslice`` slice (the building block that the lattice transfer
         map composes). Raises for an element whose linear transport map is
         not implemented.
+
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
 
         :param ref: reference particle at the element entrance
         """
@@ -5685,6 +5860,11 @@ class LinearMap(mixin.Named, mixin.Alignment):
         ``ds/nslice`` slice (the building block that the lattice transfer
         map composes). Raises for an element whose linear transport map is
         not implemented.
+
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
 
         :param ref: reference particle at the element entrance
         """
@@ -5844,6 +6024,11 @@ class SpinMap(mixin.Named, mixin.Alignment):
         ``ds/nslice`` slice (the building block that the lattice transfer
         map composes). Raises for an element whose linear transport map is
         not implemented.
+
+        Uses the same convention as ``KnownElementsList.transfer_map``: the
+        reference particle is advanced through one slice first, and the map
+        is evaluated at that post-advance reference state. The reference
+        particle you pass in is copied and left unmodified.
 
         :param ref: reference particle at the element entrance
         """
