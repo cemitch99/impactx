@@ -136,7 +136,10 @@ The code writes out the values in an ASCII file prefixed ``reduced_beam_characte
     Standard deviation of the three spin components (unit: dimensionless).  This diagnostic is written only if spin tracking is on (algo.spin = True).
 
 Quantities that a beam does not define are written as ``nan``.
+The ``step``, ``period`` and ``s`` columns describe the position in the lattice and are always written.
 The Courant-Snyder (Twiss) ``alpha`` and ``beta`` of a plane are ratios to its rms emittance, and are undefined wherever that emittance vanishes: for a single particle, for a cold plane, or longitudinally for a beam without energy spread.
+For zero-weight test beams, added with a bunch charge of zero, there is no total weight to normalize by: every weighted moment is undefined and ``charge_C`` is zero, while the unweighted ``min`` and ``max`` still report the extent of the beam.
+For a simulation whose beam is loaded in a :py:class:`~impactx.elements.Source` element instead of prior to tracking, the beam is empty until that element is reached: every diagnostic before it reports ``nan`` for all moments, minima and maxima included, and zero for ``charge_C``.
 
 
 .. _dataanalysis-plot:
