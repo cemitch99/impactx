@@ -157,3 +157,81 @@ For `MPI-parallel <https://www.mpi-forum.org>`__ runs, prefix these lines with `
          :caption: You can copy this file from ``examples/expanding/run_expanding_fft_2D_test_particles.py``.
 
 For `MPI-parallel <https://www.mpi-forum.org>`__ runs, prefix these lines with ``mpiexec -n 4 ...`` or ``srun -n 4 ...``, depending on the system.
+
+
+.. _examples-expanding-acc:
+
+Expanding Beam in a Uniform Accelerating Field with 3D Space Charge
+===================================================================
+
+A bunch in a uniform longitudinal electric field, expanding under its own space charge.
+
+The problem is identical to `examples-expanding`, except for the presence of the accelerating field.  Since all forces are linear in this case, the problem is characterized by
+the rms envelope equations.
+
+In this test, the final values of :math:`\sigma_x`, :math:`\sigma_y`, :math:`\sigma_t`, :math:`\epsilon_x`, :math:`\epsilon_y`, and :math:`\epsilon_t` obtained using
+particle tracking must agree with the corresponding values obtained using envelope tracking.
+
+
+Run
+---
+
+This example can be run as:
+
+* **Python** script: ``python3 run_expanding_acc_fft.py``
+
+For `MPI-parallel <https://www.mpi-forum.org>`__ runs, prefix these lines with ``mpiexec -n 4 ...`` or ``srun -n 4 ...``, depending on the system.
+
+.. tab-set::
+
+   .. tab-item:: Python: Script (FFT)
+
+      .. literalinclude:: run_expanding_acc_fft.py
+         :language: python3
+         :caption: You can copy this file from ``examples/expanding/run_expanding_acc_fft.py``.
+
+
+Analyze
+-------
+
+Analysis is performed in-situ for this problem
+
+
+
+
+.. _examples-expanding-2d-acc:
+
+Expanding Beam in Uniform Accelerating Field with 2D Space Charge
+=================================================================
+
+A long, unbunched beam in a uniform longitudinal electric field, expanding under its own 2D space charge.
+
+The problem is identical to `examples-expanding-2d`, except for the presence of the accelerating field.  Since all forces are linear in this case, the problem is characterized by
+the rms envelope equations.
+
+In this test, the final values of :math:`\sigma_x`, :math:`\sigma_y`, :math:`\sigma_t`, :math:`\epsilon_x`, :math:`\epsilon_y`, and :math:`\epsilon_t` obtained using
+particle tracking must agree with the corresponding values obtained using envelope tracking.
+
+Run
+---
+
+This example can be run as:
+
+* **Python** script: ``python3 run_expanding_acc_fft_2D.py`` or
+
+For `MPI-parallel <https://www.mpi-forum.org>`__ runs, prefix these lines with ``mpiexec -n 4 ...`` or ``srun -n 4 ...``, depending on the system.
+
+.. tab-set::
+
+   .. tab-item:: Python: Script (FFT)
+
+      .. literalinclude:: run_expanding_acc_fft_2D.py
+         :language: python3
+         :caption: You can copy this file from ``examples/expanding/run_expanding_acc_fft_2D.py``.
+
+
+Analyze
+-------
+
+Analysis is performed in-situ for this problem.
+

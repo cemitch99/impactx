@@ -6,28 +6,23 @@
 #
 # -*- coding: utf-8 -*-
 
-import numpy as np
-
 from impactx import ImpactX, distribution, elements
+import numpy as np
 
 sim = ImpactX()
 
 # set numerical parameters and IO control
-sim.max_level = 1
-sim.n_cell = [32, 32, 32]
-sim.blocking_factor_x = [16]
-sim.blocking_factor_y = [16]
-sim.blocking_factor_z = [4]
-# one box per level and process: this example runs on a single process
-sim.max_grid_size_x = [64]
-sim.max_grid_size_y = [64]
-sim.max_grid_size_z = [64]
+sim.max_level = 0
+sim.n_cell = [32, 32, 1]
+sim.blocking_factor_x = [32]
+sim.blocking_factor_y = [32]
+sim.blocking_factor_z = [1]
 
 sim.particle_shape = 2  # B-spline order
-sim.space_charge = "3D"
+sim.space_charge = "2D"
 sim.poisson_solver = "fft"
 sim.dynamic_size = True
-sim.prob_relative = [1.2, 1.1]
+sim.prob_relative = [1.1]
 
 # beam diagnostics
 # sim.diagnostics = False  # benchmarking
@@ -38,19 +33,19 @@ sim.init_grids()
 
 # initial beam properties
 kin_energy_MeV = 250  # reference energy
-bunch_charge_C = 1.0e-9  # used with space charge
+beam_current_A = 0.15  # used with space charge
 npart = 10000  # number of macro particles (outside tests, use 1e5 or more)
 
 #   reference particle
 ref = sim.beam.ref
-ref.set_species("electron").set_kin_energy_MeV(kin_energy_MeV)
+ref.set_species("proton").set_kin_energy_MeV(kin_energy_MeV)
 ref_for_envelope = ref.copy()
 
-sig_xy_i = 4.472135955e-4
-sig_t_i = 9.12241869e-7
+sig_xy_i = 5.0e-4   
+sig_t_i = 1.0e-3
 
 #   particle bunch
-distr = distribution.Kurth6D(
+distr = distribution.KVdist(
     lambdaX=sig_xy_i,
     lambdaY=sig_xy_i,
     lambdaT=sig_t_i,
@@ -58,10 +53,14 @@ distr = distribution.Kurth6D(
     lambdaPy=0.0,
     lambdaPt=0.0,
 )
-sim.add_particles(bunch_charge_C, distr, npart)
+sim.add_particles(beam_current_A, distr, npart)
+
+distance = 10.612823669911099
 
 # design the accelerator lattice
-acc_section = elements.ChrAcc(name="acc_section", ds=6.0, ez=100.0, bz=0.0, nslice=100)
+acc_section = elements.ChrAcc(
+    name="acc_section", ds=distance, ez=0.05, bz=0.0, nslice=100
+)
 sim.lattice.extend([acc_section])
 
 # run particle simulation
@@ -75,7 +74,7 @@ sim.lattice.clear()
 sim.lattice.extend([acc_section])
 
 # run envelope simulation
-sim.init_envelope(ref_for_envelope, distr, bunch_charge_C)
+sim.init_envelope(ref_for_envelope, distr, beam_current_A)
 sim.track_envelope()
 
 # collect beam moments
@@ -88,7 +87,7 @@ emitx_part = rbc_particles["emittance_x"]
 emity_part = rbc_particles["emittance_y"]
 emitt_part = rbc_particles["emittance_t"]
 
-sigx_env = rbc_envelope["sigma_x"]
+sigx_env = rbc_envelope["sigma_x"] 
 sigy_env = rbc_envelope["sigma_y"]
 sigt_env = rbc_envelope["sigma_t"]
 emitx_env = rbc_envelope["emittance_x"]
