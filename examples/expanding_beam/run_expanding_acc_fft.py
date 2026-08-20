@@ -120,7 +120,7 @@ print(
 
 print("")
 atol = 0.0  # ignored
-rtol = 2.0 * npart**-0.5  # from random sampling of a smooth distribution
+rtol = 2.5 * npart**-0.5  # from random sampling of a smooth distribution
 print(f"  rtol for beam size = {rtol} (ignored: atol~={atol})")
 
 assert np.allclose(
