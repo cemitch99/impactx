@@ -6,8 +6,9 @@
 #
 # -*- coding: utf-8 -*-
 
-from impactx import ImpactX, distribution, elements
 import numpy as np
+
+from impactx import ImpactX, distribution, elements
 
 sim = ImpactX()
 
@@ -57,9 +58,7 @@ distr = distribution.Kurth6D(
 sim.add_particles(bunch_charge_C, distr, npart)
 
 # design the accelerator lattice
-acc_section = elements.ChrAcc(
-    name="acc_section", ds=6.0, ez=100.0, bz=0.0, nslice=100
-)
+acc_section = elements.ChrAcc(name="acc_section", ds=6.0, ez=100.0, bz=0.0, nslice=100)
 sim.lattice.extend([acc_section])
 
 # run particle simulation
@@ -83,7 +82,7 @@ sigx_part = rbc_particles["sigma_x"]
 sigy_part = rbc_particles["sigma_y"]
 sigt_part = rbc_particles["sigma_t"]
 
-sigx_env = rbc_envelope["sigma_x"] 
+sigx_env = rbc_envelope["sigma_x"]
 sigy_env = rbc_envelope["sigma_y"]
 sigt_env = rbc_envelope["sigma_t"]
 
@@ -102,11 +101,10 @@ print(f"  sigx={sigx_env:e} sigy={sigy_env:e} sigt={sigt_env:e}")
 atol = 0.0  # ignored
 rtol = 1.5 * npart**-0.5  # from random sampling of a smooth distribution
 print(f"  rtol={rtol} (ignored: atol~={atol})")
-    
+
 assert np.allclose(
     [sigx_part, sigy_part, sigt_part],
     [sigx_env, sigy_env, sigt_env],
     rtol=rtol,
     atol=atol,
 )
-
