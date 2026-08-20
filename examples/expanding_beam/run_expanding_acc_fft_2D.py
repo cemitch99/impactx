@@ -56,7 +56,7 @@ distr = distribution.KVdist(
 )
 sim.add_particles(beam_current_A, distr, npart)
 
-distance = 10.612823669911099
+distance = 10.0
 
 # design the accelerator lattice
 acc_section = elements.ChrAcc(
