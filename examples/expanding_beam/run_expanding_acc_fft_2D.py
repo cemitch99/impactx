@@ -6,8 +6,9 @@
 #
 # -*- coding: utf-8 -*-
 
-from impactx import ImpactX, distribution, elements
 import numpy as np
+
+from impactx import ImpactX, distribution, elements
 
 sim = ImpactX()
 
@@ -41,7 +42,7 @@ ref = sim.beam.ref
 ref.set_species("proton").set_kin_energy_MeV(kin_energy_MeV)
 ref_for_envelope = ref.copy()
 
-sig_xy_i = 5.0e-4   
+sig_xy_i = 5.0e-4
 sig_t_i = 1.0e-3
 
 #   particle bunch
@@ -87,7 +88,7 @@ emitx_part = rbc_particles["emittance_x"]
 emity_part = rbc_particles["emittance_y"]
 emitt_part = rbc_particles["emittance_t"]
 
-sigx_env = rbc_envelope["sigma_x"] 
+sigx_env = rbc_envelope["sigma_x"]
 sigy_env = rbc_envelope["sigma_y"]
 sigt_env = rbc_envelope["sigma_t"]
 emitx_env = rbc_envelope["emittance_x"]
@@ -100,7 +101,7 @@ sim.finalize()
 print("")
 
 print("Predicted Expansion Factor:")
-print(sigx_env/sig_xy_i)
+print(sigx_env / sig_xy_i)
 
 print("")
 
@@ -121,7 +122,7 @@ print("")
 atol = 0.0  # ignored
 rtol = 1.5 * npart**-0.5  # from random sampling of a smooth distribution
 print(f"  rtol for beam size = {rtol} (ignored: atol~={atol})")
-    
+
 assert np.allclose(
     [sigx_part, sigy_part, sigt_part],
     [sigx_env, sigy_env, sigt_env],
@@ -132,7 +133,7 @@ assert np.allclose(
 atol = 3.0e-9
 rtol = 0.0
 print(f"  atol for emittances = {atol} (ignored: rtol~={rtol})")
-    
+
 assert np.allclose(
     [emitx_part, emity_part, emitt_part],
     [emitx_env, emity_env, emitt_env],

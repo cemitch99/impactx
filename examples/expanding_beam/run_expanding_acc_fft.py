@@ -101,7 +101,7 @@ sim.finalize()
 print("")
 
 print("Predicted Expansion Factor:")
-print(sigx_env/sig_xy_i)
+print(sigx_env / sig_xy_i)
 
 print("")
 
@@ -122,7 +122,7 @@ print("")
 atol = 0.0  # ignored
 rtol = 1.5 * npart**-0.5  # from random sampling of a smooth distribution
 print(f"  rtol for beam size = {rtol} (ignored: atol~={atol})")
-    
+
 assert np.allclose(
     [sigx_part, sigy_part, sigt_part],
     [sigx_env, sigy_env, sigt_env],
@@ -133,7 +133,7 @@ assert np.allclose(
 atol = 3.0e-9
 rtol = 0.0
 print(f"  atol for emittances = {atol} (ignored: rtol~={rtol})")
-    
+
 assert np.allclose(
     [emitx_part, emity_part, emitt_part],
     [emitx_env, emity_env, emitt_env],

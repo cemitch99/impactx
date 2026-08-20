@@ -2243,4 +2243,3 @@ add_impactx_test(expanding-2d-acc.py
     examples/expanding_beam/analysis_expanding_acc_fft_2D.py
     OFF  # no plot script yet
 )
-
