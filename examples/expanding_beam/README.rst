@@ -166,7 +166,7 @@ Expanding Beam in a Uniform Accelerating Field with 3D Space Charge
 
 A bunch in a uniform longitudinal electric field, expanding under its own space charge.
 
-The problem is identical to :ref:`the above example <examples-expanding-fft>`, except for the presence of the accelerating field.  
+The problem is identical to :ref:`the above example <examples-expanding-fft>`, except for the presence of the accelerating field.
 Since all forces are linear in this case, the problem is characterized by the rms envelope equations.
 
 In this test, the final values of :math:`\sigma_x`, :math:`\sigma_y`, :math:`\sigma_t`, :math:`\epsilon_x`, :math:`\epsilon_y`, and :math:`\epsilon_t` obtained using
@@ -206,7 +206,7 @@ Expanding Beam in Uniform Accelerating Field with 2D Space Charge
 
 A long, unbunched beam in a uniform longitudinal electric field, expanding under its own 2D space charge.
 
-The problem is identical to :ref:`the above example <examples-expanding-fft-2d>`, except for the presence of the accelerating field.  
+The problem is identical to :ref:`the above example <examples-expanding-fft-2d>`, except for the presence of the accelerating field.
 Since all forces are linear in this case, the problem is characterized by the rms envelope equations.
 
 In this test, the final values of :math:`\sigma_x`, :math:`\sigma_y`, :math:`\sigma_t`, :math:`\epsilon_x`, :math:`\epsilon_y`, and :math:`\epsilon_t` obtained using
