@@ -35,7 +35,7 @@ sim.init_grids()
 # initial beam properties
 kin_energy_MeV = 250  # reference energy
 beam_current_A = 0.15  # used with space charge
-npart = 10000  # number of macro particles (outside tests, use 1e5 or more)
+npart = 100000  # number of macro particles (outside tests, use 1e5 or more)
 
 #   reference particle
 ref = sim.beam.ref
