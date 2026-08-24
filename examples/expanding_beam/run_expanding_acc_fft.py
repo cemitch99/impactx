@@ -61,6 +61,7 @@ distr = distribution.Kurth6D(
 sim.add_particles(bunch_charge_C, distr, npart)
 
 # design the accelerator lattice
+# `ez*ds` is the net change in gamma
 acc_section = elements.ChrAcc(name="acc_section", ds=6.0, ez=100.0, bz=0.0, nslice=100)
 sim.lattice.extend([acc_section])
 
