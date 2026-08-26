@@ -46,6 +46,7 @@ ref = sim.beam.ref
 ref.set_species("electron").set_kin_energy_MeV(kin_energy_MeV)
 ref_for_envelope = ref.copy()
 
+gamma_i = ref.gamma
 sig_xy_i = 4.472135955e-4
 sig_t_i = 9.12241869e-7
 
@@ -62,7 +63,9 @@ sim.add_particles(bunch_charge_C, distr, npart)
 
 # design the accelerator lattice
 # `ez*ds` is the net change in gamma
-acc_section = elements.ChrAcc(name="acc_section", ds=6.0, ez=100.0, bz=0.0, nslice=100)
+ez_value = 100.0
+ds_value = 10.0
+acc_section = elements.ChrAcc(name="acc_section", ds=ds_value, ez=ez_value, bz=0.0, nslice=100)
 sim.lattice.extend([acc_section])
 
 # run particle simulation
@@ -96,13 +99,22 @@ emitx_env = rbc_envelope["emittance_x"]
 emity_env = rbc_envelope["emittance_y"]
 emitt_env = rbc_envelope["emittance_t"]
 
+gamma_f = ref.gamma
+relative_change_gamma_predicted = ds_value * ez_value / gamma_i
+relative_change_beam_size_predicted = (sigx_env - sig_xy_i) / sig_xy_i
+
 # clean shutdown
 sim.finalize()
 
 print("")
 
-print("Predicted Expansion Factor:")
-print(sigx_env / sig_xy_i)
+print("Predicted Relative Change in Beam Size:")
+print(relative_change_beam_size_predicted)
+
+print("")
+
+print("Predicted Relative Change in Gamma:")
+print(relative_change_gamma_predicted)
 
 print("")
 
@@ -141,3 +153,22 @@ assert np.allclose(
     rtol=rtol,
     atol=atol,
 )
+
+print("")
+
+print("Computed Relative Change in Gamma:")
+relative_change_gamma = (gamma_f - gamma_i) / gamma_i
+print(f"  relative_change_gamma={relative_change_gamma:e}")
+
+atol = 3.0e-9
+rtol = 0.0
+print(f"  atol for gamma = {atol} (ignored: rtol~={rtol})")
+
+print("")
+assert np.allclose(
+    [relative_change_gamma],
+    [relative_change_gamma_predicted],
+    rtol=rtol,
+    atol=atol,
+)
+
