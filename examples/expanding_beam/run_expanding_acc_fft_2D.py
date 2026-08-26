@@ -96,7 +96,7 @@ emitx_env = rbc_envelope["emittance_x"]
 emity_env = rbc_envelope["emittance_y"]
 emitt_env = rbc_envelope["emittance_t"]
 
-gamma_f = ref.gamma  
+gamma_f = ref.gamma
 relative_change_gamma_predicted = ds_value * ez_value / gamma_i
 relative_change_beam_size_predicted = (sigx_env - sig_xy_i) / sig_xy_i
 
@@ -156,7 +156,7 @@ print("")
 print("Computed Relative Change in Gamma:")
 relative_change_gamma = (gamma_f - gamma_i) / gamma_i
 print(f"  relative_change_gamma={relative_change_gamma:e}")
- 
+
 atol = 3.0e-9
 rtol = 0.0
 print(f"  atol for gamma = {atol} (ignored: rtol~={rtol})")
@@ -168,4 +168,3 @@ assert np.allclose(
     rtol=rtol,
     atol=atol,
 )
-

@@ -65,7 +65,9 @@ sim.add_particles(bunch_charge_C, distr, npart)
 # `ez*ds` is the net change in gamma
 ez_value = 100.0
 ds_value = 10.0
-acc_section = elements.ChrAcc(name="acc_section", ds=ds_value, ez=ez_value, bz=0.0, nslice=100)
+acc_section = elements.ChrAcc(
+    name="acc_section", ds=ds_value, ez=ez_value, bz=0.0, nslice=100
+)
 sim.lattice.extend([acc_section])
 
 # run particle simulation
@@ -171,4 +173,3 @@ assert np.allclose(
     rtol=rtol,
     atol=atol,
 )
-
