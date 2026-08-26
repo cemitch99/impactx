@@ -28,7 +28,7 @@
 
 namespace impactx::particles::wakefields
 {
-    /** Function to handle CSR bending process including charge deposition,
+    /** Function to handle wakefield calculations, including charge deposition,
      * mean transverse position calculation, wakefield generation, and convolution.
      *
      * Returns immediately if slice_ds is zero.
@@ -140,7 +140,7 @@ namespace impactx::particles::wakefields
                 amrex::Real *const dptr_wake_function = wake_function.data();
 
                 // Derivative of the line density is required for the CSR wake
-                if (short_range_wakefields){
+                if (csr){
                     // Call charge density derivative function
                     impactx::particles::wakefields::DerivativeCharge1D(charge_distribution, source_data, bin_size,
                                                                    GetNumberDensity); // Use number derivatives for convolution with CSR
