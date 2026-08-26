@@ -13,6 +13,7 @@
 #include "particles/ImpactXParticleContainer.H"
 #include "ChargeBinning.H"
 #include "CSRBendElement.H"
+#include "ShortRangeWakeElement.H"
 #include "WakeConvolution.H"
 #include "WakePush.H"
 
@@ -50,11 +51,18 @@ namespace impactx::particles::wakefields
         BL_PROFILE("impactx::particles::wakefields::HandleWakefield")
 
         amrex::ParmParse pp_algo("algo");
+
         bool csr = false;
         pp_algo.queryAdd("csr", csr);
 
+        bool short_range_wake = false;
+        pp_algo.queryAdd("short_range_wake", short_range_wake);
+
         // Call the CSR bend function
         auto const [element_has_csr, R] = impactx::particles::wakefields::CSRBendElement(element_variant, particle_container.GetRefParticle());
+
+        // Call the function for short range wake elements
+        auto const [element_has_short_range_wake, parameter] = impactx::particles::wakefields::ShortRangeWakeElement(element_variant, particle_container.GetRefParticle());
 
         // Enter loop if lattice has bend element
         if (csr && element_has_csr)
