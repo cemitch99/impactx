@@ -74,6 +74,9 @@ namespace impactx::particles::wakefields
             int csr_bins = 150;
             pp_algo.queryAddWithParser("csr_bins", csr_bins);
 
+            int wake_bins = 150; 
+            pp_algo.queryAddWithParser("wake_bins", wake_bins);
+
             // Measure beam size, extract the min, max of particle positions
             [[maybe_unused]] auto const [x_min, y_min, t_min, x_max, y_max, t_max] =
                 particle_container.MinAndMaxPositions();
@@ -101,7 +104,7 @@ namespace impactx::particles::wakefields
             bool const is_unity_particle_weight = false; // Only true if w = 1
             bool const GetNumberDensity = true;
 
-            int const num_bins = csr_bins;  // Set resolution
+            int const num_bins = (csr)? csr_bins : wake_bins;  // Set resolution
             amrex::Real const bin_min = t_min;
             amrex::Real const bin_max = t_max;
             amrex::Real const bin_size = (bin_max - bin_min) / (num_bins - 1);  // number of evaluation points
@@ -143,7 +146,7 @@ namespace impactx::particles::wakefields
                                                                    GetNumberDensity); // Use number derivatives for convolution with CSR
                 }
 
-                // Construct CSR wake function on 2N support
+                // Construct wake function on 2N support
                 auto const dR = R;  // for NVCC capture
                 amrex::ParallelFor(num_bins*2, [=] AMREX_GPU_DEVICE(int i) {
                     if (i < num_bins) {
