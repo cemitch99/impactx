@@ -15,9 +15,13 @@ sim = ImpactX()
 # set numerical parameters and IO control
 sim.max_level = 0
 sim.n_cell = [32, 32, 1]
-sim.blocking_factor_x = [32]
-sim.blocking_factor_y = [32]
+sim.blocking_factor_x = [16]
+sim.blocking_factor_y = [16]
 sim.blocking_factor_z = [1]
+# one box per level and process: the domain is chopped to the number of processes
+sim.max_grid_size_x = [64]
+sim.max_grid_size_y = [64]
+sim.max_grid_size_z = [64]
 
 sim.particle_shape = 2  # B-spline order
 sim.space_charge = "2D"
