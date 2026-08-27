@@ -659,6 +659,7 @@ namespace impactx::elements
         amrex::ParticleReal m_phase; //! RF driven phase in deg
         int m_mapsteps; //! number of map integration steps per slice
         int m_id; //! unique RF cavity id used for data lookup map
+        amrex::ParticleReal m_wake_data;  // dummy member for now
 
         int m_ncoef = 0; //! number of Fourier coefficients
         amrex::ParticleReal const * m_cos_h_data = nullptr; //! non-owning pointer to host cosine coefficients
