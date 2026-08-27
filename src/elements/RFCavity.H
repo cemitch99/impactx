@@ -154,7 +154,7 @@ namespace impactx::elements
             amrex::ParticleReal phase,
             std::vector<amrex::ParticleReal> cos_coef,
             std::vector<amrex::ParticleReal> sin_coef,
-            std::optional<std::tuple<std::vector<amrex::ParticleReal>,
+            [[maybe_unused]] std::optional<std::tuple<std::vector<amrex::ParticleReal>,
                        std::vector<amrex::ParticleReal>,
                        std::vector<amrex::ParticleReal>,
                        std::vector<amrex::ParticleReal>>> wake_data,
