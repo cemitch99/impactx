@@ -97,6 +97,19 @@ namespace impactx::elements
         amrex::Gpu::TrackedVector<amrex::ParticleReal> sin;
     };
 
+    /** On-axis wake function as specified by the user.
+     *
+     * Host data persists across simulations; device data is uploaded
+     * on-demand "lazily" on first use and released when AMReX shuts down.
+     */
+    struct CavityWakeFunction
+    {
+        amrex::Gpu::TrackedVector<amrex::ParticleReal> z_data;
+        amrex::Gpu::TrackedVector<amrex::ParticleReal> wake_x_data;
+        amrex::Gpu::TrackedVector<amrex::ParticleReal> wake_y_data;
+        amrex::Gpu::TrackedVector<amrex::ParticleReal> wake_z_data;
+    };
+
     struct RFCavity
     : public mixin::Named,
       public mixin::BeamOptic<RFCavity>,
@@ -140,6 +153,10 @@ namespace impactx::elements
             amrex::ParticleReal phase,
             std::vector<amrex::ParticleReal> cos_coef,
             std::vector<amrex::ParticleReal> sin_coef,
+            std::optional<std::tuple<std::vector<amrex::ParticleReal>,
+                       std::vector<amrex::ParticleReal>,
+                       std::vector<amrex::ParticleReal>,
+                       std::vector<amrex::ParticleReal>>> wake_data,
             amrex::ParticleReal dx = DEFAULT_dx,
             amrex::ParticleReal dy = DEFAULT_dy,
             amrex::ParticleReal rotation_degree = DEFAULT_rotation_degree,
