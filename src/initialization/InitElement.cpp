@@ -301,7 +301,7 @@ namespace detail
             std::vector<amrex::ParticleReal> cos_coef = ez.default_cos_coef;
             std::vector<amrex::ParticleReal> sin_coef = ez.default_sin_coef;
             std::vector<amrex::ParticleReal> z_data;
-            std::vector<amrex::ParticleReal> wake_x_data; 
+            std::vector<amrex::ParticleReal> wake_x_data;
             std::vector<amrex::ParticleReal> wake_y_data;
             std::vector<amrex::ParticleReal> wake_z_data;
             std::tuple<std::vector<amrex::ParticleReal>,
