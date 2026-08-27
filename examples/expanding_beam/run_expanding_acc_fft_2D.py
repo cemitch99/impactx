@@ -8,7 +8,7 @@
 
 import numpy as np
 
-from impactx import ImpactX, distribution, elements
+from impactx import Config, ImpactX, distribution, elements
 
 sim = ImpactX()
 
@@ -161,7 +161,8 @@ print("Computed Relative Change in Gamma:")
 relative_change_gamma = (gamma_f - gamma_i) / gamma_i
 print(f"  relative_change_gamma={relative_change_gamma:e}")
 
-atol = 3.0e-9
+# in SINGLE, the floor is float32 roundoff accumulated over the slice pushes
+atol = 3.0e-9 if Config.precision == "DOUBLE" else 1.0e-5
 rtol = 0.0
 print(f"  atol for gamma = {atol} (ignored: rtol~={rtol})")
 
