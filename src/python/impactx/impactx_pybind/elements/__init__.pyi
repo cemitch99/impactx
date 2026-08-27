@@ -4841,6 +4841,8 @@ class Source(mixin.Named, mixin.Thin):
         openpmd_path: str,
         active_once: bool = True,
         load_ref_particle: bool = True,
+        load_step: typing.SupportsInt | typing.SupportsIndex | None = None,
+        load_step_index: typing.SupportsInt | typing.SupportsIndex | None = None,
         name: str | None = None,
     ) -> None:
         """
@@ -4963,6 +4965,24 @@ class Source(mixin.Named, mixin.Thin):
         """
     @load_ref_particle.setter
     def load_ref_particle(self, arg1: bool) -> None: ...
+    @property
+    def load_step(self) -> int | None:
+        """
+        Which step (iteration) to load from the openPMD series: the ImpactX step at which the beam monitor wrote the beam, which is stored as the openPMD iteration in the file. Set at most one of load_step and load_step_index; if neither is set, the last step in the file is loaded.
+        """
+    @load_step.setter
+    def load_step(
+        self, arg1: typing.SupportsInt | typing.SupportsIndex | None
+    ) -> None: ...
+    @property
+    def load_step_index(self) -> int | None:
+        """
+        Which step (iteration) to load from the openPMD series, by position in the file: 0 is the first step and -1 the last, counting back from it as in Python (-2 is the second to last step). Set at most one of load_step and load_step_index; if neither is set, the last step in the file is loaded.
+        """
+    @load_step_index.setter
+    def load_step_index(
+        self, arg1: typing.SupportsInt | typing.SupportsIndex | None
+    ) -> None: ...
     @property
     def series_name(self) -> str:
         """
