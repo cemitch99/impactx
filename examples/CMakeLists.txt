@@ -2227,3 +2227,19 @@ add_impactx_test(chracc-depol-eb.py
     examples/spin_tracking/analysis_chracc_depolarization_EB.py
     OFF  # no plot script yet
 )
+
+# Expanding Beam in Uniform Accelerating Field with 3D Space Charge ###########
+add_impactx_test(expanding-acc.py
+    examples/expanding_beam/run_expanding_acc_fft.py
+    ON    # ImpactX MPI-parallel
+    OFF  # analysis in situ in run script
+    OFF  # no plot script yet
+)
+
+# Expanding Beam in Uniform Accelerating Field with 2D Space Charge ###########
+add_impactx_test(expanding-2d-acc.py
+    examples/expanding_beam/run_expanding_acc_fft_2D.py
+    ON    # ImpactX MPI-parallel
+    OFF  # analysis in situ in run script
+    OFF  # no plot script yet
+)
