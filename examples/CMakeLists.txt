@@ -2232,7 +2232,7 @@ add_impactx_test(chracc-depol-eb.py
 add_impactx_test(expanding-acc.py
     examples/expanding_beam/run_expanding_acc_fft.py
     ON    # ImpactX MPI-parallel
-    examples/expanding_beam/analysis_expanding_acc_fft.py
+    OFF  # analysis in situ in run script
     OFF  # no plot script yet
 )
 
@@ -2240,6 +2240,6 @@ add_impactx_test(expanding-acc.py
 add_impactx_test(expanding-2d-acc.py
     examples/expanding_beam/run_expanding_acc_fft_2D.py
     ON    # ImpactX MPI-parallel
-    examples/expanding_beam/analysis_expanding_acc_fft_2D.py
+    OFF  # analysis in situ in run script
     OFF  # no plot script yet
 )
