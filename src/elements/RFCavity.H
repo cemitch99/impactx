@@ -136,6 +136,7 @@ namespace impactx::elements
          * @param phase RF driven phase in deg
          * @param cos_coef TODO
          * @param sin_coef TODO
+         * @param wake_data Optional data describing single-particle wake function
          * @param dx horizontal translation error in m
          * @param dy vertical translation error in m
          * @param rotation_degree rotation error in the transverse plane [degrees]
