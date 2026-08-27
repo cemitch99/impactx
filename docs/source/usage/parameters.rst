@@ -2070,6 +2070,36 @@ When ImpactX needs to sort particles spatially, it will redistribute them over M
     The existing reference particle in that case needs to be manually configured before the tracking loop.
     This option acts during particle tracking, it has no effect in envelope or reference-particle-only tracking.
 
+.. pp:param:: <source_name>.load_step
+    :type: ``integer``
+    :default: unset (if neither option is set, the last step in the file is loaded)
+
+    Which step (iteration) to load from the openPMD series, selected by step number.
+
+    This is the ImpactX step at which the ``beam_monitor`` wrote the beam, which is stored as the
+    openPMD iteration in the file.
+    These step numbers are usually not consecutive, because the global step counter also advances in
+    the elements between two monitors: list them with, e.g., `openpmd-ls <https://openpmd-api.readthedocs.io/en/0.17.1/utilities/cli.html>`__ before selecting one.
+    A step that is not in the file is an error, which lists the steps that are in it.
+    A negative value is an error, too: the step numbers in a file are not negative, use
+    ``load_step_index`` to count back from the last step.
+
+    Set at most one of ``load_step`` and ``load_step_index``.
+
+.. pp:param:: <source_name>.load_step_index
+    :type: ``integer``
+    :default: unset (if neither option is set, the last step in the file is loaded)
+
+    Which step (iteration) to load from the openPMD series, selected by position in the file.
+
+    ``0`` is the first step in the file and ``-1`` is the last, counting back from it as in Python,
+    e.g. ``-2`` is the second to last step.
+    Use this when the step numbers in the file are not known, e.g. ``-2`` to continue from the turn
+    before the last one that a ring wrote.
+    An index that reaches past either end of the file is an error, which lists the steps in it.
+
+    Set at most one of ``load_step`` and ``load_step_index``.
+
 
 ``spin_map``
 ^^^^^^^^^^^^
