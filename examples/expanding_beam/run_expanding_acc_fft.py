@@ -13,7 +13,7 @@ from impactx import ImpactX, distribution, elements
 sim = ImpactX()
 
 # set numerical parameters and IO control
-sim.max_level = 1
+sim.max_level = 0
 sim.n_cell = [32, 32, 32]
 sim.blocking_factor_x = [16]
 sim.blocking_factor_y = [16]
@@ -27,7 +27,7 @@ sim.particle_shape = 2  # B-spline order
 sim.space_charge = "3D"
 sim.poisson_solver = "fft"
 sim.dynamic_size = True
-sim.prob_relative = [1.2, 1.1]
+sim.prob_relative = [1.1]
 
 # beam diagnostics
 # sim.diagnostics = False  # benchmarking
@@ -39,7 +39,7 @@ sim.init_grids()
 # initial beam properties
 kin_energy_MeV = 250  # reference energy
 bunch_charge_C = 1.0e-9  # used with space charge
-npart = 10000  # number of macro particles (outside tests, use 1e5 or more)
+npart = 100000  # number of macro particles (outside tests, use 1e5 or more)
 
 #   reference particle
 ref = sim.beam.ref
