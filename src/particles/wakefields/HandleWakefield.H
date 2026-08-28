@@ -179,7 +179,7 @@ namespace impactx::particles::wakefields
                             dptr_wake_function[i] = impactx::particles::wakefields::w_l_csr(s, dR, bin_size);
                         }
                     });
-                
+
                     // Call convolution function
                     convolved_wakefield = impactx::particles::wakefields::convolve_fft(source_data, wake_function, bin_size);
                 }
@@ -196,7 +196,7 @@ namespace impactx::particles::wakefields
                             dptr_wake_function[i] = impactx::particles::wakefields::w_user(s, wake_z_data, bin_min, bin_size);
                         }
                     });
-                 
+
                     // Call convolution function
                     convolved_wakefield = impactx::particles::wakefields::convolve_fft(source_data, wake_function, bin_size);
                 }

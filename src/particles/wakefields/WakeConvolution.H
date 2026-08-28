@@ -90,7 +90,7 @@ namespace impactx::particles::wakefields
     );
 
     /** Interpolated User-Defined Wake Function
-     * 
+     *
      * @param[in] s value along s [m]
      * @param[in] z_data tabulated z data supplied by user [m]
      * @param[in] wake_data tabulated wake data supplied by user [V/m/pC/mm]
@@ -112,7 +112,7 @@ namespace impactx::particles::wakefields
         amrex::Real const idzreal = static_cast<amrex::Real>(idz);
         amrex::Real lambda = (s - z_min) / bin_size - idzreal;
         amrex::Real wake_interp = (1_prt-lambda)*wake_data[idz] + lambda*wake_data[idz+1];
-        
+
         return wake_interp;
      }
 
