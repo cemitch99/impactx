@@ -20,6 +20,7 @@
 #include <AMReX_GpuContainers.H>
 #include <AMReX_GpuDevice.H>
 #include <AMReX_GpuParallelReduce.H>
+#include <AMReX_Print.H>
 
 #include <cmath>
 #include <stdexcept>
@@ -58,12 +59,14 @@ namespace impactx::particles::wakefields
 
         bool short_range_wakefields = false;
         pp_algo.queryAdd("short_range_wakefields", short_range_wakefields);
+        amrex::Print() << "short_range_wakefields = " << short_range_wakefields << "\n";
 
         // Call the CSR bend function
         auto const [element_has_csr, R] = impactx::particles::wakefields::CSRBendElement(element_variant, particle_container.GetRefParticle());
 
         // Call the function preparing short range wake elements
         [[maybe_unused]] auto const [element_has_short_range_wake, z_data, wake_x_data, wake_y_data, wake_z_data] = impactx::particles::wakefields::ShortRangeWakeElement(element_variant, particle_container.GetRefParticle());
+        amrex::Print() << "size of z_data = " << z_data.size();
 
         // Which effect applies to this very element?
         bool const apply_csr = csr && element_has_csr;
@@ -84,6 +87,7 @@ namespace impactx::particles::wakefields
 
             int wake_bins = 150;
             pp_algo.queryAddWithParser("wake_bins", wake_bins);
+            amrex::Print() << "wake_bins = " << wake_bins << "\n";
 
             // Measure beam size, extract the min, max of particle positions
             [[maybe_unused]] auto const [x_min, y_min, t_min, x_max, y_max, t_max] =
@@ -138,9 +142,6 @@ namespace impactx::particles::wakefields
             // same length.
             amrex::Gpu::DeviceVector<amrex::Real> convolved_wakefield(num_bins, 0.0);
             if (amrex::ParallelDescriptor::IOProcessor()) {
-                // Call the mean transverse position function
-                impactx::particles::wakefields::MeanTransversePosition(particle_container, mean_x, mean_y, bin_min,
-                                                                       bin_size, is_unity_particle_weight);
 
                 // Data for line density (derivative, in the case of CSR) source and 1D wake function
                 amrex::Gpu::DeviceVector<amrex::Real> source_data(charge_distribution.size() - 1, 0.0);
@@ -152,6 +153,14 @@ namespace impactx::particles::wakefields
                     // Call charge density derivative function
                     impactx::particles::wakefields::DerivativeCharge1D(charge_distribution, source_data, bin_size,
                                                                    GetNumberDensity); // Use number derivatives for convolution with CSR
+                }
+
+                // Slice mean transverse position is required for the short range structure wake
+                if (apply_short_range_wake){
+                    // Call the mean transverse position function
+                    impactx::particles::wakefields::MeanTransversePosition(particle_container, mean_x, mean_y, bin_min,
+                                                                           bin_size, is_unity_particle_weight);
+                    amrex::Print() << "z_data[0] = " << z_data.at(0);
                 }
 
                 // Construct wake function on 2N support

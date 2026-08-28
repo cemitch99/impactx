@@ -14,6 +14,8 @@ sim = ImpactX()
 
 # set numerical parameters and IO control
 sim.space_charge = False
+sim.short_range_wakefields = True
+sim.wake_bins = 4
 # sim.diagnostics = False  # benchmarking
 sim.slice_step_diagnostics = False
 
@@ -59,6 +61,9 @@ z_wake = wake_data_in[:, 0]
 wake_x_data = wake_data_in[:, 1]
 wake_y_data = wake_data_in[:, 2]
 wake_z_data = wake_data_in[:, 3]
+
+print("z_wake = ")
+print(z_wake)
 
 #   Drift elements
 dr1 = elements.Drift(name="dr1", ds=0.4, nslice=1)

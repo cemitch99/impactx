@@ -77,8 +77,10 @@ rf.wake_z_data = 0.0 0.0 0.0 0.0
 ###############################################################################
 # Algorithms
 ###############################################################################
+algo.particle_shape = 2
 algo.space_charge = false
-algo.short_range_wakefields = false
+algo.short_range_wakefields = true
+algo.wake_bins = 4
 
 ###############################################################################
 # Diagnostics
