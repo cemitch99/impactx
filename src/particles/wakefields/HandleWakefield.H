@@ -63,7 +63,7 @@ namespace impactx::particles::wakefields
         auto const [element_has_csr, R] = impactx::particles::wakefields::CSRBendElement(element_variant, particle_container.GetRefParticle());
 
         // Call the function preparing short range wake elements
-        [[maybe_unused]] auto const [element_has_short_range_wake, parameter] = impactx::particles::wakefields::ShortRangeWakeElement(element_variant, particle_container.GetRefParticle());
+        [[maybe_unused]] auto const [element_has_short_range_wake, z_data, wake_x_data, wake_y_data, wake_z_data] = impactx::particles::wakefields::ShortRangeWakeElement(element_variant, particle_container.GetRefParticle());
 
         // Which effect applies to this very element?
         bool const apply_csr = csr && element_has_csr;

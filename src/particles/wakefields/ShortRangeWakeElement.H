@@ -32,19 +32,26 @@ namespace impactx::particles::wakefields
      * @returns boolean flag indicating if the element supports short range wakefields
      */
     template <typename VariantType>
-    std::tuple<bool, amrex::Real>
+    std::tuple<bool, std::vector<amrex::ParticleReal>, std::vector<amrex::ParticleReal>, std::vector<amrex::ParticleReal>, std::vector<amrex::ParticleReal>>
     ShortRangeWakeElement (
         VariantType const& element_variant,
         [[maybe_unused]] RefPart const & refpart
     )
     {
-        amrex::Real parameter = 0;
+        std::vector<amrex::ParticleReal> z_data;
+        std::vector<amrex::ParticleReal> wake_x_data;
+        std::vector<amrex::ParticleReal> wake_y_data;
+        std::vector<amrex::ParticleReal> wake_z_data;
         bool element_has_short_range_wake = false;
 
         if (std::holds_alternative<elements::RFCavity>(element_variant))
         {
             // Access element parameters as needed.
-            // auto& element = std::get<elements::RFCavity>(element_variant);
+            auto& element = std::get<elements::RFCavity>(element_variant);
+            z_data = elements::RFCavity::WakeData::get(element.m_wake_id)->z_data.host_const();
+            wake_x_data = elements::RFCavity::WakeData::get(element.m_wake_id)->wake_x_data.host_const();
+            wake_y_data = elements::RFCavity::WakeData::get(element.m_wake_id)->wake_y_data.host_const();
+            wake_z_data = elements::RFCavity::WakeData::get(element.m_wake_id)->wake_z_data.host_const();
             element_has_short_range_wake = true;
         }
         else if (std::holds_alternative<elements::ShortRF>(element_variant))
@@ -66,7 +73,7 @@ namespace impactx::particles::wakefields
             element_has_short_range_wake = true;
         }
 
-        return {element_has_short_range_wake, parameter};
+        return {element_has_short_range_wake, z_data, wake_x_data, wake_y_data, wake_z_data};
     }
 
 } // namespace impactx::particles::wakefields
