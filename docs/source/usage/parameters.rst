@@ -1035,6 +1035,11 @@ and momenta :math:`(px,py,pt)` are dimensionless.  So, for example, :math:`R(1,1
 
 The internal tracking methods used by ImpactX are symplectic.  However, if a user-defined linear map :math:`R` is provided, it is up to the user to ensure that the matrix :math:`R` is symplectic.  Otherwise, this condition may be violated.
 
+.. note::
+
+   This element cannot be sliced, so a collective effect kick (space charge, CSR, ISR) is applied as ``K(ds/2) M(ds) K(ds/2)``: half a kick, the element map, then the other half, at two collective solves per element (see :pp:param:`algo.strang_split`).
+   Model it as several shorter elements to resolve collective effects along its length.
+
 This element is defined via ``<linear_map_name>.type = linear_map`` and requires these additional parameters:
 
 .. pp:param:: <linear_map_name>.R(i,j)
@@ -2122,6 +2127,11 @@ The matrix :math:`A` multiplies the phase space vector :math:`(x,p_x,y,p_y,t,p_t
 and momenta :math:`(p_x,p_y,p_t)` are dimensionless.  The three components output are dimensionless.  So, for example, :math:`A(1,1)` has units of 1/m, and :math:`A(1,2)` is dimensionless.
 All three components of :math:`v` are dimensionless.
 
+.. note::
+
+   This element cannot be sliced, so a collective effect kick (space charge, CSR, ISR) is applied as ``K(ds/2) M(ds) K(ds/2)``: half a kick, the element map, then the other half, at two collective solves per element (see :pp:param:`algo.strang_split`).
+   Model it as several shorter elements to resolve collective effects along its length.
+
 This element is defined via ``<spin_map_name>.type = spin_map`` and requires these additional parameters:
 
 .. pp:param:: <spin_map_name>.v(i)
@@ -2298,12 +2308,26 @@ This requires these additional parameters:
 Collective Effects
 ------------------
 
+.. pp:param:: algo.strang_split
+    :type: ``boolean``
+    :optional:
+    :default: ``true``
+
+    Whether to compose the collective effect kicks and the element transport in a second-order, time-symmetric Strang split.
+    Per slice, this applies ``M(ds/2) K(ds) M(ds/2)``: half of the slice transport ``M``, the collective kick ``K`` at the slice midpoint, then the other half.
+    The collective solve still runs once per slice, so the second order comes at the cost of the first-order composition and far fewer slices are needed for the same accuracy.
+
+    Elements that cannot be subdivided (``Programmable``, ``LinearMap`` and ``SpinMap``) halve the kick instead, ``K(ds/2) M(ds) K(ds/2)``, which needs two collective solves per slice.
+
+    Setting this to ``false`` composes kick and transport to first order, ``K(ds) M(ds)``, as most other beam dynamics codes do.
+    This is useful to compare against those codes and to study the convergence with ``nslice``.
+
 .. _running-cpp-parameters-collective-spacecharge:
 
 Space Charge
 ^^^^^^^^^^^^
 
-Space charge kicks are applied in between slices of thick :ref:`lattice elements <running-cpp-parameters-lattice>`.
+Space charge kicks are applied per slice of thick :ref:`lattice elements <running-cpp-parameters-lattice>`.
 See there ``nslice`` option on lattice elements for slicing.
 
 .. pp:param:: algo.space_charge

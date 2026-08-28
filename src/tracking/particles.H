@@ -27,49 +27,86 @@
 
 namespace impactx
 {
-    /** Traverse the lattice for particle (beam + reference) tracking, applying the
-     *  per-slice physics as two composable operations.
+    /** Traverse the lattice for particle (beam + reference) tracking.
      *
      *  This function performs the nested lattice traversal (looping over periods,
      *  then over the beamline elements in each period, then over the
      *  collective-effect slices within each element). It also maintains the
      *  user-defined hooks, the reference-particle edge update and the global step
      *  counter.
-     *  The caller supplies the per-slice physics as a @p collective_kicks
-     *  (space charge, CSR, ISR, ...) and an @p element_push
-     *  (the external-field of an element). Keeping the kick and the transport as
-     *  separate, composable operations isolates the collective-effect composition:
-     *  forward, this applies ``K`` then ``M`` per slice (first order).
-     *  Planned: second-order Strang split ``K(1/2) [M K]^(n-1) M K(1/2)``.
      *
-     *  Hooks, the reference-particle edge update, the step counter and the
-     *  tracking-state element pointer are maintained on ``Forward`` tracking only.
+     *  The caller supplies the per-slice physics as three composable operations: the
+     *  collective kick @p collective_kicks ``K`` (space charge, CSR, ISR, ...), the
+     *  element transport @p element_push ``M`` (the external-field map of one
+     *  element slice) and the @p slice_diagnostics book-keeping (boundary conditions,
+     *  lost particles, slice diagnostics), which runs once per slice.
+     *
+     *  With collective effects active (@p collective_effects) and @p strang_split on, every
+     *  slice is composed as a second-order, time-symmetric Strang split. Which of the two
+     *  operators is halved depends on the element:
+     *      ``M(ds/2) K(ds) M(ds/2)``
+     *  for an element that can be subdivided (@see elements::can_slice): half of the slice
+     *  transport, the collective kick at the slice midpoint, then the other half. The half
+     *  transports are realized by temporarily doubling the element's ``nslice``, which simply
+     *  halves the ds per slice. The expensive collective solve still runs only once per slice.
+     *      ``K(ds/2) M(ds) K(ds/2)``
+     *  for every other element: the kick is linear in the slice length, so halving it needs no
+     *  subdivision, at the price of a second collective solve per slice.
+     *  Turning the split off composes kick and transport to first order instead:
+     *  ``K(ds) M(ds)`` forward and ``M(ds) K(ds)`` backward.
+     *  Zero-length elements and runs without collective effects apply ``M`` alone, since a
+     *  kick over zero length leaves the momenta unchanged. Typically, thin elements are
+     *  embedded in drift elements, which experience the collective effect kicks.
+     *
+     *  The reference-particle edge is set once per element and in both directions:
+     *  s-dependent (soft-edge) maps integrate their on-axis field profile relative to it,
+     *  so the second half-map continues where the first one ended.
+     *
+     *  ``Backward`` tracking mirrors the traversal (periods, elements and slices in
+     *  reverse), reverses each element map (``M -> M^-1``) and inverts each kick (the
+     *  negated ``ds`` makes ``slice_ds`` negative). This is the exact time-reverse of
+     *  forward tracking. Hooks, the step counter and the tracking-state element pointer
+     *  are maintained on ``Forward`` tracking only.
      *
      *  The number of periods (``lattice.periods``) and verbosity (``impactx.verbose``)
      *  are read from the inputs. The step counter is advanced from its current value,
      *  so the caller is expected to reset it (to 0) before a forward run.
      *
      *  @tparam HookFn callable ``void (std::string const & name)`` invoking a named hook
-     *  @tparam CollectiveKicks callable, see @p ElementPush for the signature
+     *  @tparam CollectiveKicks callable
+     *    ``void (elements::KnownElements & element, amrex::ParticleReal slice_ds)``
+     *    applying the collective-effect kick over the length @p slice_ds
      *  @tparam ElementPush callable
-     *    ``void (elements::KnownElements & element, int element_index, int slice_step,
-     *            int nslice, amrex::ParticleReal slice_ds, int step, int period)``
+     *    ``void (elements::KnownElements & element, int step, int period)``
+     *    applying one slice of the element's external-field transport map (no book-keeping)
+     *  @tparam SliceDiagnostics callable ``void (int step, int period)`` running the
+     *    once-per-slice book-keeping (boundary conditions, lost particles, slice diagnostics)
      *  @param[in,out] lattice the beamline elements to traverse
      *  @param[in,out] pc beam particle container (reference particle / edge update)
      *  @param[in,out] tracking_state tracking state shared with hooks (element, step, period);
      *                 its ``m_direction`` selects the traversal direction
+     *  @param[in] collective_effects whether any collective kick is active in this run
+     *  @param[in] strang_split whether to Strang-split the collective kicks (second order),
+     *                 false composes kick and transport to first order
      *  @param[in] call_hook registry for user-specified callback hooks
-     *  @param[in] collective_kicks applied collective effect kicks (SC, CSR, ISR, etc.), per-slice
-     *  @param[in] element_push applied the external-field of an element, per-slice
+     *  @param[in] collective_kicks applies the collective effect kicks (SC, CSR, ISR, ...)
+     *  @param[in] element_push applies the external-field map of one element slice
+     *  @param[in] slice_diagnostics once-per-slice book-keeping and diagnostics
      */
-    template <typename HookFn, typename CollectiveKicks, typename ElementPush>
+    template <
+        typename HookFn, typename CollectiveKicks,
+        typename ElementPush, typename SliceDiagnostics
+    >
     void track_lattice_particles (
         std::list<elements::KnownElements> & lattice,
         ImpactXParticleContainer & pc,
         TrackingState & tracking_state,
+        bool collective_effects,
+        bool strang_split,
         HookFn const & call_hook,
         CollectiveKicks && collective_kicks,
-        ElementPush && element_push
+        ElementPush && element_push,
+        SliceDiagnostics && slice_diagnostics
     )
     {
         bool const forward = tracking_state.forward();
@@ -88,11 +125,12 @@ namespace impactx
             int period
         )
         {
+            // set the reference-particle edge to the entrance of this element: s-dependent
+            // (soft-edge) maps integrate their on-axis field profile relative to it
+            pc.SetRefParticleEdge();
+
             if (forward)
             {
-                // update element edge of the reference particle
-                pc.SetRefParticleEdge();
-
                 // book-keeping: currently visited element reference
                 tracking_state.m_element = &element_variant;
 
@@ -101,14 +139,25 @@ namespace impactx
             }
             else
             {
-                // back-tracking: invert this element's map in place so the element
-                // transport below applies the inverse map.
+                // backward tracking: invert this element's map in place so the element
+                // transport below applies the inverse map M^-1.
                 elements::reverse(element_variant);
             }
 
             // number of slices used for the application of space charge
             int const nslice = elements::nslice(element_variant);
             amrex::ParticleReal const slice_ds = elements::slice_ds(element_variant); // in meters
+
+            // zero-length elements receive no kick: it would leave the momenta unchanged
+            bool const kick = collective_effects && slice_ds != amrex::ParticleReal(0);
+
+            // second-order, time-symmetric Strang split of the kick ``K`` and transport ``M``
+            bool const strang = kick && strang_split;
+
+            // which of the two is halved: an element that can be subdivided puts the
+            // transport outside (MKM), any other one halves the kick instead (KMK)
+            bool const split_transport = strang && elements::can_slice(element_variant);
+            bool const split_kick = strang && !split_transport;
 
             // sub-steps for space charge within the element
             for (int s = 0; s < nslice; ++s)
@@ -128,17 +177,45 @@ namespace impactx
                     call_hook("before_slice");
                 }
 
-                // TODO: Strang-split here (#846 / #920)
-                if (forward)
+                if (split_transport)
                 {
+                    // M(ds/2) K(ds) M(ds/2): the doubled slice count halves each transport
+                    elements::ScopedNslice const half_slices(element_variant, 2 * nslice);
+                    element_push(element_variant, step, period);
                     collective_kicks(element_variant, slice_ds);
                     element_push(element_variant, step, period);
+                }
+                else if (split_kick)
+                {
+                    // K(ds/2) M(ds) K(ds/2): the kick is linear in the slice length, so
+                    // halving it needs no subdivision of the element
+                    amrex::ParticleReal const half_ds = amrex::ParticleReal(0.5) * slice_ds;
+                    collective_kicks(element_variant, half_ds);
+                    element_push(element_variant, step, period);
+                    collective_kicks(element_variant, half_ds);
+                }
+                else if (kick)
+                {
+                    // the split is turned off: first-order composition
+                    if (forward)
+                    {
+                        collective_kicks(element_variant, slice_ds);
+                        element_push(element_variant, step, period);
+                    }
+                    else
+                    {
+                        element_push(element_variant, step, period);
+                        collective_kicks(element_variant, slice_ds);
+                    }
                 }
                 else
                 {
+                    // zero-length slice or no collective effects: transport only
                     element_push(element_variant, step, period);
-                    collective_kicks(element_variant, slice_ds);
                 }
+
+                // once-per-slice book-keeping and diagnostics
+                slice_diagnostics(step, period);
             }
 
             if (forward)
