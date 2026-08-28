@@ -23,6 +23,7 @@
 
 #include <cmath>
 #include <stdexcept>
+#include <string>
 #include <vector>
 
 
@@ -64,11 +65,18 @@ namespace impactx::particles::wakefields
         // Call the function preparing short range wake elements
         [[maybe_unused]] auto const [element_has_short_range_wake, parameter] = impactx::particles::wakefields::ShortRangeWakeElement(element_variant, particle_container.GetRefParticle());
 
+        // Which effect applies to this very element?
+        bool const apply_csr = csr && element_has_csr;
+        bool const apply_short_range_wake = short_range_wakefields && element_has_short_range_wake;
+
         // Enter loop if wakefields are turned on
-        if ((csr && element_has_csr) || (short_range_wakefields && element_has_short_range_wake))
+        if (apply_csr || apply_short_range_wake)
         {
 #ifndef ImpactX_USE_FFT
-            throw std::runtime_error("algo.csr or algo.short_range_wakefields was requested but ImpactX was not compiled with FFT support. Recompile with ImpactX_FFT=ON.");
+            throw std::runtime_error(
+                std::string(apply_csr ? "algo.csr" : "algo.short_range_wakefields") +
+                " was requested but ImpactX was not compiled with FFT support. Recompile with ImpactX_FFT=ON."
+            );
 #endif
 
             int csr_bins = 150;
@@ -104,7 +112,7 @@ namespace impactx::particles::wakefields
             bool const is_unity_particle_weight = false; // Only true if w = 1
             bool const GetNumberDensity = true;
 
-            int const num_bins = (csr)? csr_bins : wake_bins;  // Set resolution
+            int const num_bins = apply_csr ? csr_bins : wake_bins;  // Set resolution
             amrex::Real const bin_min = t_min;
             amrex::Real const bin_max = t_max;
             amrex::Real const bin_size = (bin_max - bin_min) / (num_bins - 1);  // number of evaluation points
@@ -140,7 +148,7 @@ namespace impactx::particles::wakefields
                 amrex::Real *const dptr_wake_function = wake_function.data();
 
                 // Derivative of the line density is required for the CSR wake
-                if (csr){
+                if (apply_csr){
                     // Call charge density derivative function
                     impactx::particles::wakefields::DerivativeCharge1D(charge_distribution, source_data, bin_size,
                                                                    GetNumberDensity); // Use number derivatives for convolution with CSR

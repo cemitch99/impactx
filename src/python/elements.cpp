@@ -2058,7 +2058,10 @@ void init_elements(py::module& m)
                     std::make_pair("phase", rfc.m_phase),
                     std::make_pair("cos_coefficients", RFCavity::DynamicData::get(rfc.m_id)->cos.host_const()),
                     std::make_pair("sin_coefficients", RFCavity::DynamicData::get(rfc.m_id)->sin.host_const()),
-                    std::make_pair("wake_data", rfc.m_wake_data),
+                    std::make_pair("z_data", RFCavity::WakeData::get(rfc.m_wake_id)->z_data.host_const()),
+                    std::make_pair("wake_x_data", RFCavity::WakeData::get(rfc.m_wake_id)->wake_x_data.host_const()),
+                    std::make_pair("wake_y_data", RFCavity::WakeData::get(rfc.m_wake_id)->wake_y_data.host_const()),
+                    std::make_pair("wake_z_data", RFCavity::WakeData::get(rfc.m_wake_id)->wake_z_data.host_const()),
                     std::make_pair("mapsteps", rfc.m_mapsteps)
                 );
             }

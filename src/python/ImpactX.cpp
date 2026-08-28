@@ -291,7 +291,7 @@ void init_ImpactX (py::module& m)
         )
         .def_property("wake_bins",
             [](ImpactX & /* ix */) {
-                return detail::get_or_throw<bool>("algo", "wake_bins");
+                return detail::get_or_throw<int>("algo", "wake_bins");
             },
             [](ImpactX & /* ix */, int wake_bins) {
                 amrex::ParmParse pp_algo("algo");
