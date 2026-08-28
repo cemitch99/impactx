@@ -166,21 +166,41 @@ namespace impactx::particles::wakefields
                                                                            bin_size, is_unity_particle_weight);
                 }
 
-                // Construct wake function on 2N support
-                auto const dR = R;  // for NVCC capture
-                amrex::ParallelFor(num_bins*2, [=] AMREX_GPU_DEVICE(int i) {
-                    if (i < num_bins) {
-                        amrex::Real const s = static_cast<amrex::Real>(i) * bin_size;
-                        dptr_wake_function[i] = impactx::particles::wakefields::w_l_csr(s, dR, bin_size);
-                    }
-                    else if (i > num_bins) {
-                        amrex::Real const s = static_cast<amrex::Real>(i - 2*num_bins) * bin_size;
-                        dptr_wake_function[i] = impactx::particles::wakefields::w_l_csr(s, dR, bin_size);
-                    }
-                });
+                if (apply_csr){
+                    // Construct wake function on 2N support
+                    auto const dR = R;  // for NVCC capture
+                    amrex::ParallelFor(num_bins*2, [=] AMREX_GPU_DEVICE(int i) {
+                        if (i < num_bins) {
+                            amrex::Real const s = static_cast<amrex::Real>(i) * bin_size;
+                            dptr_wake_function[i] = impactx::particles::wakefields::w_l_csr(s, dR, bin_size);
+                        }
+                        else if (i > num_bins) {
+                            amrex::Real const s = static_cast<amrex::Real>(i - 2*num_bins) * bin_size;
+                            dptr_wake_function[i] = impactx::particles::wakefields::w_l_csr(s, dR, bin_size);
+                        }
+                    });
+                
+                    // Call convolution function
+                    convolved_wakefield = impactx::particles::wakefields::convolve_fft(source_data, wake_function, bin_size);
+                }
+                if (apply_short_range_wake){
+                    // TODO:  This section needs to be updated to use the interpolated data from z_data, wake_z_data, etc.
+                    // Construct wake function on 2N support
+                    amrex::ParallelFor(num_bins*2, [=] AMREX_GPU_DEVICE(int i) {
+                        if (i < num_bins) {
+                            amrex::Real const s = static_cast<amrex::Real>(i) * bin_size;
+                            dptr_wake_function[i] = impactx::particles::wakefields::w_user(s, wake_z_data, bin_min, bin_size);
+                        }
+                        else if (i > num_bins) {
+                            amrex::Real const s = static_cast<amrex::Real>(i - 2*num_bins) * bin_size;
+                            dptr_wake_function[i] = impactx::particles::wakefields::w_user(s, wake_z_data, bin_min, bin_size);
+                        }
+                    });
+                 
+                    // Call convolution function
+                    convolved_wakefield = impactx::particles::wakefields::convolve_fft(source_data, wake_function, bin_size);
+                }
 
-                // Call convolution function
-                convolved_wakefield = impactx::particles::wakefields::convolve_fft(source_data, wake_function, bin_size);
             }
 
             // Broadcast the global wakefield from the IO processor (which alone

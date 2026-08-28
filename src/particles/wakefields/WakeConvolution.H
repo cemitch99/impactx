@@ -89,6 +89,33 @@ namespace impactx::particles::wakefields
         amrex::Real L
     );
 
+    /** Interpolated User-Defined Wake Function
+     * 
+     * @param[in] s value along s [m]
+     * @param[in] z_data tabulated z data supplied by user [m]
+     * @param[in] wake_data tabulated wake data supplied by user [V/m/pC/mm]
+     * @param[in] bin_size bin size [m]
+     * @return interpolated value wake function [V/m/pC/mm]
+     */
+    AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE
+    amrex::Real
+    w_user (
+        amrex::Real s,
+        std::vector<amrex::ParticleReal> wake_data,
+        amrex::Real const z_min,
+        amrex::Real const bin_size
+    )
+    {
+        using namespace amrex::literals;
+
+        int const idz = static_cast<int>((s - z_min) / bin_size);
+        amrex::Real const idzreal = static_cast<amrex::Real>(idz);
+        amrex::Real lambda = (s - z_min) / bin_size - idzreal;
+        amrex::Real wake_interp = (1_prt-lambda)*wake_data[idz] + lambda*wake_data[idz+1];
+        
+        return wake_interp;
+     }
+
     /** CSR Wake Function
      *
      * Eq. (28) in:
