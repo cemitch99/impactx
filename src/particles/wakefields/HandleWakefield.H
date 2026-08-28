@@ -72,6 +72,10 @@ namespace impactx::particles::wakefields
         bool const apply_csr = csr && element_has_csr;
         bool const apply_short_range_wake = short_range_wakefields && element_has_short_range_wake;
 
+        if (apply_short_range_wake){
+            amrex::Print() << "z_data[0] = " << z_data.at(0);
+        }
+
         // Enter loop if wakefields are turned on
         if (apply_csr || apply_short_range_wake)
         {
@@ -160,7 +164,6 @@ namespace impactx::particles::wakefields
                     // Call the mean transverse position function
                     impactx::particles::wakefields::MeanTransversePosition(particle_container, mean_x, mean_y, bin_min,
                                                                            bin_size, is_unity_particle_weight);
-                    amrex::Print() << "z_data[0] = " << z_data.at(0);
                 }
 
                 // Construct wake function on 2N support

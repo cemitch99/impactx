@@ -69,7 +69,7 @@ rf.cos_coefficients =                    \
                 1.8685171825676386e-004
 rf.sin_coefficients = 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0  \
                 0 0 0 0 0 0 0
-rf.z_data = 0.0 0.0 0.0 0.0
+rf.z_data = 0.5 0.0 0.0 0.0
 rf.wake_x_data = 0.0 0.0 0.0 0.0
 rf.wake_y_data = 0.0 0.0 0.0 0.0
 rf.wake_z_data = 0.0 0.0 0.0 0.0
