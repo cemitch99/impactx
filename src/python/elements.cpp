@@ -2089,7 +2089,7 @@ void init_elements(py::module& m)
              py::arg("phase"),
              py::arg("cos_coefficients"),
              py::arg("sin_coefficients"),
-             py::arg("z_data") = py::none(),   
+             py::arg("z_data") = py::none(),
              py::arg("wake_x_data") = py::none(),
              py::arg("wake_y_data") = py::none(),
              py::arg("wake_z_data") = py::none(),
