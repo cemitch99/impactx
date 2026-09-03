@@ -74,10 +74,14 @@ class PipeAperture:
     @property
     def aperture_x(self) -> float:
         """
-        horizontal aperture in m
+        horizontal aperture in m; zero or less removes the aperture restriction
         """
+    @aperture_x.setter
+    def aperture_x(self, arg1: typing.SupportsFloat | typing.SupportsIndex) -> None: ...
     @property
     def aperture_y(self) -> float:
         """
-        vertical aperture in m
+        vertical aperture in m; zero or less removes the aperture restriction
         """
+    @aperture_y.setter
+    def aperture_y(self, arg1: typing.SupportsFloat | typing.SupportsIndex) -> None: ...

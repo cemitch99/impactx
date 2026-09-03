@@ -18,7 +18,7 @@
 #include "particles/spacecharge/HandleSpacecharge.H"
 #include "particles/wakefields/HandleISR.H"
 #include "particles/wakefields/HandleWakefield.H"
-#include "tracking/particles.H"
+#include "tracking/common.H"
 
 #include <AMReX.H>
 #include <AMReX_AmrParGDB.H>
@@ -92,6 +92,17 @@ namespace impactx
         pp_algo.query("csr", csr);
         bool isr = false;
         pp_algo.query("isr", isr);
+
+        // whether any collective effect is active: only then is a kick applied per slice
+        bool const collective_effects =
+            (space_charge != SpaceChargeAlgo::False) || csr || isr;
+
+        // second-order Strang split of the collective kicks, on by default
+        //   Disabling it composes kick and transport to first order instead, which is what
+        //   most other codes do: useful to compare against them and to show convergence.
+        bool strang_split = true;
+        pp_algo.query("strang_split", strang_split);
+
         bool spin = false;
         pp_algo.query("spin", spin);
 
@@ -108,6 +119,9 @@ namespace impactx
             amrex::Print() << " CSR effects: " << csr << "\n";
             amrex::Print() << " ISR effects: " << isr << "\n";
             amrex::Print() << " Spin tracking: " << spin << "\n";
+            if (collective_effects) {
+                amrex::Print() << " Strang split: " << strang_split << "\n";
+            }
         }
 
         // collective effect kicks applied per element slice:
@@ -127,8 +141,11 @@ namespace impactx
             particles::spacecharge::HandleSpacecharge(amr_data, [this](){ this->ResizeMesh(); }, slice_ds);
         };
 
-        // the per-slice external-field transport map and per-slice housekeeping
-        auto element_push = [this, &pc, verbose, &pp_diag, diag_enable, &early_params_checked] (
+        // the external-field transport map ``M`` of one element slice
+        //   The Strang split around collective effects applies this twice per slice, once
+        //   per half-map, so it carries no book-keeping: that lives in @see
+        //   slice_diagnostics below.
+        auto element_push = [&pc] (
             elements::KnownElements & element_variant,
             int step_,
             int period_
@@ -136,7 +153,16 @@ namespace impactx
         {
             // push all particles with external maps
             push(*pc, element_variant, step_, period_);
+        };
 
+        // book-keeping and diagnostics, applied once at the end of each slice
+        auto slice_diagnostics = [
+            this, &pc, verbose, &pp_diag, diag_enable, &early_params_checked
+        ] (
+            int step_,
+            int period_
+        )
+        {
             // Apply optional particle boundary conditions
             particles::ParticleBoundary(*pc);
 
@@ -176,14 +202,17 @@ namespace impactx
         };
 
         // traverse the lattice, applying the collective kick and the
-        // element transport per element slice (\see track_lattice_particles)
-        track_lattice_particles(
+        // element transport per element slice (\see track_lattice)
+        track_lattice(
             m_lattice,
-            *pc,
+            pc->GetRefParticle(),
             m_tracking_state,
+            collective_effects,
+            strang_split,
             [this](std::string const & name) { call_hook(name); },
             collective_kicks,
-            element_push
+            element_push,
+            slice_diagnostics
         );
 
         if (diag_enable)

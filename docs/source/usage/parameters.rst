@@ -499,6 +499,13 @@ This requires these additional parameters:
 
     Rotation error in the transverse plane.
 
+.. pp:param:: <buncher_name>.aperture_x/y
+    :link_aliases: <buncher_name>.aperture_x <buncher_name>.aperture_y
+    :type: ``float``
+    :unit: m
+
+    Horizontal / vertical half-aperture (elliptical).
+
 
 ``cfbend``
 ^^^^^^^^^^
@@ -837,6 +844,13 @@ This element is defined via ``<dipedge_name>.type = dipedge`` and requires these
 
     Rotation error in the transverse plane.
 
+.. pp:param:: <dipedge_name>.aperture_x/y
+    :link_aliases: <dipedge_name>.aperture_x <dipedge_name>.aperture_y
+    :type: ``float``
+    :unit: m
+
+    Horizontal / vertical half-aperture (elliptical).
+
 
 ``drift``
 ^^^^^^^^^
@@ -992,6 +1006,13 @@ This requires these additional parameters:
 
     Rotation error in the transverse plane.
 
+.. pp:param:: <kicker_name>.aperture_x/y
+    :link_aliases: <kicker_name>.aperture_x <kicker_name>.aperture_y
+    :type: ``float``
+    :unit: m
+
+    Horizontal / vertical half-aperture (elliptical).
+
 
 ``line``
 ^^^^^^^^
@@ -1035,6 +1056,11 @@ and momenta :math:`(px,py,pt)` are dimensionless.  So, for example, :math:`R(1,1
 
 The internal tracking methods used by ImpactX are symplectic.  However, if a user-defined linear map :math:`R` is provided, it is up to the user to ensure that the matrix :math:`R` is symplectic.  Otherwise, this condition may be violated.
 
+.. note::
+
+   This element cannot be sliced, so a collective effect kick (space charge, CSR, ISR) is applied as ``K(ds/2) M(ds) K(ds/2)``: half a kick, the element map, then the other half, at two collective solves per element (see :pp:param:`algo.strang_split`).
+   Model it as several shorter elements to resolve collective effects along its length.
+
 This element is defined via ``<linear_map_name>.type = linear_map`` and requires these additional parameters:
 
 .. pp:param:: <linear_map_name>.R(i,j)
@@ -1061,6 +1087,13 @@ This element is defined via ``<linear_map_name>.type = linear_map`` and requires
     :unit: degree
 
     Rotation error in the transverse plane.
+
+.. pp:param:: <linear_map_name>.aperture_x/y
+    :link_aliases: <linear_map_name>.aperture_x <linear_map_name>.aperture_y
+    :type: ``float``
+    :unit: m
+
+    Horizontal / vertical half-aperture (elliptical).
 
 
 ``multipole``
@@ -1099,6 +1132,13 @@ This requires these additional parameters:
     :unit: degree
 
     Rotation error in the transverse plane.
+
+.. pp:param:: <multipole_name>.aperture_x/y
+    :link_aliases: <multipole_name>.aperture_x <multipole_name>.aperture_y
+    :type: ``float``
+    :unit: m
+
+    Horizontal / vertical half-aperture (elliptical).
 
 
 ``multipole_exact``
@@ -1214,6 +1254,13 @@ This requires these additional parameters:
     :unit: degree
 
     Rotation error in the transverse plane.
+
+.. pp:param:: <nonlinear_lens_name>.aperture_x/y
+    :link_aliases: <nonlinear_lens_name>.aperture_x <nonlinear_lens_name>.aperture_y
+    :type: ``float``
+    :unit: m
+
+    Horizontal / vertical half-aperture (elliptical).
 
 
 ``plane_xyrotation``
@@ -1670,6 +1717,13 @@ This element is defined via ``<quadedge_name>.type = quadedge`` and requires the
 
     Rotation error in the transverse plane.
 
+.. pp:param:: <quadedge_name>.aperture_x/y
+    :link_aliases: <quadedge_name>.aperture_x <quadedge_name>.aperture_y
+    :type: ``float``
+    :unit: m
+
+    Horizontal / vertical half-aperture (elliptical).
+
 ``rfcavity``
 ^^^^^^^^^^^^
 
@@ -1898,6 +1952,13 @@ This requires these additional parameters:
 
     Rotation error in the transverse plane.
 
+.. pp:param:: <shortrf_name>.aperture_x/y
+    :link_aliases: <shortrf_name>.aperture_x <shortrf_name>.aperture_y
+    :type: ``float``
+    :unit: m
+
+    Horizontal / vertical half-aperture (elliptical).
+
 
 ``solenoid``
 ^^^^^^^^^^^^
@@ -2070,6 +2131,36 @@ When ImpactX needs to sort particles spatially, it will redistribute them over M
     The existing reference particle in that case needs to be manually configured before the tracking loop.
     This option acts during particle tracking, it has no effect in envelope or reference-particle-only tracking.
 
+.. pp:param:: <source_name>.load_step
+    :type: ``integer``
+    :default: unset (if neither option is set, the last step in the file is loaded)
+
+    Which step (iteration) to load from the openPMD series, selected by step number.
+
+    This is the ImpactX step at which the ``beam_monitor`` wrote the beam, which is stored as the
+    openPMD iteration in the file.
+    These step numbers are usually not consecutive, because the global step counter also advances in
+    the elements between two monitors: list them with, e.g., `openpmd-ls <https://openpmd-api.readthedocs.io/en/0.17.1/utilities/cli.html>`__ before selecting one.
+    A step that is not in the file is an error, which lists the steps that are in it.
+    A negative value is an error, too: the step numbers in a file are not negative, use
+    ``load_step_index`` to count back from the last step.
+
+    Set at most one of ``load_step`` and ``load_step_index``.
+
+.. pp:param:: <source_name>.load_step_index
+    :type: ``integer``
+    :default: unset (if neither option is set, the last step in the file is loaded)
+
+    Which step (iteration) to load from the openPMD series, selected by position in the file.
+
+    ``0`` is the first step in the file and ``-1`` is the last, counting back from it as in Python,
+    e.g. ``-2`` is the second to last step.
+    Use this when the step numbers in the file are not known, e.g. ``-2`` to continue from the turn
+    before the last one that a ring wrote.
+    An index that reaches past either end of the file is an error, which lists the steps in it.
+
+    Set at most one of ``load_step`` and ``load_step_index``.
+
 
 ``spin_map``
 ^^^^^^^^^^^^
@@ -2091,6 +2182,11 @@ The vector :math:`v` and the matrix :math:`A` are defaulted to zero, so only ent
 The matrix :math:`A` multiplies the phase space vector :math:`(x,p_x,y,p_y,t,p_t)`, where coordinates :math:`(x,y,t)` have units of m
 and momenta :math:`(p_x,p_y,p_t)` are dimensionless.  The three components output are dimensionless.  So, for example, :math:`A(1,1)` has units of 1/m, and :math:`A(1,2)` is dimensionless.
 All three components of :math:`v` are dimensionless.
+
+.. note::
+
+   This element cannot be sliced, so a collective effect kick (space charge, CSR, ISR) is applied as ``K(ds/2) M(ds) K(ds/2)``: half a kick, the element map, then the other half, at two collective solves per element (see :pp:param:`algo.strang_split`).
+   Model it as several shorter elements to resolve collective effects along its length.
 
 This element is defined via ``<spin_map_name>.type = spin_map`` and requires these additional parameters:
 
@@ -2117,14 +2213,14 @@ This element is defined via ``<spin_map_name>.type = spin_map`` and requires the
     :unit: m
     :default: ``0``
 
-    Horizontal / vertical translation error (not used, defaults to 0).
+    Horizontal / vertical translation error.
 
 .. pp:param:: <spin_map_name>.rotation
     :type: ``float``
     :unit: degree
     :default: ``0``
 
-    Rotation error in the transverse plane (not used, defaults to 0).
+    Rotation error in the transverse plane.
 
 
 ``tapered_pl``
@@ -2174,6 +2270,13 @@ This element is defined via ``<tapered_pl_name>.type = tapered_pl`` and requires
 
     Rotation error in the transverse plane.
 
+.. pp:param:: <tapered_pl_name>.aperture_x/y
+    :link_aliases: <tapered_pl_name>.aperture_x <tapered_pl_name>.aperture_y
+    :type: ``float``
+    :unit: m
+
+    Horizontal / vertical half-aperture (elliptical).
+
 
 ``thin_dipole``
 ^^^^^^^^^^^^^^^
@@ -2206,6 +2309,13 @@ This requires these additional parameters:
     :unit: degree
 
     Rotation error in the transverse plane.
+
+.. pp:param:: <thin_dipole_name>.aperture_x/y
+    :link_aliases: <thin_dipole_name>.aperture_x <thin_dipole_name>.aperture_y
+    :type: ``float``
+    :unit: m
+
+    Horizontal / vertical half-aperture (elliptical).
 
 
 ``uniform_acc_chromatic``
@@ -2268,12 +2378,26 @@ This requires these additional parameters:
 Collective Effects
 ------------------
 
+.. pp:param:: algo.strang_split
+    :type: ``boolean``
+    :optional:
+    :default: ``true``
+
+    Whether to compose the collective effect kicks and the element transport in a second-order, time-symmetric Strang split.
+    Per slice, this applies ``M(ds/2) K(ds) M(ds/2)``: half of the slice transport ``M``, the collective kick ``K`` at the slice midpoint, then the other half.
+    The collective solve still runs once per slice, so the second order comes at the cost of the first-order composition and far fewer slices are needed for the same accuracy.
+
+    Elements that cannot be subdivided (``Programmable``, ``LinearMap`` and ``SpinMap``) halve the kick instead, ``K(ds/2) M(ds) K(ds/2)``, which needs two collective solves per slice.
+
+    Setting this to ``false`` composes kick and transport to first order, ``K(ds) M(ds)``, as most other beam dynamics codes do.
+    This is useful to compare against those codes and to study the convergence with ``nslice``.
+
 .. _running-cpp-parameters-collective-spacecharge:
 
 Space Charge
 ^^^^^^^^^^^^
 
-Space charge kicks are applied in between slices of thick :ref:`lattice elements <running-cpp-parameters-lattice>`.
+Space charge kicks are applied per slice of thick :ref:`lattice elements <running-cpp-parameters-lattice>`.
 See there ``nslice`` option on lattice elements for slicing.
 
 .. pp:param:: algo.space_charge

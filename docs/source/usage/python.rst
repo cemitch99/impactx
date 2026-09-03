@@ -87,6 +87,12 @@ Collective Effects & Overall Simulation Parameters
 
       Use dynamic (``True``) resizing of the field mesh or static sizing (``False``).
 
+   .. py:property:: strang_split
+
+      Compose the collective effect kicks and the element transport in a second-order,
+      time-symmetric Strang split (``True``, default) or to first order (``False``).
+      See :pp:param:`algo.strang_split`.
+
    .. py:property:: space_charge
 
       The physical model of space charge used.
@@ -1701,7 +1707,7 @@ For an element with ``nslice`` > 1, the pushes and maps refer to a single ``ds/n
 
       focusing t strength in 1/m
 
-.. py:class:: impactx.elements.DipEdge(psi, rc, g, R=1, K0=pi**2/6, K1=0, K2=1, K3=1/6, K4=0, K5=0, K6=0, model="linear", location="entry", modify_ref_part=False, dx=0, dy=0, rotation=0, name=None)
+.. py:class:: impactx.elements.DipEdge(psi, rc, g, R=1, K0=pi**2/6, K1=0, K2=1, K3=1/6, K4=0, K5=0, K6=0, model="linear", location="entry", modify_ref_part=False, dx=0, dy=0, rotation=0, aperture_x=0, aperture_y=0, name=None)
 
    Edge focusing associated with bend entry or exit
 
@@ -1754,6 +1760,8 @@ For an element with ``nslice`` > 1, the pushes and maps refer to a single ``ds/n
    :param dx: horizontal translation error [m]
    :param dy: vertical translation error [m]
    :param rotation: rotation error in the transverse plane [degrees]
+   :param aperture_x: horizontal half-aperture (elliptical) in m
+   :param aperture_y: vertical half-aperture (elliptical) in m
    :param name: an optional name for the element
 
 .. py:class:: impactx.elements.Drift(ds, dx=0, dy=0, rotation=0, aperture_x=0, aperture_y=0, nslice=1, name=None)
@@ -1797,16 +1805,21 @@ For an element with ``nslice`` > 1, the pushes and maps refer to a single ``ds/n
    :param nslice: number of slices used for the application of space charge
    :param name: an optional name for the element
 
-.. py:class:: impactx.elements.Kicker(xkick, ykick, unit="dimensionless", dx=0, dy=0, rotation=0, name=None)
+.. py:class:: impactx.elements.Kicker(xkick, ykick, unit="dimensionless", dx=0, dy=0, rotation=0, aperture_x=0, aperture_y=0, name=None)
 
    A thin transverse kicker.
 
    :param xkick: horizontal kick strength (dimensionless OR T-m)
    :param ykick: vertical kick strength (dimensionless OR T-m)
    :param unit: specification of units (``"dimensionless"`` in units of the magnetic rigidity of the reference particle or ``"T-m"``)
+   :param dx: horizontal translation error in m
+   :param dy: vertical translation error in m
+   :param rotation: rotation error in the transverse plane [degrees]
+   :param aperture_x: horizontal half-aperture (elliptical) in m
+   :param aperture_y: vertical half-aperture (elliptical) in m
    :param name: an optional name for the element
 
-.. py:class:: impactx.elements.LinearMap(R, dx=0, dy=0, rotation=0, name=None)
+.. py:class:: impactx.elements.LinearMap(R, ds=0, dx=0, dy=0, rotation=0, aperture_x=0, aperture_y=0, name=None)
 
    A custom, linear transport matrix.
 
@@ -1823,9 +1836,20 @@ For an element with ``nslice`` > 1, the pushes and maps refer to a single ``ds/n
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
    :param rotation: rotation error in the transverse plane [degrees]
+   :param aperture_x: horizontal half-aperture (elliptical) in m
+   :param aperture_y: vertical half-aperture (elliptical) in m
    :param name: an optional name for the element
 
-.. py:class:: impactx.elements.Multipole(multipole, K_normal, K_skew, dx=0, dy=0, rotation=0, name=None)
+   .. note::
+
+      This element cannot be sliced, so a collective effect kick (space charge,
+      CSR, ISR) is applied as ``K(ds/2) M(ds) K(ds/2)``: half a kick, the element
+      map, then the other half, at two collective solves per element
+      (see :py:attr:`~impactx.ImpactX.strang_split`).
+      Model it as several shorter elements to resolve collective effects along
+      its length.
+
+.. py:class:: impactx.elements.Multipole(multipole, K_normal, K_skew, dx=0, dy=0, rotation=0, aperture_x=0, aperture_y=0, name=None)
 
    A general thin multipole element.
 
@@ -1836,6 +1860,8 @@ For an element with ``nslice`` > 1, the pushes and maps refer to a single ``ds/n
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
    :param rotation: rotation error in the transverse plane [degrees]
+   :param aperture_x: horizontal half-aperture (elliptical) in m
+   :param aperture_y: vertical half-aperture (elliptical) in m
    :param name: an optional name for the element
 
 .. py:class:: impactx.elements.ExactCFbend(ds, k_normal, k_skew, unit=0, dx=0, dy=0, rotation=0, aperture_x=0, aperture_y=0, int_order=2, mapsteps=10, nslice=1, name=None)
@@ -1931,7 +1957,7 @@ For an element with ``nslice`` > 1, the pushes and maps refer to a single ``ds/n
 
    This element does nothing.
 
-.. py:class:: impactx.elements.NonlinearLens(knll, cnll, dx=0, dy=0, rotation=0, name=None)
+.. py:class:: impactx.elements.NonlinearLens(knll, cnll, dx=0, dy=0, rotation=0, aperture_x=0, aperture_y=0, name=None)
 
    Single short segment of the nonlinear magnetic insert element.
 
@@ -1945,6 +1971,8 @@ For an element with ``nslice`` > 1, the pushes and maps refer to a single ``ds/n
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
    :param rotation: rotation error in the transverse plane [degrees]
+   :param aperture_x: horizontal half-aperture (elliptical) in m
+   :param aperture_y: vertical half-aperture (elliptical) in m
    :param name: an optional name for the element
 
 .. py:class:: impactx.elements.BeamMonitor(name, backend="default", encoding="g", period_sample_intervals=1, particles=True, beam_moments=True)
@@ -2004,7 +2032,7 @@ For an element with ``nslice`` > 1, the pushes and maps refer to a single ``ds/n
 
       Scale factor (in meters^(1/2)) of the IOTA nonlinear magnetic insert element used for computing H and I.
 
-.. py:class:: impactx.elements.Source(distribution, openpmd_path, active_once=True, load_ref_particle=True, name=None)
+.. py:class:: impactx.elements.Source(distribution, openpmd_path, active_once=True, load_ref_particle=True, load_step=None, load_step_index=None, name=None)
 
    A particle source.
    Currently, this only supports openPMD files from our :py:class:`impactx.elements.BeamMonitor`
@@ -2013,7 +2041,29 @@ For an element with ``nslice`` > 1, the pushes and maps refer to a single ``ds/n
    :param openpmd_path: path to the openPMD series
    :param active_once: Inject particles only for the first lattice period. Default: ``True``
    :param load_ref_particle: Restore the reference particle from the species metadata of the openPMD file. Default: ``True``
+   :param load_step: Which step (iteration) to load from the openPMD series, selected by step number. Default: ``None``
+   :param load_step_index: Which step (iteration) to load from the openPMD series, selected by position in the file. Default: ``None``
    :param name: an optional name for the element
+
+   .. note::
+
+      ``load_step`` is the ImpactX step at which the :py:class:`impactx.elements.BeamMonitor`
+      wrote the beam, which is stored as the openPMD iteration in the file.
+      These step numbers are usually not consecutive, because the global step counter also advances in
+      the elements between two monitors: list them with, e.g., `openpmd-ls <https://openpmd-api.readthedocs.io/en/0.17.1/utilities/cli.html>`__ before selecting one.
+      A step that is not in the file is an error, which lists the steps that are in it.
+      A negative value is an error, too: the step numbers in a file are not negative, use
+      ``load_step_index`` to count back from the last step.
+
+      ``load_step_index`` selects the step by position in the file instead: ``0`` is the first step
+      and ``-1`` is the last, counting back from it as in Python, e.g. ``load_step_index=-2`` is the
+      second to last step.
+      Use this when the step numbers in the file are not known, e.g. ``load_step_index=-2`` to
+      continue from the turn before the last one that a ring wrote.
+      An index that reaches past either end of the file is an error, which lists the steps in it.
+
+      Set at most one of ``load_step`` and ``load_step_index``.
+      If neither is set, the last step in the file is loaded.
 
    .. note::
 
@@ -2045,6 +2095,13 @@ For an element with ``nslice`` > 1, the pushes and maps refer to a single ``ds/n
    :param ds: Segment length in m.
    :param nslice: number of slices used for the application of space charge
    :param name: an optional name for the element
+
+   .. note::
+
+      The Strang split (:py:attr:`~impactx.ImpactX.strang_split`) cannot halve this element's
+      push, so it halves the collective effect kick (space charge, CSR, ISR)
+      instead: ``K(ds/2) M(ds) K(ds/2)`` per slice, at two collective solves per
+      slice.
 
    .. note::
 
@@ -2195,6 +2252,8 @@ For an element with ``nslice`` > 1, the pushes and maps refer to a single ``ds/n
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
    :param rotation: rotation error in the transverse plane [degrees]
+   :param aperture_x: horizontal half-aperture (elliptical) in m
+   :param aperture_y: vertical half-aperture (elliptical) in m
    :param name: an optional name for the element
 
 .. py:class:: impactx.elements.ChrPlasmaLens(ds, k, unit=0, dx=0, dy=0, rotation=0, aperture_x=0, aperture_y=0, nslice=1, name=None)
@@ -2321,7 +2380,7 @@ For an element with ``nslice`` > 1, the pushes and maps refer to a single ``ds/n
    :param nslice: number of slices used for the application of space charge
    :param name: an optional name for the element
 
-.. py:class:: impactx.elements.Buncher(V, k, dx=0, dy=0, rotation=0)
+.. py:class:: impactx.elements.Buncher(V, k, dx=0, dy=0, rotation=0, aperture_x=0, aperture_y=0, name=None)
 
    A short RF cavity element at zero crossing for bunching (MaryLie model).
 
@@ -2330,8 +2389,11 @@ For an element with ``nslice`` > 1, the pushes and maps refer to a single ``ds/n
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
    :param rotation: rotation error in the transverse plane [degrees]
+   :param aperture_x: horizontal half-aperture (elliptical) in m
+   :param aperture_y: vertical half-aperture (elliptical) in m
+   :param name: an optional name for the element
 
-.. py:class:: impactx.elements.ShortRF(V, freq, phase=-90.0, dx=0, dy=0, rotation=0, name=None)
+.. py:class:: impactx.elements.ShortRF(V, freq, phase=-90.0, dx=0, dy=0, rotation=0, aperture_x=0, aperture_y=0, name=None)
 
    A short RF cavity element (MAD-X model).
 
@@ -2341,6 +2403,8 @@ For an element with ``nslice`` > 1, the pushes and maps refer to a single ``ds/n
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
    :param rotation: rotation error in the transverse plane [degrees]
+   :param aperture_x: horizontal half-aperture (elliptical) in m
+   :param aperture_y: vertical half-aperture (elliptical) in m
    :param name: an optional name for the element
 
 .. py:class:: impactx.elements.SoftSolenoid(ds, bscale, *, cos_coefficients=None, sin_coefficients=None, z=None, field_on_axis=None, ncoef=None, unit=0, dx=0, dy=0, rotation=0, aperture_x=0, aperture_y=0, mapsteps=10, nslice=1, name=None)
@@ -2399,7 +2463,7 @@ For an element with ``nslice`` > 1, the pushes and maps refer to a single ``ds/n
    :param phi_out: angle of the reference particle with respect to the longitudinal (z) axis in the rotated frame in degrees
    :param name: an optional name for the element
 
-.. py:class:: impactx.elements.PlaneXYRot(angle,  dx=0, dy=0, rotation=0, name=None)
+.. py:class:: impactx.elements.PlaneXYRot(angle, dx=0, dy=0, rotation=0, name=None)
 
    Map for a transverse rotation in the x-y plane (i.e., about the reference velocity vector).
 
@@ -2498,7 +2562,7 @@ For an element with ``nslice`` > 1, the pushes and maps refer to a single ``ds/n
    :param nslice: number of slices used for the application of space charge
    :param name: an optional name for the element
 
-.. py:class:: impactx.elements.SpinMap(v=0, A=0, dx=0, dy=0, rotation=0, name=None)
+.. py:class:: impactx.elements.SpinMap(v, A, ds=0, dx=0, dy=0, rotation=0, name=None)
 
    A custom, user-specified spin map that acts on the spin 3-vector :math:`(s_x,s_y,s_z)`.  Spin maps are specified in the Lie-algebraic form:
 
@@ -2517,14 +2581,23 @@ For an element with ``nslice`` > 1, the pushes and maps refer to a single ``ds/n
    All three components of :math:`v` are dimensionless.
 
    :param v: a 1-indexed, 3x1, axis-angle vector that defines the spin rotation at the phase space design point
-   :param R: a 1-indexed, 3x6, spin-orbit coupling matrix to multiply with the phase space vector :math:`(x,p_x,y,p_y,t,p_t)` that defines the spin rotation for off-design particles
+   :param A: a 1-indexed, 3x6, spin-orbit coupling matrix to multiply with the phase space vector :math:`(x,p_x,y,p_y,t,p_t)` that defines the spin rotation for off-design particles
    :param ds: length associated with a user-defined linear element (defaults to 0), in m
-   :param dx: horizontal translation error in m (not used, defaults to 0)
-   :param dy: vertical translation error in m (not used, defaults to 0)
-   :param rotation: rotation error in the transverse plane [degrees] (not used, defaults to 0)
+   :param dx: horizontal translation error in m
+   :param dy: vertical translation error in m
+   :param rotation: rotation error in the transverse plane [degrees]
    :param name: an optional name for the element
 
-.. py:class:: impactx.elements.ThinDipole(theta, rc, dx=0, dy=0, rotation=0, name=None)
+   .. note::
+
+      This element cannot be sliced, so a collective effect kick (space charge,
+      CSR, ISR) is applied as ``K(ds/2) M(ds) K(ds/2)``: half a kick, the element
+      map, then the other half, at two collective solves per element
+      (see :py:attr:`~impactx.ImpactX.strang_split`).
+      Model it as several shorter elements to resolve collective effects along
+      its length.
+
+.. py:class:: impactx.elements.ThinDipole(theta, rc, dx=0, dy=0, rotation=0, aperture_x=0, aperture_y=0, name=None)
 
    A general thin dipole element.
 
@@ -2533,13 +2606,15 @@ For an element with ``nslice`` > 1, the pushes and maps refer to a single ``ds/n
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
    :param rotation: rotation error in the transverse plane [degrees]
+   :param aperture_x: horizontal half-aperture (elliptical) in m
+   :param aperture_y: vertical half-aperture (elliptical) in m
    :param name: an optional name for the element
 
    Reference:
 
    * G. Ripken and F. Schmidt, Thin-Lens Formalism for Tracking, CERN/SL/95-12 (AP), 1995.
 
-.. py:class:: impactx.elements.TaperedPL(k, taper, unit=0, dx=0, dy=0, rotation=0, name=None)
+.. py:class:: impactx.elements.TaperedPL(k, taper, unit=0, dx=0, dy=0, rotation=0, aperture_x=0, aperture_y=0, name=None)
 
    A thin nonlinear plasma lens with transverse (horizontal) taper
 
@@ -2559,6 +2634,8 @@ For an element with ``nslice`` > 1, the pushes and maps refer to a single ``ds/n
    :param dx: horizontal translation error in m
    :param dy: vertical translation error in m
    :param rotation: rotation error in the transverse plane [degrees]
+   :param aperture_x: horizontal half-aperture (elliptical) in m
+   :param aperture_y: vertical half-aperture (elliptical) in m
    :param name: an optional name for the element
 
    .. py:property:: k

@@ -1206,7 +1206,7 @@ class ConstF(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
     @ky.setter
     def ky(self, arg1: typing.SupportsFloat | typing.SupportsIndex) -> None: ...
 
-class DipEdge(mixin.Named, mixin.Thin, mixin.Alignment):
+class DipEdge(mixin.Named, mixin.Thin, mixin.Alignment, mixin.PipeAperture):
     def __eq__(self, other):
         """
         Value-based equality.
@@ -1250,6 +1250,8 @@ class DipEdge(mixin.Named, mixin.Thin, mixin.Alignment):
         dx: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         dy: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         rotation: typing.SupportsFloat | typing.SupportsIndex = 0.0,
+        aperture_x: typing.SupportsFloat | typing.SupportsIndex = 0.0,
+        aperture_y: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         name: str | None = None,
     ) -> None:
         """
@@ -1450,7 +1452,7 @@ class DipEdge(mixin.Named, mixin.Thin, mixin.Alignment):
     @rc.setter
     def rc(self, arg1: typing.SupportsFloat | typing.SupportsIndex) -> None: ...
 
-class QuadEdge(mixin.Named, mixin.Thin, mixin.Alignment):
+class QuadEdge(mixin.Named, mixin.Thin, mixin.Alignment, mixin.PipeAperture):
     def __eq__(self, other):
         """
         Value-based equality.
@@ -1483,6 +1485,8 @@ class QuadEdge(mixin.Named, mixin.Thin, mixin.Alignment):
         dx: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         dy: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         rotation: typing.SupportsFloat | typing.SupportsIndex = 0.0,
+        aperture_x: typing.SupportsFloat | typing.SupportsIndex = 0.0,
+        aperture_y: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         name: str | None = None,
     ) -> None:
         """
@@ -2519,7 +2523,7 @@ class ExactSbend(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
     @phi.setter
     def phi(self, arg1: typing.SupportsFloat | typing.SupportsIndex) -> None: ...
 
-class Kicker(mixin.Named, mixin.Thin, mixin.Alignment):
+class Kicker(mixin.Named, mixin.Thin, mixin.Alignment, mixin.PipeAperture):
     def __eq__(self, other):
         """
         Value-based equality.
@@ -2552,6 +2556,8 @@ class Kicker(mixin.Named, mixin.Thin, mixin.Alignment):
         dx: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         dy: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         rotation: typing.SupportsFloat | typing.SupportsIndex = 0.0,
+        aperture_x: typing.SupportsFloat | typing.SupportsIndex = 0.0,
+        aperture_y: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         name: str | None = None,
     ) -> None:
         """
@@ -2668,7 +2674,7 @@ class Kicker(mixin.Named, mixin.Thin, mixin.Alignment):
     @ykick.setter
     def ykick(self, arg1: typing.SupportsFloat | typing.SupportsIndex) -> None: ...
 
-class Multipole(mixin.Named, mixin.Thin, mixin.Alignment):
+class Multipole(mixin.Named, mixin.Thin, mixin.Alignment, mixin.PipeAperture):
     def __eq__(self, other):
         """
         Value-based equality.
@@ -2701,6 +2707,8 @@ class Multipole(mixin.Named, mixin.Thin, mixin.Alignment):
         dx: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         dy: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         rotation: typing.SupportsFloat | typing.SupportsIndex = 0.0,
+        aperture_x: typing.SupportsFloat | typing.SupportsIndex = 0.0,
+        aperture_y: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         name: str | None = None,
     ) -> None:
         """
@@ -3076,7 +3084,7 @@ class Marker(mixin.Named, mixin.Thin):
         :param ref: reference particle at the element entrance
         """
 
-class NonlinearLens(mixin.Named, mixin.Thin, mixin.Alignment):
+class NonlinearLens(mixin.Named, mixin.Thin, mixin.Alignment, mixin.PipeAperture):
     def __eq__(self, other):
         """
         Value-based equality.
@@ -3108,6 +3116,8 @@ class NonlinearLens(mixin.Named, mixin.Thin, mixin.Alignment):
         dx: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         dy: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         rotation: typing.SupportsFloat | typing.SupportsIndex = 0.0,
+        aperture_x: typing.SupportsFloat | typing.SupportsIndex = 0.0,
+        aperture_y: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         name: str | None = None,
     ) -> None:
         """
@@ -4319,7 +4329,7 @@ class CFbend(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
     @rc.setter
     def rc(self, arg1: typing.SupportsFloat | typing.SupportsIndex) -> None: ...
 
-class Buncher(mixin.Named, mixin.Thin, mixin.Alignment):
+class Buncher(mixin.Named, mixin.Thin, mixin.Alignment, mixin.PipeAperture):
     def __eq__(self, other):
         """
         Value-based equality.
@@ -4351,6 +4361,8 @@ class Buncher(mixin.Named, mixin.Thin, mixin.Alignment):
         dx: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         dy: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         rotation: typing.SupportsFloat | typing.SupportsIndex = 0.0,
+        aperture_x: typing.SupportsFloat | typing.SupportsIndex = 0.0,
+        aperture_y: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         name: str | None = None,
     ) -> None:
         """
@@ -4467,7 +4479,7 @@ class Buncher(mixin.Named, mixin.Thin, mixin.Alignment):
     @k.setter
     def k(self, arg1: typing.SupportsFloat | typing.SupportsIndex) -> None: ...
 
-class ShortRF(mixin.Named, mixin.Thin, mixin.Alignment):
+class ShortRF(mixin.Named, mixin.Thin, mixin.Alignment, mixin.PipeAperture):
     def __eq__(self, other):
         """
         Value-based equality.
@@ -4500,6 +4512,8 @@ class ShortRF(mixin.Named, mixin.Thin, mixin.Alignment):
         dx: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         dy: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         rotation: typing.SupportsFloat | typing.SupportsIndex = 0.0,
+        aperture_x: typing.SupportsFloat | typing.SupportsIndex = 0.0,
+        aperture_y: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         name: str | None = None,
     ) -> None:
         """
@@ -4841,6 +4855,8 @@ class Source(mixin.Named, mixin.Thin):
         openpmd_path: str,
         active_once: bool = True,
         load_ref_particle: bool = True,
+        load_step: typing.SupportsInt | typing.SupportsIndex | None = None,
+        load_step_index: typing.SupportsInt | typing.SupportsIndex | None = None,
         name: str | None = None,
     ) -> None:
         """
@@ -4963,6 +4979,24 @@ class Source(mixin.Named, mixin.Thin):
         """
     @load_ref_particle.setter
     def load_ref_particle(self, arg1: bool) -> None: ...
+    @property
+    def load_step(self) -> int | None:
+        """
+        Which step (iteration) to load from the openPMD series: the ImpactX step at which the beam monitor wrote the beam, which is stored as the openPMD iteration in the file. Set at most one of load_step and load_step_index; if neither is set, the last step in the file is loaded.
+        """
+    @load_step.setter
+    def load_step(
+        self, arg1: typing.SupportsInt | typing.SupportsIndex | None
+    ) -> None: ...
+    @property
+    def load_step_index(self) -> int | None:
+        """
+        Which step (iteration) to load from the openPMD series, by position in the file: 0 is the first step and -1 the last, counting back from it as in Python (-2 is the second to last step). Set at most one of load_step and load_step_index; if neither is set, the last step in the file is loaded.
+        """
+    @load_step_index.setter
+    def load_step_index(
+        self, arg1: typing.SupportsInt | typing.SupportsIndex | None
+    ) -> None: ...
     @property
     def series_name(self) -> str:
         """
@@ -5432,7 +5466,7 @@ class SoftQuadrupole(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeApertu
         linearized spin-orbit coupling matrix (valid after a reference-particle push)
         """
 
-class ThinDipole(mixin.Named, mixin.Thin, mixin.Alignment):
+class ThinDipole(mixin.Named, mixin.Thin, mixin.Alignment, mixin.PipeAperture):
     def __eq__(self, other):
         """
         Value-based equality.
@@ -5464,6 +5498,8 @@ class ThinDipole(mixin.Named, mixin.Thin, mixin.Alignment):
         dx: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         dy: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         rotation: typing.SupportsFloat | typing.SupportsIndex = 0.0,
+        aperture_x: typing.SupportsFloat | typing.SupportsIndex = 0.0,
+        aperture_y: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         name: str | None = None,
     ) -> None:
         """
@@ -5573,7 +5609,7 @@ class ThinDipole(mixin.Named, mixin.Thin, mixin.Alignment):
     @theta.setter
     def theta(self, arg1: typing.SupportsFloat | typing.SupportsIndex) -> None: ...
 
-class TaperedPL(mixin.Named, mixin.Thin, mixin.Alignment):
+class TaperedPL(mixin.Named, mixin.Thin, mixin.Alignment, mixin.PipeAperture):
     def __eq__(self, other):
         """
         Value-based equality.
@@ -5606,6 +5642,8 @@ class TaperedPL(mixin.Named, mixin.Thin, mixin.Alignment):
         dx: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         dy: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         rotation: typing.SupportsFloat | typing.SupportsIndex = 0.0,
+        aperture_x: typing.SupportsFloat | typing.SupportsIndex = 0.0,
+        aperture_y: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         name: str | None = None,
     ) -> None:
         """
@@ -5735,7 +5773,7 @@ class TaperedPL(mixin.Named, mixin.Thin, mixin.Alignment):
     @unit.setter
     def unit(self, arg1: typing.SupportsInt | typing.SupportsIndex) -> None: ...
 
-class LinearMap(mixin.Named, mixin.Alignment):
+class LinearMap(mixin.Named, mixin.Alignment, mixin.PipeAperture):
     def __eq__(self, other):
         """
         Value-based equality.
@@ -5767,6 +5805,8 @@ class LinearMap(mixin.Named, mixin.Alignment):
         dx: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         dy: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         rotation: typing.SupportsFloat | typing.SupportsIndex = 0.0,
+        aperture_x: typing.SupportsFloat | typing.SupportsIndex = 0.0,
+        aperture_y: typing.SupportsFloat | typing.SupportsIndex = 0.0,
         name: str | None = None,
     ) -> None:
         """

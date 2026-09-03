@@ -9,12 +9,12 @@
  */
 #include "ImpactX.H"
 #include "diagnostics/DiagnosticOutput.H"
-#include "elements/mixin/accessors.H"
 #include "envelope/spacecharge/EnvelopeSpaceChargePush.H"
 #include "initialization/Algorithms.H"
 #include "initialization/InitAmrCore.H"
 #include "particles/ImpactXParticleContainer.H"
 #include "particles/Push.H"
+#include "tracking/common.H"
 
 #include <ablastr/warn_manager/WarnManager.H>
 
@@ -47,10 +47,7 @@ namespace impactx
         //   before we start the tracking loop, we are in "step 0" (initial state)
         int & step = m_tracking_state.m_step;
         step = 0;
-
-        // period in the lattice (e.g., turns)
-        int & period = m_tracking_state.m_period;
-        period = 0;
+        m_tracking_state.m_direction = TrackingDirection::Forward;
 
         // check typos in inputs after step 1
         bool early_params_checked = false;
@@ -112,10 +109,15 @@ namespace impactx
                 ablastr::warn_manager::WarnPriority::high
             );
         }
-        if (space_charge == SpaceChargeAlgo::Gauss3D) {
+        // envelope tracking models space charge as the linear field of the rms-equivalent
+        //   uniform beam ellipse (2D) or ellipsoid (3D); the other models are particle-only
+        if (space_charge == SpaceChargeAlgo::Gauss3D ||
+            space_charge == SpaceChargeAlgo::Gauss2p5D ||
+            space_charge == SpaceChargeAlgo::True_2p5D)
+        {
             throw std::runtime_error(
-                "Gauss3D space charge force calculation is only supported with particle tracking. "
-                "For envelope tracking, use: 3D"
+                to_string(space_charge) + " space charge force calculation is only supported "
+                "with particle tracking. For envelope tracking, use: 2D or 3D"
             );
         }
 
@@ -127,106 +129,114 @@ namespace impactx
         }
         AMREX_ALWAYS_ASSERT_WITH_MESSAGE(!csr, "CSR effects are not yet implemented for envelope tracking.");
 
-        // periods through the lattice
-        int num_periods = 1;
-        amrex::ParmParse("lattice").queryAddWithParser("periods", num_periods);
+        // whether any collective effect is active: only then is a kick applied per slice
+        //   At zero intensity the kick leaves the covariance matrix unchanged, so it is
+        //   skipped entirely: that is what the warning above announces, and it keeps the
+        //   element transport of such a run unsplit.
+        bool const collective_effects =
+            (space_charge == SpaceChargeAlgo::True_2D ||
+             space_charge == SpaceChargeAlgo::True_3D) &&
+            intensity != 0_prt;
 
-        for (period=0; period < num_periods; ++period)
+        // second-order Strang split of the collective kicks, on by default
+        //   Disabling it composes kick and transport to first order instead, which is what
+        //   most other codes do: useful to compare against them and to show convergence.
+        //   This is the same option as in particle tracking, so that both models compose
+        //   their collective kicks to the same order and stay comparable.
+        bool strang_split = true;
+        pp_algo.query("strang_split", strang_split);
+        if (verbose > 0 && collective_effects)
         {
-            // optional, user-defined function call
-            m_tracking_state.m_element = &m_lattice.front();
-            call_hook("before_period");
+            amrex::Print() << " Strang split: " << strang_split << "\n";
+        }
 
-            // loop over all beamline elements
-            for (auto &element_variant: m_lattice)
+        // the collective effect kick ``K`` of one element slice
+        auto collective_kicks = [&ref, &cm, &intensity, space_charge] (
+            //! (unused) the kick does not depend on the element
+            [[maybe_unused]] elements::KnownElements & element_variant,
+            amrex::ParticleReal kick_ds
+        )
+        {
+            if (space_charge == SpaceChargeAlgo::True_2D)
             {
-                // update element edge of the reference particle
-                ref.sedge = ref.s;
+                // push Covariance Matrix in 2D space charge fields
+                envelope::spacecharge::space_charge2D_push(ref, cm, intensity, kick_ds);
+            } else if (space_charge == SpaceChargeAlgo::True_3D)
+            {
+                // push Covariance Matrix in 3D space charge fields
+                envelope::spacecharge::space_charge3D_push(ref, cm, intensity, kick_ds);
+            }
+        };
 
-                // optional, user-defined function call
-                m_tracking_state.m_element = &element_variant;
-                call_hook("before_element");
-
-                // number of slices used for the application of space charge
-                int const nslice = elements::nslice(element_variant);
-                amrex::ParticleReal const slice_ds = elements::slice_ds(element_variant); // in meters
-
-                // sub-steps for space charge within the element
-                for (int slice_step = 0; slice_step < nslice; ++slice_step)
+        // the external-field transport map ``M`` of one element slice
+        //   The Strang split around collective effects applies this twice per slice, once
+        //   per half-map, so it carries no book-keeping: that lives in @see
+        //   slice_diagnostics below.
+        auto element_push = [&ref, &cm] (
+            elements::KnownElements & element_variant,
+            [[maybe_unused]] int step_,   //! (unused) the envelope has no per-step element output
+            [[maybe_unused]] int period_  //! (unused) the envelope has no per-period element output
+        )
+        {
+            std::visit([&ref, &cm](auto&& element)
+            {
+                // push reference particle in global coordinates
                 {
-                    BL_PROFILE("ImpactX::track_envelope::slice_step");
-                    step++;
-                    if (verbose > 0)
-                    {
-                        amrex::Print() << "\n++++ Starting step=" << step
-                                       << " slice_step=" << slice_step;
-                    }
+                    BL_PROFILE("impactx::push::RefPart");
+                    element(ref);
+                }
 
-                    // optional, user-defined function call
-                    call_hook("before_slice");
+                // push Covariance Matrix in external fields
+                element(cm, ref);
 
-                    if (space_charge == SpaceChargeAlgo::True_2D)
-                    {
-                        // push Covariance Matrix in 2D space charge fields
-                        envelope::spacecharge::space_charge2D_push(ref, cm, intensity, slice_ds);
-                    } else if (space_charge == SpaceChargeAlgo::True_3D)
-                    {
-                        // push Covariance Matrix in 3D space charge fields
-                        envelope::spacecharge::space_charge3D_push(ref, cm, intensity, slice_ds);
-                    }
+            }, element_variant);
+        };
 
-                    std::visit([&ref, &cm](auto&& element)
-                    {
-                        // push reference particle in global coordinates
-                        {
-                            BL_PROFILE("impactx::push::RefPart");
-                            element(ref);
-                        }
+        // book-keeping and diagnostics, applied once at the end of each slice
+        auto slice_diagnostics = [
+            this, &ref, &cm, verbose, &pp_diag, diag_enable, &early_params_checked
+        ] (
+            int step_,
+            int period_
+        )
+        {
+            // just prints an empty newline at the end of the slice_step
+            if (verbose > 0)
+            {
+                amrex::Print() << "\n";
+            }
 
-                        // push Covariance Matrix in external fields
-                        element(cm, ref);
+            // slice-step diagnostics
+            bool slice_step_diagnostics = false;
+            pp_diag.queryAdd("slice_step_diagnostics", slice_step_diagnostics);
 
-                    }, element_variant);
+            if (diag_enable && slice_step_diagnostics)
+            {
+                // print slice step reference particle to file
+                diagnostics::DiagnosticOutput(ref, "ref_particle", step_, true);
 
-                    // just prints an empty newline at the end of the slice_step
-                    if (verbose > 0)
-                    {
-                        amrex::Print() << "\n";
-                    }
+                // print slice step reduced beam characteristics to file
+                diagnostics::DiagnosticOutput(
+                    cm, ref, "reduced_beam_characteristics", step_, period_, true);
+            }
 
-                    // slice-step diagnostics
-                    bool slice_step_diagnostics = false;
-                    pp_diag.queryAdd("slice_step_diagnostics", slice_step_diagnostics);
+            // inputs: unused parameters (e.g. typos) check after step 1 has finished
+            if (!early_params_checked) { early_params_checked = early_param_check(); }
+        };
 
-
-                    if (diag_enable && slice_step_diagnostics)
-                    {
-                        // print slice step reference particle to file
-                        diagnostics::DiagnosticOutput(ref, "ref_particle", step, true);
-
-                        // print slice step reduced beam characteristics to file
-                        diagnostics::DiagnosticOutput(
-                            cm, ref, "reduced_beam_characteristics", step, period, true);
-
-                    }
-
-                    // inputs: unused parameters (e.g. typos) check after step 1 has finished
-                    if (!early_params_checked) { early_params_checked = early_param_check(); }
-
-                } // end in-element space-charge slice-step loop
-
-                // optional, user-defined function call
-                call_hook("after_element");
-
-            } // end beamline element loop
-
-            // optional, user-defined function call
-            call_hook("after_period");
-
-        } // end periods though the lattice loop
-
-        // avoid dangling references if users manipulate the lattice
-        m_tracking_state.set_no_element();
+        // traverse the lattice, applying the collective kick and the
+        // element transport per element slice (\see track_lattice)
+        track_lattice(
+            m_lattice,
+            ref,
+            m_tracking_state,
+            collective_effects,
+            strang_split,
+            [this](std::string const & name) { call_hook(name); },
+            collective_kicks,
+            element_push,
+            slice_diagnostics
+        );
 
         if (diag_enable)
         {
@@ -235,7 +245,7 @@ namespace impactx
 
             // print the final values of the reduced beam characteristics
             diagnostics::DiagnosticOutput(
-                cm, ref, "reduced_beam_characteristics_final", step, period);
+                cm, ref, "reduced_beam_characteristics_final", step, m_tracking_state.m_period);
         }
     }
 } // namespace impactx

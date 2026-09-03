@@ -1031,6 +1031,13 @@ class ImpactX:
     @spin.setter
     def spin(self, arg1: bool) -> None: ...
     @property
+    def strang_split(self) -> bool:
+        """
+        Compose the collective effect kicks and the element transport in a second-order, time-symmetric Strang split (default: enabled) or to first order.
+        """
+    @strang_split.setter
+    def strang_split(self, arg1: bool) -> None: ...
+    @property
     def tiny_profiler(self) -> bool:
         """
         This parameter can be used to disable tiny profiling including CArena memory profiling at runtime.
