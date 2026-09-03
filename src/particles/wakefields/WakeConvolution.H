@@ -93,7 +93,7 @@ namespace impactx::particles::wakefields
      *
      * @param[in] s value along s [m]
      * @param[in] wake_data tabulated wake data supplied by user [V/m/pC/mm]
-     * @param[in] z_min lower bound of grid for deposition [m] 
+     * @param[in] z_min lower bound of grid for deposition [m]
      * @param[in] bin_size bin size [m]
      * @return interpolated value wake function [V/m/pC/mm]
      */
