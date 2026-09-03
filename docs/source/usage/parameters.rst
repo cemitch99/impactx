@@ -499,6 +499,13 @@ This requires these additional parameters:
 
     Rotation error in the transverse plane.
 
+.. pp:param:: <buncher_name>.aperture_x/y
+    :link_aliases: <buncher_name>.aperture_x <buncher_name>.aperture_y
+    :type: ``float``
+    :unit: m
+
+    Horizontal / vertical half-aperture (elliptical).
+
 
 ``cfbend``
 ^^^^^^^^^^
@@ -837,6 +844,13 @@ This element is defined via ``<dipedge_name>.type = dipedge`` and requires these
 
     Rotation error in the transverse plane.
 
+.. pp:param:: <dipedge_name>.aperture_x/y
+    :link_aliases: <dipedge_name>.aperture_x <dipedge_name>.aperture_y
+    :type: ``float``
+    :unit: m
+
+    Horizontal / vertical half-aperture (elliptical).
+
 
 ``drift``
 ^^^^^^^^^
@@ -992,6 +1006,13 @@ This requires these additional parameters:
 
     Rotation error in the transverse plane.
 
+.. pp:param:: <kicker_name>.aperture_x/y
+    :link_aliases: <kicker_name>.aperture_x <kicker_name>.aperture_y
+    :type: ``float``
+    :unit: m
+
+    Horizontal / vertical half-aperture (elliptical).
+
 
 ``line``
 ^^^^^^^^
@@ -1067,6 +1088,13 @@ This element is defined via ``<linear_map_name>.type = linear_map`` and requires
 
     Rotation error in the transverse plane.
 
+.. pp:param:: <linear_map_name>.aperture_x/y
+    :link_aliases: <linear_map_name>.aperture_x <linear_map_name>.aperture_y
+    :type: ``float``
+    :unit: m
+
+    Horizontal / vertical half-aperture (elliptical).
+
 
 ``multipole``
 ^^^^^^^^^^^^^
@@ -1104,6 +1132,13 @@ This requires these additional parameters:
     :unit: degree
 
     Rotation error in the transverse plane.
+
+.. pp:param:: <multipole_name>.aperture_x/y
+    :link_aliases: <multipole_name>.aperture_x <multipole_name>.aperture_y
+    :type: ``float``
+    :unit: m
+
+    Horizontal / vertical half-aperture (elliptical).
 
 
 ``multipole_exact``
@@ -1219,6 +1254,13 @@ This requires these additional parameters:
     :unit: degree
 
     Rotation error in the transverse plane.
+
+.. pp:param:: <nonlinear_lens_name>.aperture_x/y
+    :link_aliases: <nonlinear_lens_name>.aperture_x <nonlinear_lens_name>.aperture_y
+    :type: ``float``
+    :unit: m
+
+    Horizontal / vertical half-aperture (elliptical).
 
 
 ``plane_xyrotation``
@@ -1675,6 +1717,13 @@ This element is defined via ``<quadedge_name>.type = quadedge`` and requires the
 
     Rotation error in the transverse plane.
 
+.. pp:param:: <quadedge_name>.aperture_x/y
+    :link_aliases: <quadedge_name>.aperture_x <quadedge_name>.aperture_y
+    :type: ``float``
+    :unit: m
+
+    Horizontal / vertical half-aperture (elliptical).
+
 ``rfcavity``
 ^^^^^^^^^^^^
 
@@ -1902,6 +1951,13 @@ This requires these additional parameters:
     :unit: degree
 
     Rotation error in the transverse plane.
+
+.. pp:param:: <shortrf_name>.aperture_x/y
+    :link_aliases: <shortrf_name>.aperture_x <shortrf_name>.aperture_y
+    :type: ``float``
+    :unit: m
+
+    Horizontal / vertical half-aperture (elliptical).
 
 
 ``solenoid``
@@ -2157,14 +2213,14 @@ This element is defined via ``<spin_map_name>.type = spin_map`` and requires the
     :unit: m
     :default: ``0``
 
-    Horizontal / vertical translation error (not used, defaults to 0).
+    Horizontal / vertical translation error.
 
 .. pp:param:: <spin_map_name>.rotation
     :type: ``float``
     :unit: degree
     :default: ``0``
 
-    Rotation error in the transverse plane (not used, defaults to 0).
+    Rotation error in the transverse plane.
 
 
 ``tapered_pl``
@@ -2214,6 +2270,13 @@ This element is defined via ``<tapered_pl_name>.type = tapered_pl`` and requires
 
     Rotation error in the transverse plane.
 
+.. pp:param:: <tapered_pl_name>.aperture_x/y
+    :link_aliases: <tapered_pl_name>.aperture_x <tapered_pl_name>.aperture_y
+    :type: ``float``
+    :unit: m
+
+    Horizontal / vertical half-aperture (elliptical).
+
 
 ``thin_dipole``
 ^^^^^^^^^^^^^^^
@@ -2246,6 +2309,13 @@ This requires these additional parameters:
     :unit: degree
 
     Rotation error in the transverse plane.
+
+.. pp:param:: <thin_dipole_name>.aperture_x/y
+    :link_aliases: <thin_dipole_name>.aperture_x <thin_dipole_name>.aperture_y
+    :type: ``float``
+    :unit: m
+
+    Horizontal / vertical half-aperture (elliptical).
 
 
 ``uniform_acc_chromatic``

@@ -947,7 +947,7 @@ void init_elements(py::module& m)
     register_push(py_ConstF);
     register_reverse(py_ConstF);
 
-    py::class_<DipEdge, elements::mixin::Named, elements::mixin::Thin, elements::mixin::Alignment> py_DipEdge(me, "DipEdge");
+    py::class_<DipEdge, elements::mixin::Named, elements::mixin::Thin, elements::mixin::Alignment, elements::mixin::PipeAperture> py_DipEdge(me, "DipEdge");
     py_DipEdge
         .def("__repr__",
              [](DipEdge const & dip_edge) {
@@ -1009,6 +1009,8 @@ void init_elements(py::module& m)
             amrex::ParticleReal dx,
             amrex::ParticleReal dy,
             amrex::ParticleReal rotation_degree,
+            amrex::ParticleReal aperture_x,
+            amrex::ParticleReal aperture_y,
             std::optional<std::string> name
             )
             {
@@ -1017,7 +1019,7 @@ void init_elements(py::module& m)
 
                 DipEdge::Model const fm = amrex::getEnum<DipEdge::Model>(model);
                 DipEdge::Location const fl = amrex::getEnum<DipEdge::Location>(location);
-                return new DipEdge(psi, rc, g, R, K0, K1, K2, K3, K4, K5, K6, fm, fl, modify_ref_part, dx, dy, rotation_degree, name);
+                return new DipEdge(psi, rc, g, R, K0, K1, K2, K3, K4, K5, K6, fm, fl, modify_ref_part, dx, dy, rotation_degree, aperture_x, aperture_y, name);
             }),
             py::arg("psi"),
             py::arg("rc"),
@@ -1036,6 +1038,8 @@ void init_elements(py::module& m)
             py::arg("dx") = DipEdge::DEFAULT_dx,
             py::arg("dy") = DipEdge::DEFAULT_dy,
             py::arg("rotation") = DipEdge::DEFAULT_rotation_degree,
+            py::arg("aperture_x") = DipEdge::DEFAULT_aperture_x,
+            py::arg("aperture_y") = DipEdge::DEFAULT_aperture_y,
             py::arg("name") = py::none(),
             "Edge focusing associated with bend entry or exit."
         )
@@ -1122,7 +1126,7 @@ void init_elements(py::module& m)
     register_push(py_DipEdge);
     register_reverse(py_DipEdge);
 
-    py::class_<QuadEdge, elements::mixin::Named, elements::mixin::Thin, elements::mixin::Alignment> py_QuadEdge(me, "QuadEdge");
+    py::class_<QuadEdge, elements::mixin::Named, elements::mixin::Thin, elements::mixin::Alignment, elements::mixin::PipeAperture> py_QuadEdge(me, "QuadEdge");
     py_QuadEdge
         .def("__repr__",
              [](QuadEdge const & quadedge) {
@@ -1149,11 +1153,13 @@ void init_elements(py::module& m)
                 amrex::ParticleReal dx,
                 amrex::ParticleReal dy,
                 amrex::ParticleReal rotation_degree,
+                amrex::ParticleReal aperture_x,
+                amrex::ParticleReal aperture_y,
                 std::optional<std::string> name
              )
              {
                  QuadEdge::Location const fl = amrex::getEnum<QuadEdge::Location>(flag);
-                 return new QuadEdge(k, unit, fl, dx, dy, rotation_degree, name);
+                 return new QuadEdge(k, unit, fl, dx, dy, rotation_degree, aperture_x, aperture_y, name);
              }),
              py::arg("k"),
              py::arg("unit") = QuadEdge::DEFAULT_unit,
@@ -1161,6 +1167,8 @@ void init_elements(py::module& m)
              py::arg("dx") = QuadEdge::DEFAULT_dx,
              py::arg("dy") = QuadEdge::DEFAULT_dy,
              py::arg("rotation") = QuadEdge::DEFAULT_rotation_degree,
+             py::arg("aperture_x") = QuadEdge::DEFAULT_aperture_x,
+             py::arg("aperture_y") = QuadEdge::DEFAULT_aperture_y,
              py::arg("name") = py::none(),
              R"(A thin quadrupole fringe field element. Flag must be "entry" or "exit".)"
         )
@@ -1579,7 +1587,7 @@ void init_elements(py::module& m)
     register_push(py_ExactSbend);
     register_reverse(py_ExactSbend);
 
-    py::class_<Kicker, elements::mixin::Named, elements::mixin::Thin, elements::mixin::Alignment> py_Kicker(me, "Kicker");
+    py::class_<Kicker, elements::mixin::Named, elements::mixin::Thin, elements::mixin::Alignment, elements::mixin::PipeAperture> py_Kicker(me, "Kicker");
     py_Kicker
         .def("__repr__",
              [](Kicker const & kicker) {
@@ -1607,11 +1615,13 @@ void init_elements(py::module& m)
                 amrex::ParticleReal dx,
                 amrex::ParticleReal dy,
                 amrex::ParticleReal rotation_degree,
+                amrex::ParticleReal aperture_x,
+                amrex::ParticleReal aperture_y,
                 std::optional<std::string> name
              )
              {
                  Kicker::UnitSystem const u = Kicker::unit_from_name(unit);
-                 return new Kicker(xkick, ykick, u, dx, dy, rotation_degree, name);
+                 return new Kicker(xkick, ykick, u, dx, dy, rotation_degree, aperture_x, aperture_y, name);
              }),
              py::arg("xkick"),
              py::arg("ykick"),
@@ -1619,6 +1629,8 @@ void init_elements(py::module& m)
              py::arg("dx") = Kicker::DEFAULT_dx,
              py::arg("dy") = Kicker::DEFAULT_dy,
              py::arg("rotation") = Kicker::DEFAULT_rotation_degree,
+             py::arg("aperture_x") = Kicker::DEFAULT_aperture_x,
+             py::arg("aperture_y") = Kicker::DEFAULT_aperture_y,
              py::arg("name") = py::none(),
              R"(A thin transverse kicker element. Kicks are for unit "dimensionless" or in "T-m".)"
         )
@@ -1637,7 +1649,7 @@ void init_elements(py::module& m)
     register_push(py_Kicker);
     register_reverse(py_Kicker);
 
-    py::class_<Multipole, elements::mixin::Named, elements::mixin::Thin, elements::mixin::Alignment> py_Multipole(me, "Multipole");
+    py::class_<Multipole, elements::mixin::Named, elements::mixin::Thin, elements::mixin::Alignment, elements::mixin::PipeAperture> py_Multipole(me, "Multipole");
     py_Multipole
         .def("__repr__",
              [](Multipole const & multipole) {
@@ -1666,6 +1678,8 @@ void init_elements(py::module& m)
                 amrex::ParticleReal,
                 amrex::ParticleReal,
                 amrex::ParticleReal,
+                amrex::ParticleReal,
+                amrex::ParticleReal,
                 std::optional<std::string>
              >(),
              py::arg("multipole"),
@@ -1674,6 +1688,8 @@ void init_elements(py::module& m)
              py::arg("dx") = Multipole::DEFAULT_dx,
              py::arg("dy") = Multipole::DEFAULT_dy,
              py::arg("rotation") = Multipole::DEFAULT_rotation_degree,
+             py::arg("aperture_x") = Multipole::DEFAULT_aperture_x,
+             py::arg("aperture_y") = Multipole::DEFAULT_aperture_y,
              py::arg("name") = py::none(),
              "A general thin multipole element."
         )
@@ -1738,7 +1754,7 @@ void init_elements(py::module& m)
     register_push(py_Marker);
     register_reverse(py_Marker);
 
-    py::class_<NonlinearLens, elements::mixin::Named, elements::mixin::Thin, elements::mixin::Alignment> py_NonlinearLens(me, "NonlinearLens");
+    py::class_<NonlinearLens, elements::mixin::Named, elements::mixin::Thin, elements::mixin::Alignment, elements::mixin::PipeAperture> py_NonlinearLens(me, "NonlinearLens");
     py_NonlinearLens
         .def("__repr__",
              [](NonlinearLens const & nl) {
@@ -1764,6 +1780,8 @@ void init_elements(py::module& m)
                 amrex::ParticleReal,
                 amrex::ParticleReal,
                 amrex::ParticleReal,
+                amrex::ParticleReal,
+                amrex::ParticleReal,
                 std::optional<std::string>
              >(),
              py::arg("knll"),
@@ -1771,6 +1789,8 @@ void init_elements(py::module& m)
              py::arg("dx") = NonlinearLens::DEFAULT_dx,
              py::arg("dy") = NonlinearLens::DEFAULT_dy,
              py::arg("rotation") = NonlinearLens::DEFAULT_rotation_degree,
+             py::arg("aperture_x") = NonlinearLens::DEFAULT_aperture_x,
+             py::arg("aperture_y") = NonlinearLens::DEFAULT_aperture_y,
              py::arg("name") = py::none(),
              "Single short segment of the nonlinear magnetic insert element."
         )
@@ -2264,7 +2284,7 @@ void init_elements(py::module& m)
     register_push(py_CFbend);
     register_reverse(py_CFbend);
 
-    py::class_<Buncher, elements::mixin::Named, elements::mixin::Thin, elements::mixin::Alignment> py_Buncher(me, "Buncher");
+    py::class_<Buncher, elements::mixin::Named, elements::mixin::Thin, elements::mixin::Alignment, elements::mixin::PipeAperture> py_Buncher(me, "Buncher");
     py_Buncher
         .def("__repr__",
              [](Buncher const & buncher) {
@@ -2290,6 +2310,8 @@ void init_elements(py::module& m)
                 amrex::ParticleReal,
                 amrex::ParticleReal,
                 amrex::ParticleReal,
+                amrex::ParticleReal,
+                amrex::ParticleReal,
                 std::optional<std::string>
              >(),
              py::arg("V"),
@@ -2297,6 +2319,8 @@ void init_elements(py::module& m)
              py::arg("dx") = Buncher::DEFAULT_dx,
              py::arg("dy") = Buncher::DEFAULT_dy,
              py::arg("rotation") = Buncher::DEFAULT_rotation_degree,
+             py::arg("aperture_x") = Buncher::DEFAULT_aperture_x,
+             py::arg("aperture_y") = Buncher::DEFAULT_aperture_y,
              py::arg("name") = py::none(),
              "A short linear RF cavity element at zero-crossing for bunching."
         )
@@ -2314,7 +2338,7 @@ void init_elements(py::module& m)
     register_push(py_Buncher);
     register_reverse(py_Buncher);
 
-    py::class_<ShortRF, elements::mixin::Named, elements::mixin::Thin, elements::mixin::Alignment> py_ShortRF(me, "ShortRF");
+    py::class_<ShortRF, elements::mixin::Named, elements::mixin::Thin, elements::mixin::Alignment, elements::mixin::PipeAperture> py_ShortRF(me, "ShortRF");
     py_ShortRF
         .def("__repr__",
              [](ShortRF const & short_rf) {
@@ -2343,6 +2367,8 @@ void init_elements(py::module& m)
                 amrex::ParticleReal,
                 amrex::ParticleReal,
                 amrex::ParticleReal,
+                amrex::ParticleReal,
+                amrex::ParticleReal,
                 std::optional<std::string>
              >(),
              py::arg("V"),
@@ -2351,6 +2377,8 @@ void init_elements(py::module& m)
              py::arg("dx") = ShortRF::DEFAULT_dx,
              py::arg("dy") = ShortRF::DEFAULT_dy,
              py::arg("rotation") = ShortRF::DEFAULT_rotation_degree,
+             py::arg("aperture_x") = ShortRF::DEFAULT_aperture_x,
+             py::arg("aperture_y") = ShortRF::DEFAULT_aperture_y,
              py::arg("name") = py::none(),
              "A short RF cavity element."
         )
@@ -2782,7 +2810,7 @@ void init_elements(py::module& m)
     register_push(py_SoftQuadrupole);
     register_reverse(py_SoftQuadrupole);
 
-    py::class_<ThinDipole, elements::mixin::Named, elements::mixin::Thin, elements::mixin::Alignment> py_ThinDipole(me, "ThinDipole");
+    py::class_<ThinDipole, elements::mixin::Named, elements::mixin::Thin, elements::mixin::Alignment, elements::mixin::PipeAperture> py_ThinDipole(me, "ThinDipole");
     py_ThinDipole
         .def("__repr__",
              [](ThinDipole const & thin_dp) {
@@ -2826,6 +2854,8 @@ void init_elements(py::module& m)
                 amrex::ParticleReal,
                 amrex::ParticleReal,
                 amrex::ParticleReal,
+                amrex::ParticleReal,
+                amrex::ParticleReal,
                 std::optional<std::string>
              >(),
              py::arg("theta"),
@@ -2833,6 +2863,8 @@ void init_elements(py::module& m)
              py::arg("dx") = ThinDipole::DEFAULT_dx,
              py::arg("dy") = ThinDipole::DEFAULT_dy,
              py::arg("rotation") = ThinDipole::DEFAULT_rotation_degree,
+             py::arg("aperture_x") = ThinDipole::DEFAULT_aperture_x,
+             py::arg("aperture_y") = ThinDipole::DEFAULT_aperture_y,
              py::arg("name") = py::none(),
              "A thin kick model of a dipole bend."
         )
@@ -2859,7 +2891,7 @@ void init_elements(py::module& m)
     register_push(py_ThinDipole);
     register_reverse(py_ThinDipole);
 
-    py::class_<TaperedPL, elements::mixin::Named, elements::mixin::Thin, elements::mixin::Alignment> py_TaperedPL(me, "TaperedPL");
+    py::class_<TaperedPL, elements::mixin::Named, elements::mixin::Thin, elements::mixin::Alignment, elements::mixin::PipeAperture> py_TaperedPL(me, "TaperedPL");
     py_TaperedPL
         .def("__repr__",
              [](TaperedPL const & taperedpl) {
@@ -2887,6 +2919,8 @@ void init_elements(py::module& m)
                 amrex::ParticleReal,
                 amrex::ParticleReal,
                 amrex::ParticleReal,
+                amrex::ParticleReal,
+                amrex::ParticleReal,
                 std::optional<std::string>
              >(),
              py::arg("k"),
@@ -2895,6 +2929,8 @@ void init_elements(py::module& m)
              py::arg("dx") = TaperedPL::DEFAULT_dx,
              py::arg("dy") = TaperedPL::DEFAULT_dy,
              py::arg("rotation") = TaperedPL::DEFAULT_rotation_degree,
+             py::arg("aperture_x") = TaperedPL::DEFAULT_aperture_x,
+             py::arg("aperture_y") = TaperedPL::DEFAULT_aperture_y,
              py::arg("name") = py::none(),
              R"doc(A thin nonlinear plasma lens with transverse (horizontal) taper
 
@@ -2924,7 +2960,7 @@ void init_elements(py::module& m)
     register_push(py_TaperedPL);
     register_reverse(py_TaperedPL);
 
-    py::class_<LinearMap, elements::mixin::Named, elements::mixin::Alignment> py_LinearMap(me, "LinearMap");
+    py::class_<LinearMap, elements::mixin::Named, elements::mixin::Alignment, elements::mixin::PipeAperture> py_LinearMap(me, "LinearMap");
     py_LinearMap
         .def("__repr__",
              [](LinearMap const & linearmap) {
@@ -2946,6 +2982,8 @@ void init_elements(py::module& m)
                 amrex::ParticleReal,
                 amrex::ParticleReal,
                 amrex::ParticleReal,
+                amrex::ParticleReal,
+                amrex::ParticleReal,
                 std::optional<std::string>
              >(),
              py::arg("R"),
@@ -2953,6 +2991,8 @@ void init_elements(py::module& m)
              py::arg("dx") = LinearMap::DEFAULT_dx,
              py::arg("dy") = LinearMap::DEFAULT_dy,
              py::arg("rotation") = LinearMap::DEFAULT_rotation_degree,
+             py::arg("aperture_x") = LinearMap::DEFAULT_aperture_x,
+             py::arg("aperture_y") = LinearMap::DEFAULT_aperture_y,
              py::arg("name") = py::none(),
              "(A user-provided linear map, represented as a 6x6 transport matrix.)"
         )
