@@ -92,8 +92,8 @@ namespace impactx::particles::wakefields
     /** Interpolated User-Defined Wake Function
      *
      * @param[in] s value along s [m]
-     * @param[in] z_data tabulated z data supplied by user [m]
      * @param[in] wake_data tabulated wake data supplied by user [V/m/pC/mm]
+     * @param[in] z_min lower bound of grid for deposition [m] 
      * @param[in] bin_size bin size [m]
      * @return interpolated value wake function [V/m/pC/mm]
      */
@@ -101,7 +101,8 @@ namespace impactx::particles::wakefields
     amrex::Real
     w_user (
         amrex::Real s,
-        std::vector<amrex::ParticleReal> wake_data,
+        std::vector<amrex::ParticleReal> const wake_data,
+        //TO DO:  use amrex::Gpu::DeviceVector<amrex::Real> const & wake_data,
         amrex::Real const z_min,
         amrex::Real const bin_size
     )
