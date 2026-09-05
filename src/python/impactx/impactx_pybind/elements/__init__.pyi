@@ -414,14 +414,14 @@ class Aperture(mixin.Named, mixin.Thin, mixin.Alignment):
     @property
     def aperture_x(self) -> float:
         """
-        maximum horizontal coordinate
+        maximum horizontal coordinate in m; zero or less removes the horizontal boundary
         """
     @aperture_x.setter
     def aperture_x(self, arg1: typing.SupportsFloat | typing.SupportsIndex) -> None: ...
     @property
     def aperture_y(self) -> float:
         """
-        maximum vertical coordinate
+        maximum vertical coordinate in m; zero or less removes the vertical boundary
         """
     @aperture_y.setter
     def aperture_y(self, arg1: typing.SupportsFloat | typing.SupportsIndex) -> None: ...
