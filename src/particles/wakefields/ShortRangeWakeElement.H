@@ -19,64 +19,83 @@
 #include <AMReX_REAL.H>
 
 #include <cmath>
-#include <tuple>
 #include <variant>
 
 
 namespace impactx::particles::wakefields
 {
+    /** Non-owning view on the user-specified single-particle wake function of an element.
+     *
+     * Trivially copyable, so it can be captured by value into GPU kernels. The
+     * pointers address memory owned by the element and are only valid for the
+     * duration of the current call: do not cache them, re-query per use instead.
+     */
+    struct ShortRangeWakeView
+    {
+        bool has_wake = false;  //!< element contributes a short range structure wake
+        int n_data = 0;  //!< number of tabulated values per wake function
+        amrex::ParticleReal const * z = nullptr;  //!< longitudinal positions in m
+        amrex::ParticleReal const * wake_x = nullptr;  //!< horizontal single-particle wake function
+        amrex::ParticleReal const * wake_y = nullptr;  //!< vertical single-particle wake function
+        amrex::ParticleReal const * wake_z = nullptr;  //!< longitudinal single-particle wake function
+    };
+
     /** Function to check if an element supports short range structure wakefields and to calculate parameters needed for wake.
      *
      * @param[in] element_variant the lattice element to check
      * @param[in] refpart reference particle
-     * @returns boolean flag indicating if the element supports short range wakefields
+     * @returns a view on the element's wake function data, with has_wake set if the element supplies one
      */
     template <typename VariantType>
-    std::tuple<bool, std::vector<amrex::ParticleReal>, std::vector<amrex::ParticleReal>, std::vector<amrex::ParticleReal>, std::vector<amrex::ParticleReal>>
+    ShortRangeWakeView
     ShortRangeWakeElement (
         VariantType const& element_variant,
         [[maybe_unused]] RefPart const & refpart
     )
     {
-        std::vector<amrex::ParticleReal> z_data;
-        std::vector<amrex::ParticleReal> wake_x_data;
-        std::vector<amrex::ParticleReal> wake_y_data;
-        std::vector<amrex::ParticleReal> wake_z_data;
-        bool element_has_short_range_wake = false;
+        ShortRangeWakeView wake;
 
         if (std::holds_alternative<elements::RFCavity>(element_variant))
         {
             // Access element parameters as needed.
-            auto& element = std::get<elements::RFCavity>(element_variant);
-            z_data = elements::RFCavity::WakeData::get(element.m_wake_id)->z_data.host_const();
-            wake_x_data = elements::RFCavity::WakeData::get(element.m_wake_id)->wake_x_data.host_const();
-            wake_y_data = elements::RFCavity::WakeData::get(element.m_wake_id)->wake_y_data.host_const();
-            wake_z_data = elements::RFCavity::WakeData::get(element.m_wake_id)->wake_z_data.host_const();
-            element_has_short_range_wake = true;
+            auto const & element = std::get<elements::RFCavity>(element_variant);
+            auto const & wake_data = *elements::RFCavity::WakeData::get(element.m_wake_id);
+
+            // Upload to device (no-op on CPU builds) and take non-owning views.
+            auto const & d_z = wake_data.z_data.device_const();
+
+            // the wake data is optional: an element without a tabulated wake
+            // function does not contribute a short-range wake
+            if (!d_z.empty())
+            {
+                wake.has_wake = true;
+                wake.n_data = static_cast<int>(d_z.size());
+                wake.z = d_z.data();
+                wake.wake_x = wake_data.wake_x_data.device_const().data();
+                wake.wake_y = wake_data.wake_y_data.device_const().data();
+                wake.wake_z = wake_data.wake_z_data.device_const().data();
+            }
         }
         else if (std::holds_alternative<elements::ShortRF>(element_variant))
         {
             // Access element parameters as needed.
             // auto& element = std::get<elements::ShortRF>(element_variant);
             // TODO:  not supported yet
-            element_has_short_range_wake = false;
         }
         else if (std::holds_alternative<elements::Buncher>(element_variant))
         {
             // Access element parameters as needed.
             // auto& element = std::get<elements::Buncher>(element_variant);
             // TODO:  not supported yet
-            element_has_short_range_wake = false;
         }
         else if (std::holds_alternative<elements::ChrAcc>(element_variant))
         {
             // Access element parameters as needed.
             // auto& element = std::get<elements::ChrAcc>(element_variant);
             // TODO:  not supported yet
-            element_has_short_range_wake = false;
         }
 
-        return {element_has_short_range_wake, z_data, wake_x_data, wake_y_data, wake_z_data};
+        return wake;
     }
 
 } // namespace impactx::particles::wakefields

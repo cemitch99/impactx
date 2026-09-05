@@ -91,28 +91,39 @@ namespace impactx::particles::wakefields
 
     /** Interpolated User-Defined Wake Function
      *
+     * TODO: this interpolates onto the deposition grid; the tabulated abscissa
+     *       z_data of the user-supplied wake is not taken into account yet.
+     *
      * @param[in] s value along s [m]
      * @param[in] wake_data tabulated wake data supplied by user [V/m/pC/mm]
+     * @param[in] n_data number of tabulated values in wake_data
      * @param[in] z_min lower bound of grid for deposition [m]
      * @param[in] bin_size bin size [m]
-     * @return interpolated value wake function [V/m/pC/mm]
+     * @return interpolated value wake function [V/m/pC/mm], zero outside the tabulated range
      */
     AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE
     amrex::Real
     w_user (
         amrex::Real s,
-        std::vector<amrex::ParticleReal> const wake_data,
-        //TO DO:  use amrex::Gpu::DeviceVector<amrex::Real> const & wake_data,
+        amrex::ParticleReal const * wake_data,
+        int const n_data,
         amrex::Real const z_min,
         amrex::Real const bin_size
     )
     {
         using namespace amrex::literals;
 
-        int const idz = static_cast<int>((s - z_min) / bin_size);
-        amrex::Real const idzreal = static_cast<amrex::Real>(idz);
-        amrex::Real lambda = (s - z_min) / bin_size - idzreal;
-        amrex::Real wake_interp = (1_prt-lambda)*wake_data[idz] + lambda*wake_data[idz+1];
+        amrex::Real const pos = (s - z_min) / bin_size;
+
+        // outside the tabulated range the wake function is not defined: it is taken as zero
+        if (pos < 0_rt) { return 0_rt; }
+        int const idz = static_cast<int>(pos);
+        if (idz + 1 >= n_data) { return 0_rt; }
+
+        amrex::Real const lambda = pos - static_cast<amrex::Real>(idz);
+        amrex::Real const wake_interp =
+            (1_rt - lambda) * static_cast<amrex::Real>(wake_data[idz]) +
+            lambda * static_cast<amrex::Real>(wake_data[idz+1]);
 
         return wake_interp;
      }

@@ -20,7 +20,6 @@
 #include <AMReX_GpuContainers.H>
 #include <AMReX_GpuDevice.H>
 #include <AMReX_GpuParallelReduce.H>
-#include <AMReX_Print.H>
 
 #include <cmath>
 #include <stdexcept>
@@ -59,22 +58,16 @@ namespace impactx::particles::wakefields
 
         bool short_range_wakefields = false;
         pp_algo.queryAdd("short_range_wakefields", short_range_wakefields);
-        amrex::Print() << "short_range_wakefields = " << short_range_wakefields << "\n";
 
         // Call the CSR bend function
         auto const [element_has_csr, R] = impactx::particles::wakefields::CSRBendElement(element_variant, particle_container.GetRefParticle());
 
         // Call the function preparing short range wake elements
-        [[maybe_unused]] auto const [element_has_short_range_wake, z_data, wake_x_data, wake_y_data, wake_z_data] = impactx::particles::wakefields::ShortRangeWakeElement(element_variant, particle_container.GetRefParticle());
-        amrex::Print() << "size of z_data = " << z_data.size();
+        auto const short_range_wake = impactx::particles::wakefields::ShortRangeWakeElement(element_variant, particle_container.GetRefParticle());
 
         // Which effect applies to this very element?
         bool const apply_csr = csr && element_has_csr;
-        bool const apply_short_range_wake = short_range_wakefields && element_has_short_range_wake;
-
-        if (apply_short_range_wake){
-            amrex::Print() << "z_data[0] = " << z_data.at(0);
-        }
+        bool const apply_short_range_wake = short_range_wakefields && short_range_wake.has_wake;
 
         // Enter loop if wakefields are turned on
         if (apply_csr || apply_short_range_wake)
@@ -91,7 +84,6 @@ namespace impactx::particles::wakefields
 
             int wake_bins = 150;
             pp_algo.queryAddWithParser("wake_bins", wake_bins);
-            amrex::Print() << "wake_bins = " << wake_bins << "\n";
 
             // Measure beam size, extract the min, max of particle positions
             [[maybe_unused]] auto const [x_min, y_min, t_min, x_max, y_max, t_max] =
@@ -184,16 +176,18 @@ namespace impactx::particles::wakefields
                     convolved_wakefield = impactx::particles::wakefields::convolve_fft(source_data, wake_function, bin_size);
                 }
                 if (apply_short_range_wake){
-                    // TODO:  This section needs to be updated to use the interpolated data from z_data, wake_z_data, etc.
+                    // TODO:  This section needs to be updated to use the interpolated data from
+                    //        short_range_wake.z, short_range_wake.wake_z, etc.
                     // Construct wake function on 2N support
+                    auto const wake = short_range_wake;  // trivially copyable view, captured by value
                     amrex::ParallelFor(num_bins*2, [=] AMREX_GPU_DEVICE(int i) {
                         if (i < num_bins) {
                             amrex::Real const s = static_cast<amrex::Real>(i) * bin_size;
-                            dptr_wake_function[i] = impactx::particles::wakefields::w_user(s, wake_z_data, bin_min, bin_size);
+                            dptr_wake_function[i] = impactx::particles::wakefields::w_user(s, wake.wake_z, wake.n_data, bin_min, bin_size);
                         }
                         else if (i > num_bins) {
                             amrex::Real const s = static_cast<amrex::Real>(i - 2*num_bins) * bin_size;
-                            dptr_wake_function[i] = impactx::particles::wakefields::w_user(s, wake_z_data, bin_min, bin_size);
+                            dptr_wake_function[i] = impactx::particles::wakefields::w_user(s, wake.wake_z, wake.n_data, bin_min, bin_size);
                         }
                     });
 
