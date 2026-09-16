@@ -8,8 +8,8 @@
 
 import numpy as np
 
-import amrex.space3d as amr
 from impactx import ImpactX, elements
+
 
 def test_cfbend_zero_quad():
     """This test compares the linear map for an ExactCFbend element with zero quad strength to the linear map for an Sbend."""
@@ -33,7 +33,21 @@ def test_cfbend_zero_quad():
     ns = 10  # number of slices per ds in the element
 
     # Construct lattice
-    cfbend = elements.ExactCFbend(aperture_x=0.0, aperture_y=0.0, ds=0.391140372489, dx=0.0, dy=0.0, int_order=2, k_normal=[1.3386467172031062, 0.0, 30.21694, -75.81527], k_skew=[0.0, 0.0, 0.0, 0.0], mapsteps=10, name='m1r', nslice=10, rotation=0.0, unit=0)
+    cfbend = elements.ExactCFbend(
+        aperture_x=0.0,
+        aperture_y=0.0,
+        ds=0.391140372489,
+        dx=0.0,
+        dy=0.0,
+        int_order=2,
+        k_normal=[1.3386467172031062, 0.0, 30.21694, -75.81527],
+        k_skew=[0.0, 0.0, 0.0, 0.0],
+        mapsteps=10,
+        name="m1r",
+        nslice=10,
+        rotation=0.0,
+        unit=0,
+    )
     sbend = elements.Sbend(ds=0.391140372489, rc=0.747023084693581)
 
     sim.lattice.extend([cfbend])
@@ -52,11 +66,11 @@ def test_cfbend_zero_quad():
     atol = 1.0e-14
     rtol = 0.0
     print(f"  atol={atol} (ignored: rtol~={rtol})")
-    print(f"  Linear map for cfbend with zero quad strength: ")
+    print("  Linear map for cfbend with zero quad strength: ")
     print(R_cfbend)
     print()
-    print(f"  Linear map for sbend:  ")
-    print(R_sbend)    
+    print("  Linear map for sbend:  ")
+    print(R_sbend)
 
     assert np.allclose(
         R_cfbend,
