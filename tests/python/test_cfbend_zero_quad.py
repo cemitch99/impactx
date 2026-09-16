@@ -26,7 +26,6 @@ def test_cfbend_zero_quad():
     #  set reference particle
     ref = sim.beam.ref
     kin_energy_MeV = 2.606299137493995  # reference kinetic energy (p = 70 MeV/c)
-    charge_qe = 1.0  # particle charge
     ref.set_species("proton").set_kin_energy_MeV(kin_energy_MeV)
 
     # init accelerator lattice
@@ -44,7 +43,7 @@ def test_cfbend_zero_quad():
         k_skew=[0.0, 0.0, 0.0, 0.0],
         mapsteps=10,
         name="m1r",
-        nslice=10,
+        nslice=ns,
         rotation=0.0,
         unit=0,
     )
