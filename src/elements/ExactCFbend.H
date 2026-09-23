@@ -820,13 +820,17 @@ namespace impactx::elements
 
             // trigonometry
             auto const [sinx, cosx] = amrex::Math::sincos(omega_x * slice_ds);
-            amrex::ParticleReal const sincx = (omega_x != 0.0)? sinx/omega_x : slice_ds;
-            amrex::ParticleReal const sinhcx = (omega_x != 0.0)? std::sinh(omega_x * slice_ds)/omega_x : slice_ds;
+            amrex::ParticleReal const sinhx = std::sinh(omega_x * slice_ds);
             amrex::ParticleReal const coshx = std::cosh(omega_x * slice_ds);
             auto const [siny, cosy] = amrex::Math::sincos(omega_y * slice_ds);
-            amrex::ParticleReal const sincy = (omega_y != 0.0)? siny/omega_y : slice_ds;
-            amrex::ParticleReal const sinhcy = (omega_y != 0.0)? std::sinh(omega_y * slice_ds)/omega_y : slice_ds;
+            amrex::ParticleReal const sinhy = std::sinh(omega_y * slice_ds);
             amrex::ParticleReal const coshy = std::cosh(omega_y * slice_ds);
+
+            // sin(w ds)/w and sinh(w ds)/w, which tend to ds for a vanishing w
+            amrex::ParticleReal const sincx = omega_x != 0_prt ? sinx / omega_x : slice_ds;
+            amrex::ParticleReal const sinhcx = omega_x != 0_prt ? sinhx / omega_x : slice_ds;
+            amrex::ParticleReal const sincy = omega_y != 0_prt ? siny / omega_y : slice_ds;
+            amrex::ParticleReal const sinhcy = omega_y != 0_prt ? sinhy / omega_y : slice_ds;
 
             amrex::ParticleReal const igbrc = 1_prt / (gx * bet * rc);
             amrex::ParticleReal const iobrc = 1_prt / (bet * rc);
@@ -836,14 +840,14 @@ namespace impactx::elements
             Map6x6 R = Map6x6::Identity();
 
             R(1,1) = gx > 0_prt ? cosx : coshx;
-            R(1,2) = gx > 0_prt ? sincx : sinhcx ;
+            R(1,2) = gx > 0_prt ? sincx : sinhcx;
             R(1,6) = gx > 0_prt ? -(1_prt - cosx) * igbrc : -(1_prt - coshx) * igbrc;
-            R(2,1) = gx > 0_prt ? -omega_x * sinx : omega_x * omega_x * sinhcx;
+            R(2,1) = gx > 0_prt ? -omega_x * sinx : omega_x * sinhx;
             R(2,2) = gx > 0_prt ? cosx : coshx;
             R(2,6) = gx > 0_prt ? -sincx * iobrc : -sinhcx * iobrc;
             R(3,3) = gy > 0_prt ? cosy : coshy;
-            R(3,4) = gy > 0_prt ? sincy : sinhcy ;
-            R(4,3) = gy > 0_prt ? -omega_y * siny : omega_y * omega_y * sinhcy;
+            R(3,4) = gy > 0_prt ? sincy : sinhcy;
+            R(4,3) = gy > 0_prt ? -omega_y * siny : omega_y * sinhy;
             R(4,4) = gy > 0_prt ? cosy : coshy;
             R(5,1) = gx > 0_prt ? sincx * iobrc : sinhcx * iobrc;
             R(5,2) = gx > 0_prt ? (1_prt - cosx) * igbrc : (1_prt - coshx) * igbrc;
