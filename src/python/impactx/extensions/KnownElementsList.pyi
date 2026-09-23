@@ -11,7 +11,6 @@ from __future__ import annotations
 import math as math
 import os as os
 import re as re
-import weakref as weakref
 
 import impactx.impactx_pybind.elements
 from impactx.element_models import tier_of_class, validate_model
@@ -39,7 +38,6 @@ __all__: list[str] = [
     "to_dicts",
     "to_py",
     "validate_model",
-    "weakref",
 ]
 
 def _check_element_match(element, kind, name):
@@ -53,22 +51,6 @@ def _check_element_match(element, kind, name):
 
     Returns:
         bool: True if element matches any criteria (OR logic)
-    """
-
-def _clone_element(template):
-    """
-    Deep-clone a lattice element via ``to_dict`` (pybind elements are not copy.copy-able).
-
-    Goes through ``_element_to_dict`` and ``_element_from_dict`` so that the dict is
-    one the constructor accepts: ``_filter_kwargs`` drops keys that ``to_dict``
-    reports but the constructor rejects (thin elements such as ``Marker`` report
-    ``ds=0.0`` yet take only a name), and angles are converted to the degrees the
-    constructor expects.
-    """
-
-def _commit_lattice_rebuild(original, new_elements) -> None:
-    """
-    Replace lattice contents with ``new_elements`` and invalidate all FilteredElementsList views.
     """
 
 def _drift_class_for_replace_with_drifts(model: str, old_el) -> type:
@@ -93,6 +75,17 @@ def _element_from_dict(d: dict):
     Raises:
         KeyError: If 'type' key is missing
         AttributeError: If element type is not found in elements module
+    """
+
+def _element_kind(element):
+    """
+    The element kind, which a Python subclass keeps.
+
+    Args:
+        element: The element to inspect
+
+    Returns:
+        str: the name of the element type this is a kind of, e.g. ``"Drift"``
     """
 
 def _element_to_dict(element) -> dict:
@@ -126,11 +119,6 @@ def _format_value(v):
     is (rows, cols) from the SmallMatrix type, or None otherwise.
     """
 
-def _invalidate_all_registered_views(lattice) -> None:
-    """
-    Mark every registered FilteredElementsList for this lattice as invalid.
-    """
-
 def _is_regex_pattern(pattern: str) -> bool:
     """
     Check if a string looks like a regex pattern by testing if it contains regex metacharacters.
@@ -148,6 +136,18 @@ def _lattice_eq(self, other):
     reflected-equality fallback applies. Mutable containers are
     deliberately unhashable (``__hash__ = None``), matching the Python
     ``list`` convention.
+    """
+
+def _lattice_init(self, elements=None):
+    """
+    Create a lattice, optionally filled with elements.
+
+    ``elements`` is a single element or any iterable of elements: a list, another
+    lattice, a selection, a generator. The elements are shared, not copied, so the
+    caller keeps handles to the very elements the lattice holds. Constructing goes
+    through ``extend`` for exactly that reason: the C++ constructor cannot see the
+    object being constructed, and so cannot record which Python objects own the
+    elements.
     """
 
 def _lattice_isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
@@ -217,11 +217,6 @@ def _matches_string(text: str, string_pattern: str) -> bool:
 def _rad2deg(radians: float) -> float:
     """
     Convert radians to degrees.
-    """
-
-def _registry_for(lattice):
-    """
-    Return the WeakSet of FilteredElementsList instances for this lattice.
     """
 
 def _validate_select_parameters(kind, name):
@@ -507,4 +502,3 @@ DRIFT_MODEL_CLASSES: dict = {
 }
 FILTERED_ELEMENTS_LIST_INVALID_MSG: str = "This lattice selection is no longer valid because the lattice was modified; call select() again on the lattice."
 _DEGREE_ELEMENTS: tuple = ("ExactSbend", "PlaneXYRot", "PRot", "ThinDipole")
-_filtered_views_by_lattice: weakref.WeakKeyDictionary
