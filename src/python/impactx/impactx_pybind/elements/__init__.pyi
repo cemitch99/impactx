@@ -97,6 +97,23 @@ class BeamMonitor(mixin.Thin):
         This element writes the particle beam out to openPMD data.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -309,6 +326,23 @@ class Aperture(mixin.Named, mixin.Thin, mixin.Alignment):
         A short collimator element applying a transverse aperture boundary.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -494,6 +528,23 @@ class ChrDrift(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
         A Drift with chromatic effects included.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -632,6 +683,23 @@ class ChrQuad(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
         A Quadrupole magnet with chromatic effects included.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -784,6 +852,23 @@ class ChrPlasmaLens(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeApertur
         An active Plasma Lens with chromatic effects included.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -936,6 +1021,23 @@ class ChrAcc(mixin.Named, mixin.Thick, mixin.Alignment):
         A region of Uniform Acceleration, with chromatic effects included.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -1089,6 +1191,23 @@ class ConstF(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
         A linear Constant Focusing element.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -1258,6 +1377,23 @@ class DipEdge(mixin.Named, mixin.Thin, mixin.Alignment, mixin.PipeAperture):
         Edge focusing associated with bend entry or exit.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -1493,6 +1629,23 @@ class QuadEdge(mixin.Named, mixin.Thin, mixin.Alignment, mixin.PipeAperture):
         A thin quadrupole fringe field element. Flag must be "entry" or "exit".
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -1643,6 +1796,23 @@ class Drift(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
         A drift.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -1779,6 +1949,23 @@ class ExactDrift(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
         A Drift using the exact nonlinear map.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -1920,6 +2107,23 @@ class ExactMultipole(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeApertu
         A thick Multipole magnet using the exact nonlinear Hamiltonian.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -1978,6 +2182,17 @@ class ExactMultipole(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeApertu
         Reverse the element in-place so that pushing particles through
         it reverses the effect of the original element.
         """
+    def set_coefficients(
+        self,
+        k_normal: collections.abc.Sequence[typing.SupportsFloat | typing.SupportsIndex],
+        k_skew: collections.abc.Sequence[typing.SupportsFloat | typing.SupportsIndex],
+    ) -> None:
+        """
+        Replace both arrays at once.
+
+        They are validated together and applied as one step, so a rejected update
+        leaves the element unchanged.
+        """
     def to_dict(
         self,
     ) -> dict[
@@ -2022,6 +2237,32 @@ class ExactMultipole(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeApertu
         """
     @int_order.setter
     def int_order(self, arg1: typing.SupportsInt | typing.SupportsIndex) -> None: ...
+    @property
+    def k_normal(self) -> list[float]:
+        """
+        normal multipole coefficients
+
+        Both arrays are always the same length. To change the length, set both at
+        once with ``set_coefficients()``.
+        """
+    @k_normal.setter
+    def k_normal(
+        self,
+        arg1: collections.abc.Sequence[typing.SupportsFloat | typing.SupportsIndex],
+    ) -> None: ...
+    @property
+    def k_skew(self) -> list[float]:
+        """
+        skew multipole coefficients
+
+        Both arrays are always the same length. To change the length, set both at
+        once with ``set_coefficients()``.
+        """
+    @k_skew.setter
+    def k_skew(
+        self,
+        arg1: collections.abc.Sequence[typing.SupportsFloat | typing.SupportsIndex],
+    ) -> None: ...
     @property
     def mapsteps(self) -> int:
         """
@@ -2082,6 +2323,23 @@ class ExactCFbend(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture)
         A thick combined function bending magnet using the exact nonlinear Hamiltonian.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -2140,6 +2398,17 @@ class ExactCFbend(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture)
         Reverse the element in-place so that pushing particles through
         it reverses the effect of the original element.
         """
+    def set_coefficients(
+        self,
+        k_normal: collections.abc.Sequence[typing.SupportsFloat | typing.SupportsIndex],
+        k_skew: collections.abc.Sequence[typing.SupportsFloat | typing.SupportsIndex],
+    ) -> None:
+        """
+        Replace both arrays at once.
+
+        They are validated together and applied as one step, so a rejected update
+        leaves the element unchanged.
+        """
     def to_dict(
         self,
     ) -> dict[
@@ -2184,6 +2453,32 @@ class ExactCFbend(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture)
         """
     @int_order.setter
     def int_order(self, arg1: typing.SupportsInt | typing.SupportsIndex) -> None: ...
+    @property
+    def k_normal(self) -> list[float]:
+        """
+        normal multipole coefficients
+
+        Both arrays are always the same length. To change the length, set both at
+        once with ``set_coefficients()``.
+        """
+    @k_normal.setter
+    def k_normal(
+        self,
+        arg1: collections.abc.Sequence[typing.SupportsFloat | typing.SupportsIndex],
+    ) -> None: ...
+    @property
+    def k_skew(self) -> list[float]:
+        """
+        skew multipole coefficients
+
+        Both arrays are always the same length. To change the length, set both at
+        once with ``set_coefficients()``.
+        """
+    @k_skew.setter
+    def k_skew(
+        self,
+        arg1: collections.abc.Sequence[typing.SupportsFloat | typing.SupportsIndex],
+    ) -> None: ...
     @property
     def mapsteps(self) -> int:
         """
@@ -2243,6 +2538,23 @@ class ExactQuad(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
         A Quadrupole magnet using the exact nonlinear Hamiltonian.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -2409,6 +2721,23 @@ class ExactSbend(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
         An ideal sector bend using the exact nonlinear map.  When B = 0, the reference bending radius is defined by r0 = length / (angle in rad), corresponding to a magnetic field of B = rigidity / r0; otherwise the reference bending radius is defined by r0 = rigidity / B.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -2564,6 +2893,23 @@ class Kicker(mixin.Named, mixin.Thin, mixin.Alignment, mixin.PipeAperture):
         A thin transverse kicker element. Kicks are for unit "dimensionless" or in "T-m".
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -2715,6 +3061,23 @@ class Multipole(mixin.Named, mixin.Thin, mixin.Alignment, mixin.PipeAperture):
         A general thin multipole element.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -2862,6 +3225,23 @@ class Empty(mixin.Named, mixin.Thin):
         This element does nothing.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -2988,6 +3368,23 @@ class Marker(mixin.Named, mixin.Thin):
         This named element does nothing.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -3124,6 +3521,23 @@ class NonlinearLens(mixin.Named, mixin.Thin, mixin.Alignment, mixin.PipeAperture
         Single short segment of the nonlinear magnetic insert element.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -3271,6 +3685,23 @@ class PlaneXYRot(mixin.Named, mixin.Thin, mixin.Alignment):
         A rotation in the x-y plane.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -3421,6 +3852,23 @@ class PolygonAperture(mixin.Named, mixin.Thin, mixin.Alignment):
         A short collimator element described by a polygon with vertices given by their x and y coordinates.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -3478,6 +3926,21 @@ class PolygonAperture(mixin.Named, mixin.Thin, mixin.Alignment):
         """
         Reverse the element in-place so that pushing particles through
         it reverses the effect of the original element.
+        """
+    def set_vertices(
+        self,
+        vertices_x: collections.abc.Sequence[
+            typing.SupportsFloat | typing.SupportsIndex
+        ],
+        vertices_y: collections.abc.Sequence[
+            typing.SupportsFloat | typing.SupportsIndex
+        ],
+    ) -> None:
+        """
+        Replace both arrays at once.
+
+        They are validated together and applied as one step, so a rejected update
+        leaves the element unchanged.
         """
     def to_dict(
         self,
@@ -3553,6 +4016,32 @@ class PolygonAperture(mixin.Named, mixin.Thin, mixin.Alignment):
         """
     @shift_odd_x.setter
     def shift_odd_x(self, arg1: bool) -> None: ...
+    @property
+    def vertices_x(self) -> list[float]:
+        """
+        horizontal vertex coordinates in m
+
+        Both arrays are always the same length. To change the length, set both at
+        once with ``set_vertices()``.
+        """
+    @vertices_x.setter
+    def vertices_x(
+        self,
+        arg1: collections.abc.Sequence[typing.SupportsFloat | typing.SupportsIndex],
+    ) -> None: ...
+    @property
+    def vertices_y(self) -> list[float]:
+        """
+        vertical vertex coordinates in m
+
+        Both arrays are always the same length. To change the length, set both at
+        once with ``set_vertices()``.
+        """
+    @vertices_y.setter
+    def vertices_y(
+        self,
+        arg1: collections.abc.Sequence[typing.SupportsFloat | typing.SupportsIndex],
+    ) -> None: ...
 
 class Programmable(mixin.Named):
     def __eq__(self, other):
@@ -3589,6 +4078,23 @@ class Programmable(mixin.Named):
         A programmable beam optics element.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
         Tolerant equality for lattice elements.
@@ -3745,6 +4251,23 @@ class Quad(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
         A Quadrupole magnet.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -3900,6 +4423,23 @@ class RFCavity(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
         An RF cavity.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -3958,6 +4498,21 @@ class RFCavity(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
         Reverse the element in-place so that pushing particles through
         it reverses the effect of the original element.
         """
+    def set_coefficients(
+        self,
+        cos_coefficients: collections.abc.Sequence[
+            typing.SupportsFloat | typing.SupportsIndex
+        ],
+        sin_coefficients: collections.abc.Sequence[
+            typing.SupportsFloat | typing.SupportsIndex
+        ],
+    ) -> None:
+        """
+        Replace both arrays at once.
+
+        They are validated together and applied as one step, so a rejected update
+        leaves the element unchanged.
+        """
     def to_dict(
         self,
     ) -> dict[
@@ -3996,6 +4551,19 @@ class RFCavity(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
         :param ref: reference particle at the element entrance
         """
     @property
+    def cos_coefficients(self) -> list[float]:
+        """
+        cosine coefficients in the Fourier expansion of the on-axis RF electric field
+
+        Both arrays are always the same length. To change the length, set both at
+        once with ``set_coefficients()``.
+        """
+    @cos_coefficients.setter
+    def cos_coefficients(
+        self,
+        arg1: collections.abc.Sequence[typing.SupportsFloat | typing.SupportsIndex],
+    ) -> None: ...
+    @property
     def escale(self) -> float:
         """
         scaling factor for on-axis RF electric field in 1/m = (peak on-axis electric field Ez in MV/m) / (particle rest energy in MeV)
@@ -4028,6 +4596,19 @@ class RFCavity(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
         """
     @phase.setter
     def phase(self, arg1: typing.SupportsFloat | typing.SupportsIndex) -> None: ...
+    @property
+    def sin_coefficients(self) -> list[float]:
+        """
+        sine coefficients in the Fourier expansion of the on-axis RF electric field
+
+        Both arrays are always the same length. To change the length, set both at
+        once with ``set_coefficients()``.
+        """
+    @sin_coefficients.setter
+    def sin_coefficients(
+        self,
+        arg1: collections.abc.Sequence[typing.SupportsFloat | typing.SupportsIndex],
+    ) -> None: ...
     @property
     def spin_coupling(
         self,
@@ -4077,6 +4658,23 @@ class Sbend(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
         An ideal sector bend.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -4219,6 +4817,23 @@ class CFbend(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
         An ideal combined function bend (sector bend with quadrupole component).
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -4369,6 +4984,23 @@ class Buncher(mixin.Named, mixin.Thin, mixin.Alignment, mixin.PipeAperture):
         A short linear RF cavity element at zero-crossing for bunching.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -4520,6 +5152,23 @@ class ShortRF(mixin.Named, mixin.Thin, mixin.Alignment, mixin.PipeAperture):
         A short RF cavity element.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -4688,6 +5337,23 @@ class SoftSolenoid(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture
         A soft-edge solenoid.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -4746,6 +5412,21 @@ class SoftSolenoid(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture
         Reverse the element in-place so that pushing particles through
         it reverses the effect of the original element.
         """
+    def set_coefficients(
+        self,
+        cos_coefficients: collections.abc.Sequence[
+            typing.SupportsFloat | typing.SupportsIndex
+        ],
+        sin_coefficients: collections.abc.Sequence[
+            typing.SupportsFloat | typing.SupportsIndex
+        ],
+    ) -> None:
+        """
+        Replace both arrays at once.
+
+        They are validated together and applied as one step, so a rejected update
+        leaves the element unchanged.
+        """
     def to_dict(
         self,
     ) -> dict[
@@ -4791,6 +5472,19 @@ class SoftSolenoid(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture
     @bscale.setter
     def bscale(self, arg1: typing.SupportsFloat | typing.SupportsIndex) -> None: ...
     @property
+    def cos_coefficients(self) -> list[float]:
+        """
+        cosine coefficients in the Fourier expansion of the on-axis magnetic field Bz
+
+        Both arrays are always the same length. To change the length, set both at
+        once with ``set_coefficients()``.
+        """
+    @cos_coefficients.setter
+    def cos_coefficients(
+        self,
+        arg1: collections.abc.Sequence[typing.SupportsFloat | typing.SupportsIndex],
+    ) -> None: ...
+    @property
     def map(self) -> amrex.space3d.amrex_3d_pybind.SmallMatrix_6x6_F_SI1_double:
         """
         linearized transport map around the reference particle (valid after a reference-particle push)
@@ -4802,6 +5496,19 @@ class SoftSolenoid(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture
         """
     @mapsteps.setter
     def mapsteps(self, arg1: typing.SupportsInt | typing.SupportsIndex) -> None: ...
+    @property
+    def sin_coefficients(self) -> list[float]:
+        """
+        sine coefficients in the Fourier expansion of the on-axis magnetic field Bz
+
+        Both arrays are always the same length. To change the length, set both at
+        once with ``set_coefficients()``.
+        """
+    @sin_coefficients.setter
+    def sin_coefficients(
+        self,
+        arg1: collections.abc.Sequence[typing.SupportsFloat | typing.SupportsIndex],
+    ) -> None: ...
     @property
     def spin_coupling(
         self,
@@ -4863,6 +5570,23 @@ class Source(mixin.Named, mixin.Thin):
         A particle source.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -5046,6 +5770,23 @@ class Sol(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeAperture):
         An ideal hard-edge Solenoid magnet.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -5184,6 +5925,23 @@ class PRot(mixin.Named, mixin.Thin):
         An exact pole-face rotation in the x-z plane. Both angles are in degrees.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -5344,6 +6102,23 @@ class SoftQuadrupole(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeApertu
         A soft-edge quadrupole.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -5402,6 +6177,21 @@ class SoftQuadrupole(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeApertu
         Reverse the element in-place so that pushing particles through
         it reverses the effect of the original element.
         """
+    def set_coefficients(
+        self,
+        cos_coefficients: collections.abc.Sequence[
+            typing.SupportsFloat | typing.SupportsIndex
+        ],
+        sin_coefficients: collections.abc.Sequence[
+            typing.SupportsFloat | typing.SupportsIndex
+        ],
+    ) -> None:
+        """
+        Replace both arrays at once.
+
+        They are validated together and applied as one step, so a rejected update
+        leaves the element unchanged.
+        """
     def to_dict(
         self,
     ) -> dict[
@@ -5440,6 +6230,19 @@ class SoftQuadrupole(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeApertu
         :param ref: reference particle at the element entrance
         """
     @property
+    def cos_coefficients(self) -> list[float]:
+        """
+        cosine coefficients in the Fourier expansion of the on-axis field gradient
+
+        Both arrays are always the same length. To change the length, set both at
+        once with ``set_coefficients()``.
+        """
+    @cos_coefficients.setter
+    def cos_coefficients(
+        self,
+        arg1: collections.abc.Sequence[typing.SupportsFloat | typing.SupportsIndex],
+    ) -> None: ...
+    @property
     def gscale(self) -> float:
         """
         Scaling factor for on-axis field gradient in inverse meters
@@ -5458,6 +6261,19 @@ class SoftQuadrupole(mixin.Named, mixin.Thick, mixin.Alignment, mixin.PipeApertu
         """
     @mapsteps.setter
     def mapsteps(self, arg1: typing.SupportsInt | typing.SupportsIndex) -> None: ...
+    @property
+    def sin_coefficients(self) -> list[float]:
+        """
+        sine coefficients in the Fourier expansion of the on-axis field gradient
+
+        Both arrays are always the same length. To change the length, set both at
+        once with ``set_coefficients()``.
+        """
+    @sin_coefficients.setter
+    def sin_coefficients(
+        self,
+        arg1: collections.abc.Sequence[typing.SupportsFloat | typing.SupportsIndex],
+    ) -> None: ...
     @property
     def spin_coupling(
         self,
@@ -5506,6 +6322,23 @@ class ThinDipole(mixin.Named, mixin.Thin, mixin.Alignment, mixin.PipeAperture):
         A thin kick model of a dipole bend.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -5656,6 +6489,23 @@ class TaperedPL(mixin.Named, mixin.Thin, mixin.Alignment, mixin.PipeAperture):
                      where :math:`g` is the (linear) field gradient in T/m and :math:`D_x` is the targeted horizontal dispersion in m.
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -5813,6 +6663,23 @@ class LinearMap(mixin.Named, mixin.Alignment, mixin.PipeAperture):
         (A user-provided linear map, represented as a 6x6 transport matrix.)
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -5977,6 +6844,23 @@ class SpinMap(mixin.Named, mixin.Alignment):
         (A user-provided spin map, represented as a 3-vector and a 3x6 coupling matrix.)
         """
     def __repr__(self) -> str: ...
+    def copy(self, **kwargs) -> typing.Any:
+        """
+        Return a new element with the same configuration.
+
+        ``lattice.append(q)`` places ``q`` itself; ``lattice.append(q.copy())``
+        places a separate element.
+
+        Keyword arguments give the copy a different value for a parameter, which is
+        how one element supplies the values for many::
+
+            cavities = [rf.copy(name=f"rf{i}") for i in range(1, 5)]
+            scan = [quad.copy(k=k) for k in (0.8, 0.9, 1.0)]
+
+        Parameters that only mean something as a pair -- the cosine and sine
+        coefficients, the normal and skew coefficients, the polygon vertices -- are
+        given together, as the constructor takes them.
+        """
     def finalize(self) -> None: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
         """
@@ -6104,6 +6988,19 @@ class SpinMap(mixin.Named, mixin.Alignment):
     ) -> None: ...
 
 class KnownElementsList:
+    def __contains__(self, element: typing.Any) -> bool: ...
+    @typing.overload
+    def __delitem__(self, slice: slice) -> None:
+        """
+        Remove the selected elements.
+        """
+    @typing.overload
+    def __delitem__(self, index: typing.SupportsInt | typing.SupportsIndex) -> None:
+        """
+        Remove the element at a position.
+
+        An element that also sits at other positions keeps those.
+        """
     def __eq__(self, other):
         """
         Element-wise equality with any iterable of elements.
@@ -6117,187 +7014,68 @@ class KnownElementsList:
         deliberately unhashable (``__hash__ = None``), matching the Python
         ``list`` convention.
         """
+    @typing.overload
     def __getitem__(
-        self, arg0: typing.SupportsInt | typing.SupportsIndex
-    ) -> (
-        Empty
-        | Aperture
-        | Buncher
-        | CFbend
-        | ChrAcc
-        | ChrDrift
-        | ChrPlasmaLens
-        | ChrQuad
-        | ConstF
-        | BeamMonitor
-        | DipEdge
-        | Drift
-        | ExactCFbend
-        | ExactDrift
-        | ExactMultipole
-        | ExactQuad
-        | ExactSbend
-        | Kicker
-        | LinearMap
-        | Marker
-        | Multipole
-        | NonlinearLens
-        | PlaneXYRot
-        | PolygonAperture
-        | Programmable
-        | PRot
-        | Quad
-        | QuadEdge
-        | RFCavity
-        | Sbend
-        | ShortRF
-        | SoftSolenoid
-        | SoftQuadrupole
-        | Sol
-        | Source
-        | SpinMap
-        | TaperedPL
-        | ThinDipole
-    ): ...
+        self, index: typing.SupportsInt | typing.SupportsIndex
+    ) -> typing.Any:
+        """
+        Return the element at a position.
+        """
     @typing.overload
-    def __init__(self) -> None: ...
-    @typing.overload
-    def __init__(
-        self,
-        arg0: Empty
-        | Aperture
-        | Buncher
-        | CFbend
-        | ChrAcc
-        | ChrDrift
-        | ChrPlasmaLens
-        | ChrQuad
-        | ConstF
-        | BeamMonitor
-        | DipEdge
-        | Drift
-        | ExactCFbend
-        | ExactDrift
-        | ExactMultipole
-        | ExactQuad
-        | ExactSbend
-        | Kicker
-        | LinearMap
-        | Marker
-        | Multipole
-        | NonlinearLens
-        | PlaneXYRot
-        | PolygonAperture
-        | Programmable
-        | PRot
-        | Quad
-        | QuadEdge
-        | RFCavity
-        | Sbend
-        | ShortRF
-        | SoftSolenoid
-        | SoftQuadrupole
-        | Sol
-        | Source
-        | SpinMap
-        | TaperedPL
-        | ThinDipole,
-    ) -> None: ...
-    @typing.overload
-    def __init__(self, arg0: list) -> None: ...
-    def __iter__(
-        self,
-    ) -> collections.abc.Iterator[
-        Empty
-        | Aperture
-        | Buncher
-        | CFbend
-        | ChrAcc
-        | ChrDrift
-        | ChrPlasmaLens
-        | ChrQuad
-        | ConstF
-        | BeamMonitor
-        | DipEdge
-        | Drift
-        | ExactCFbend
-        | ExactDrift
-        | ExactMultipole
-        | ExactQuad
-        | ExactSbend
-        | Kicker
-        | LinearMap
-        | Marker
-        | Multipole
-        | NonlinearLens
-        | PlaneXYRot
-        | PolygonAperture
-        | Programmable
-        | PRot
-        | Quad
-        | QuadEdge
-        | RFCavity
-        | Sbend
-        | ShortRF
-        | SoftSolenoid
-        | SoftQuadrupole
-        | Sol
-        | Source
-        | SpinMap
-        | TaperedPL
-        | ThinDipole
-    ]: ...
+    def __getitem__(self, slice: slice) -> typing.Any:
+        """
+        Return a new lattice holding the selected elements.
+        """
+    def __init__(self, elements=None):
+        """
+        Create a lattice, optionally filled with elements.
+
+        ``elements`` is a single element or any iterable of elements: a list, another
+        lattice, a selection, a generator. The elements are shared, not copied, so the
+        caller keeps handles to the very elements the lattice holds. Constructing goes
+        through ``extend`` for exactly that reason: the C++ constructor cannot see the
+        object being constructed, and so cannot record which Python objects own the
+        elements.
+        """
+    def __iter__(self) -> typing.Any:
+        """
+        Iterate over the elements of the lattice.
+        """
     def __len__(self) -> int:
         """
         The length of the list.
         """
-    def append(
-        self,
-        arg0: Empty
-        | Aperture
-        | Buncher
-        | CFbend
-        | ChrAcc
-        | ChrDrift
-        | ChrPlasmaLens
-        | ChrQuad
-        | ConstF
-        | BeamMonitor
-        | DipEdge
-        | Drift
-        | ExactCFbend
-        | ExactDrift
-        | ExactMultipole
-        | ExactQuad
-        | ExactSbend
-        | Kicker
-        | LinearMap
-        | Marker
-        | Multipole
-        | NonlinearLens
-        | PlaneXYRot
-        | PolygonAperture
-        | Programmable
-        | PRot
-        | Quad
-        | QuadEdge
-        | RFCavity
-        | Sbend
-        | ShortRF
-        | SoftSolenoid
-        | SoftQuadrupole
-        | Sol
-        | Source
-        | SpinMap
-        | TaperedPL
-        | ThinDipole,
+    def __reversed__(self) -> typing.Any:
+        """
+        Iterate over the elements from the end.
+        """
+    @typing.overload
+    def __setitem__(
+        self, index: typing.SupportsInt | typing.SupportsIndex, element: typing.Any
     ) -> None:
         """
-        Add a single element to the list.
+        Replace the element at a position.
+        """
+    @typing.overload
+    def __setitem__(self, slice: slice, elements: collections.abc.Iterable) -> None:
+        """
+        Replace the selected elements.
+        """
+    def append(self, element: typing.Any) -> None:
+        """
+        Add an element to the end of the lattice.
+
+        The lattice holds this element, so changing it afterwards changes what is
+        tracked. Adding the same element twice places it at two positions. For two
+        independent elements, add ``element.copy()`` or construct a second one.
         """
     def clear(self) -> None:
         """
-        Clear the list to become empty.
+        Remove all elements from the lattice.
+        """
+    def count(self, element: typing.Any) -> int:
+        """
+        Return how many positions this element occupies.
         """
     def count_by_kind(self, kind_pattern) -> int:
         """
@@ -6312,15 +7090,9 @@ class KnownElementsList:
         Returns:
             int: Number of elements of the specified kind.
         """
-    @typing.overload
-    def extend(self, arg0: KnownElementsList) -> KnownElementsList:
+    def extend(self, elements: collections.abc.Iterable) -> typing.Any:
         """
-        Add a list of elements to the list.
-        """
-    @typing.overload
-    def extend(self, arg0: list) -> KnownElementsList:
-        """
-        Add a list of elements to the list.
+        Add several elements to the lattice.
         """
     def from_dicts(self, dicts: list[dict]):
         """
@@ -6378,6 +7150,16 @@ class KnownElementsList:
 
         Returns:
             bool: True if at least one element of the specified kind exists.
+        """
+    def index(self, element: typing.Any) -> int:
+        """
+        Return the first position holding this element.
+        """
+    def insert(
+        self, index: typing.SupportsInt | typing.SupportsIndex, element: typing.Any
+    ) -> None:
+        """
+        Insert an element before a position.
         """
     def is_empty(self) -> bool: ...
     def isclose(self, other, *, rtol=1e-12, atol=0.0, ignore_attributes=None):
@@ -6480,9 +7262,13 @@ class KnownElementsList:
         -------
         Either populates the matplotlib axes in ax or creates a new axes containing the plot.
         """
-    def pop_back(self) -> None:
+    def pop_back(self) -> typing.Any:
         """
-        Return and remove the last element of the list.
+        Remove and return the last element of the lattice.
+        """
+    def remove(self, element: typing.Any) -> None:
+        """
+        Remove the first occurrence of this element.
         """
     def select(self, *, kind=None, name=None) -> FilteredElementsList:
         """
@@ -6670,6 +7456,18 @@ class KnownElementsList:
         :param order: So far, only the calculation of linear transfer maps is supported.
         :param fallback_identity_map: For elements with an undefined transfer map in the lattice, assume the identity matrix.
         """
+    @property
+    def generation(self) -> int:
+        """
+        How often the sequence of elements changed.
+
+        Counts structural edits only: changing a parameter on an element that is
+        already in the lattice does not move anything and does not change this.
+        A view that remembers positions compares this to notice they went stale.
+
+        Compare it for equality, not by how far it moved: one call can edit the
+        sequence in several steps, as deleting a selection does.
+        """
 
 class FilteredElementsList:
     """
@@ -6703,7 +7501,7 @@ class FilteredElementsList:
     def __str__(self): ...
     def _require_valid(self) -> None:
         """
-        Raise if this view was invalidated after a lattice mutation.
+        Raise if the lattice changed after this view was taken.
         """
     def count_by_kind(self, kind_pattern) -> int:
         """
