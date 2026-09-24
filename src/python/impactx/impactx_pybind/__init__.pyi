@@ -790,12 +790,12 @@ class ImpactX:
     @isr_order.setter
     def isr_order(self, arg1: typing.SupportsInt | typing.SupportsIndex) -> None: ...
     @property
-    def lattice(self) -> elements.KnownElementsList:
+    def lattice(self) -> typing.Any:
         """
         Access the accelerator element lattice.
         """
     @lattice.setter
-    def lattice(self, arg0: elements.KnownElementsList) -> None: ...
+    def lattice(self, arg1: collections.abc.Iterable) -> None: ...
     @property
     def max_grid_size(self) -> list[int]:
         """

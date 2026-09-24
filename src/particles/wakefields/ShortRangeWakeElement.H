@@ -14,6 +14,7 @@
 #include "elements/ShortRF.H"
 #include "elements/Buncher.H"
 #include "elements/ChrUniformAcc.H"
+#include "elements/helper/Handle.H"
 #include "particles/ReferenceParticle.H"
 
 #include <AMReX_REAL.H>
@@ -55,11 +56,10 @@ namespace impactx::particles::wakefields
     {
         ShortRangeWakeView wake;
 
-        if (std::holds_alternative<elements::RFCavity>(element_variant))
+        if (auto const * element = elements::get_if<elements::RFCavity>(element_variant))
         {
             // Access element parameters as needed.
-            auto const & element = std::get<elements::RFCavity>(element_variant);
-            auto const & wake_data = *elements::RFCavity::WakeData::get(element.m_wake_id);
+            auto const & wake_data = element->m_wake;
 
             // Upload to device (no-op on CPU builds) and take non-owning views.
             auto const & d_z = wake_data.z_data.device_const();
@@ -76,22 +76,22 @@ namespace impactx::particles::wakefields
                 wake.wake_z = wake_data.wake_z_data.device_const().data();
             }
         }
-        else if (std::holds_alternative<elements::ShortRF>(element_variant))
+        else if (elements::get_if<elements::ShortRF>(element_variant) != nullptr)
         {
             // Access element parameters as needed.
-            // auto& element = std::get<elements::ShortRF>(element_variant);
+            // auto const * element = elements::get_if<elements::ShortRF>(element_variant);
             // TODO:  not supported yet
         }
-        else if (std::holds_alternative<elements::Buncher>(element_variant))
+        else if (elements::get_if<elements::Buncher>(element_variant) != nullptr)
         {
             // Access element parameters as needed.
-            // auto& element = std::get<elements::Buncher>(element_variant);
+            // auto const * element = elements::get_if<elements::Buncher>(element_variant);
             // TODO:  not supported yet
         }
-        else if (std::holds_alternative<elements::ChrAcc>(element_variant))
+        else if (elements::get_if<elements::ChrAcc>(element_variant) != nullptr)
         {
             // Access element parameters as needed.
-            // auto& element = std::get<elements::ChrAcc>(element_variant);
+            // auto const * element = elements::get_if<elements::ChrAcc>(element_variant);
             // TODO:  not supported yet
         }
 
