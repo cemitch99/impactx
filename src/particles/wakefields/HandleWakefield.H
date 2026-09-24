@@ -63,11 +63,11 @@ namespace impactx::particles::wakefields
         auto const [element_has_csr, R] = impactx::particles::wakefields::CSRBendElement(element_variant, particle_container.GetRefParticle());
 
         // Call the function preparing short range wake elements
-        auto const short_range_wake = impactx::particles::wakefields::ShortRangeWakeElement(element_variant, particle_container.GetRefParticle());
+        auto const short_range_wake = impactx::particles::wakefields::ShortRangeWakeElement(element_variant);
 
         // Which effect applies to this very element?
         bool const apply_csr = csr && element_has_csr;
-        bool const apply_short_range_wake = short_range_wakefields && short_range_wake.has_wake;
+        bool const apply_short_range_wake = short_range_wakefields && short_range_wake.has_value();
 
         // Enter loop if wakefields are turned on
         if (apply_csr || apply_short_range_wake)
@@ -179,7 +179,7 @@ namespace impactx::particles::wakefields
                     // TODO:  This section needs to be updated to use the interpolated data from
                     //        short_range_wake.z, short_range_wake.wake_z, etc.
                     // Construct wake function on 2N support
-                    auto const wake = short_range_wake;  // trivially copyable view, captured by value
+                    auto const wake = *short_range_wake;  // trivially copyable view, captured by value
                     amrex::ParallelFor(num_bins*2, [=] AMREX_GPU_DEVICE(int i) {
                         if (i < num_bins) {
                             amrex::Real const s = static_cast<amrex::Real>(i) * bin_size;

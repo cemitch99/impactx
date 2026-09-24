@@ -13,6 +13,7 @@
 #include "alignment.H"
 #include "named.H"
 #include "pipeaperture.H"
+#include "shortrangewake.H"
 #include "spintransport.H"
 #include "thick.H"
 #include "thin.H"
@@ -62,6 +63,11 @@ namespace impactx::elements::mixin
     /** Does this element support spin transport (@see SpinTransport)? */
     template<typename T_Element>
     inline constexpr bool has_spin_transport_v = std::is_base_of_v<SpinTransport, std::decay_t<T_Element>>;
+
+    /** Does this element support a short-range structure wake (@see ShortRangeWake)? */
+    template<typename T_Element>
+    inline constexpr bool has_short_range_wake_v =
+        std::is_base_of_v<ShortRangeWake, std::decay_t<T_Element>>;
 
     namespace detail
     {

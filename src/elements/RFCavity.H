@@ -18,6 +18,7 @@
 #include "helper/ArrayValidation.H"
 #include "mixin/lineartransport.H"
 #include "mixin/pipeaperture.H"
+#include "mixin/shortrangewake.H"
 #include "mixin/thick.H"
 #include "mixin/spintransport.H"
 
@@ -95,19 +96,6 @@ namespace impactx::elements
     {
         amrex::Gpu::TrackedVector<amrex::ParticleReal> cos;
         amrex::Gpu::TrackedVector<amrex::ParticleReal> sin;
-    };
-
-    /** On-axis wake function as specified by the user.
-     *
-     * Host data persists across simulations; device data is uploaded
-     * on-demand "lazily" on first use and released when AMReX shuts down.
-     */
-    struct CavityWakeFunction
-    {
-        amrex::Gpu::TrackedVector<amrex::ParticleReal> z_data;
-        amrex::Gpu::TrackedVector<amrex::ParticleReal> wake_x_data;
-        amrex::Gpu::TrackedVector<amrex::ParticleReal> wake_y_data;
-        amrex::Gpu::TrackedVector<amrex::ParticleReal> wake_z_data;
     };
 
     /** The prepared pusher for an RF cavity.
@@ -533,7 +521,8 @@ namespace impactx::elements
     struct RFCavityGPU
     : public mixin::BeamOptic<RFCavityGPU>,
       public mixin::LinearTransport<RFCavityGPU>,
-      public RFCavityPusher
+      public RFCavityPusher,
+      public mixin::ShortRangeWake
     {
         /** An RF cavity
          *
@@ -576,14 +565,9 @@ namespace impactx::elements
             int nslice = DEFAULT_nslice
         )
           : RFCavityPusher(ds, escale, freq, phase, dx, dy, rotation_degree, aperture_x, aperture_y, mapsteps, nslice),
-            m_coefficients{std::move(cos_coef), std::move(sin_coef)},
-            // optional user-specified wake data; absent data is stored as empty
-            m_wake{
-                std::move(z_data).value_or(std::vector<amrex::ParticleReal>{}),
-                std::move(wake_x_data).value_or(std::vector<amrex::ParticleReal>{}),
-                std::move(wake_y_data).value_or(std::vector<amrex::ParticleReal>{}),
-                std::move(wake_z_data).value_or(std::vector<amrex::ParticleReal>{})
-            }
+            ShortRangeWake(std::move(z_data), std::move(wake_x_data),
+                           std::move(wake_y_data), std::move(wake_z_data)),
+            m_coefficients{std::move(cos_coef), std::move(sin_coef)}
         {
             require_array_pair(m_coefficients.cos, m_coefficients.sin,
                                "RFCavity: cos and sin coefficient", 1);
@@ -755,17 +739,11 @@ namespace impactx::elements
         {
             m_coefficients.cos.release_gpu();
             m_coefficients.sin.release_gpu();
-            m_wake.z_data.release_gpu();
-            m_wake.wake_x_data.release_gpu();
-            m_wake.wake_y_data.release_gpu();
-            m_wake.wake_z_data.release_gpu();
+            release_wake_gpu();
         }
 
         //! the coefficient arrays this element owns, mirrored to the device on demand
         CavityFourierCoefficients m_coefficients;
-
-        //! the user-specified wake function this element owns, empty if none was given
-        CavityWakeFunction m_wake;
     };
 
     /** RFCavity: GPU state plus common host-only metadata */

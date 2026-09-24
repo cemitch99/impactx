@@ -10,92 +10,41 @@
 #ifndef IMPACTX_PARTICLES_WAKEFIELDS_SHORTRANGEWAKEELEMENT_H_
 #define IMPACTX_PARTICLES_WAKEFIELDS_SHORTRANGEWAKEELEMENT_H_
 
-#include "elements/RFCavity.H"
-#include "elements/ShortRF.H"
-#include "elements/Buncher.H"
-#include "elements/ChrUniformAcc.H"
 #include "elements/helper/Handle.H"
-#include "particles/ReferenceParticle.H"
+#include "elements/mixin/shortrangewake.H"
+#include "elements/mixin/traits.H"
 
-#include <AMReX_REAL.H>
-
-#include <cmath>
-#include <variant>
+#include <optional>
 
 
 namespace impactx::particles::wakefields
 {
-    /** Non-owning view on the user-specified single-particle wake function of an element.
+    /** The user-specified short-range structure wake of an element
      *
-     * Trivially copyable, so it can be captured by value into GPU kernels. The
-     * pointers address memory owned by the element and are only valid for the
-     * duration of the current call: do not cache them, re-query per use instead.
-     */
-    struct ShortRangeWakeView
-    {
-        bool has_wake = false;  //!< element contributes a short range structure wake
-        int n_data = 0;  //!< number of tabulated values per wake function
-        amrex::ParticleReal const * z = nullptr;  //!< longitudinal positions in m
-        amrex::ParticleReal const * wake_x = nullptr;  //!< horizontal single-particle wake function
-        amrex::ParticleReal const * wake_y = nullptr;  //!< vertical single-particle wake function
-        amrex::ParticleReal const * wake_z = nullptr;  //!< longitudinal single-particle wake function
-    };
-
-    /** Function to check if an element supports short range structure wakefields and to calculate parameters needed for wake.
+     * Short-range structure wakes are applied only in elements that carry one,
+     * @see elements::mixin::ShortRangeWake.
      *
      * @param[in] element_variant the lattice element to check
-     * @param[in] refpart reference particle
-     * @returns a view on the element's wake function data, with has_wake set if the element supplies one
+     * @returns a view on the element's wake function data, or nothing if the element does not
+     *          contribute a short-range wake
      */
-    template <typename VariantType>
-    ShortRangeWakeView
+    template <typename T_Element>
+    std::optional<elements::mixin::ShortRangeWakeView>
     ShortRangeWakeElement (
-        VariantType const& element_variant,
-        [[maybe_unused]] RefPart const & refpart
+        T_Element const & element_variant
     )
     {
-        ShortRangeWakeView wake;
-
-        if (auto const * element = elements::get_if<elements::RFCavity>(element_variant))
-        {
-            // Access element parameters as needed.
-            auto const & wake_data = element->m_wake;
-
-            // Upload to device (no-op on CPU builds) and take non-owning views.
-            auto const & d_z = wake_data.z_data.device_const();
-
-            // the wake data is optional: an element without a tabulated wake
-            // function does not contribute a short-range wake
-            if (!d_z.empty())
-            {
-                wake.has_wake = true;
-                wake.n_data = static_cast<int>(d_z.size());
-                wake.z = d_z.data();
-                wake.wake_x = wake_data.wake_x_data.device_const().data();
-                wake.wake_y = wake_data.wake_y_data.device_const().data();
-                wake.wake_z = wake_data.wake_z_data.device_const().data();
-            }
-        }
-        else if (elements::get_if<elements::ShortRF>(element_variant) != nullptr)
-        {
-            // Access element parameters as needed.
-            // auto const * element = elements::get_if<elements::ShortRF>(element_variant);
-            // TODO:  not supported yet
-        }
-        else if (elements::get_if<elements::Buncher>(element_variant) != nullptr)
-        {
-            // Access element parameters as needed.
-            // auto const * element = elements::get_if<elements::Buncher>(element_variant);
-            // TODO:  not supported yet
-        }
-        else if (elements::get_if<elements::ChrAcc>(element_variant) != nullptr)
-        {
-            // Access element parameters as needed.
-            // auto const * element = elements::get_if<elements::ChrAcc>(element_variant);
-            // TODO:  not supported yet
-        }
-
-        return wake;
+        return elements::visit(
+            [](auto const & element) -> std::optional<elements::mixin::ShortRangeWakeView> {
+                if constexpr (elements::mixin::has_short_range_wake_v<decltype(element)>) {
+                    if (element.has_short_range_wake()) {
+                        return element.short_range_wake();
+                    }
+                }
+                return std::nullopt;
+            },
+            element_variant
+        );
     }
 
 } // namespace impactx::particles::wakefields
