@@ -15,6 +15,7 @@
 #include "pipeaperture.H"
 #include "shortrangewake.H"
 #include "spintransport.H"
+#include "synchrotronradiation.H"
 #include "thick.H"
 #include "thin.H"
 
@@ -68,6 +69,11 @@ namespace impactx::elements::mixin
     template<typename T_Element>
     inline constexpr bool has_short_range_wake_v =
         std::is_base_of_v<ShortRangeWake, std::decay_t<T_Element>>;
+
+    /** Does this element emit synchrotron radiation (@see SynchrotronRadiation)? */
+    template<typename T_Element>
+    inline constexpr bool has_synchrotron_radiation_v =
+        std::is_base_of_v<SynchrotronRadiation, std::decay_t<T_Element>>;
 
     namespace detail
     {

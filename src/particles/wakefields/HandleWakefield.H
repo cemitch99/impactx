@@ -12,7 +12,7 @@
 
 #include "particles/ImpactXParticleContainer.H"
 #include "ChargeBinning.H"
-#include "CSRBendElement.H"
+#include "BendRadius.H"
 #include "ShortRangeWakeElement.H"
 #include "WakeConvolution.H"
 #include "WakePush.H"
@@ -59,14 +59,14 @@ namespace impactx::particles::wakefields
         bool short_range_wakefields = false;
         pp_algo.queryAdd("short_range_wakefields", short_range_wakefields);
 
-        // Call the CSR bend function
-        auto const [element_has_csr, R] = impactx::particles::wakefields::CSRBendElement(element_variant, particle_container.GetRefParticle());
+        // CSR is applied only in elements that bend the reference orbit
+        auto const rc = impactx::particles::wakefields::bend_radius(element_variant, particle_container.GetRefParticle());
 
-        // Call the function preparing short range wake elements
+        // Short-range structure wakes are applied only in elements that carry one
         auto const short_range_wake = impactx::particles::wakefields::ShortRangeWakeElement(element_variant);
 
         // Which effect applies to this very element?
-        bool const apply_csr = csr && element_has_csr;
+        bool const apply_csr = csr && rc.has_value();
         bool const apply_short_range_wake = short_range_wakefields && short_range_wake.has_value();
 
         // Enter loop if wakefields are turned on
@@ -160,7 +160,7 @@ namespace impactx::particles::wakefields
 
                 if (apply_csr){
                     // Construct wake function on 2N support
-                    auto const dR = R;  // for NVCC capture
+                    auto const dR = *rc;  // for NVCC capture; set, since CSR applies
                     amrex::ParallelFor(num_bins*2, [=] AMREX_GPU_DEVICE(int i) {
                         if (i < num_bins) {
                             amrex::Real const s = static_cast<amrex::Real>(i) * bin_size;
