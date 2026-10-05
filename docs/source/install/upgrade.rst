@@ -154,6 +154,54 @@ They have been finalized by then, so keeping them would leave elements that are 
 e.g., a :py:class:`~impactx.elements.BeamMonitor` with its output closed, still in the
 lattice.
 
+Setting a single aperture plane represents a jaw
+""""""""""""""""""""""""""""""""""""""""""""""""
+
+An element that sets only one of ``aperture_x`` or ``aperture_y`` now represents a jaw (slit) aperture:
+with only ``aperture_x`` set, particles outside the slab ``|x| <= aperture_x``, which is unbounded
+in ``y``, are lost.
+This makes the beam pipe of the thick elements behave like the
+:py:class:`~impactx.elements.Aperture` collimator (see the convention for
+:ref:`inputs files <running-cpp-parameters-aperture-convention>` and
+:ref:`Python <usage-python-aperture-convention>`).
+Previously, a beam pipe with one plane set and the other left at zero, the default, applied no
+aperture at all, and the whole beam passed.
+
+**What to check in your scripts:** look for elements that give a positive value to exactly one
+of ``aperture_x`` and ``aperture_y``, in Python or in an inputs file:
+
+.. code-block:: python
+
+   elements.Drift(ds=0.1, aperture_x=1e-4)   # loses particles with |x| > 1e-4
+
+.. code-block:: text
+
+   drift1.type = drift
+   drift1.ds = 0.1
+   drift1.aperture_x = 1e-4
+
+Where such an element used to transmit the whole beam, it now removes particles, which
+changes the transmitted charge and every beam moment downstream of it.
+
+To keep the beam pipe open, as the element used to behave, leave out the half-aperture (or set
+it to zero):
+
+.. code-block:: python
+
+   elements.Drift(ds=0.1)
+
+To bound the beam in both planes, set both:
+
+.. code-block:: python
+
+   elements.Drift(ds=0.1, aperture_x=1e-4, aperture_y=1e-4)
+
+The :py:class:`~impactx.elements.Aperture` collimator follows the same convention.
+A half-aperture of zero or less now removes the boundary in that plane, where the constructor
+used to raise.
+For example, ``elements.Aperture(aperture_x=0, aperture_y=1e-3)`` is a jaw (slit) that cuts
+only in ``y``.
+
 New in this release
 """""""""""""""""""
 
