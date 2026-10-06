@@ -2289,7 +2289,7 @@ The aperture is disabled entirely only if both planes are zero or less, which is
 
       When ImpactX needs to sort particles spatially, it will redistribute them over MPI ranks automatically during tracking.
 
-.. py:class:: impactx.elements.Programmable(ds=0.0, nslice=1, name=None)
+.. py:class:: impactx.elements.Programmable(ds=0.0, includes_collective_effects=False, nslice=1, name=None)
 
    A programmable beam optics element.
 
@@ -2297,6 +2297,7 @@ The aperture is disabled entirely only if both planes are zero or less, which is
    See :ref:`usage-howto-python-extend` for a worked example.
 
    :param ds: Segment length in m.
+   :param includes_collective_effects: the push hooks already model collective effects over the length of this element, see :py:attr:`includes_collective_effects`
    :param nslice: number of slices used for the application of space charge
    :param name: an optional name for the element
 
@@ -2306,6 +2307,16 @@ The aperture is disabled entirely only if both planes are zero or less, which is
       push, so it halves the collective effect kick (space charge, CSR, ISR)
       instead: ``K(ds/2) M(ds) K(ds/2)`` per slice, at two collective solves per
       slice.
+
+   .. py:property:: includes_collective_effects
+
+      Declares that the push hooks already model collective effects over the length of this
+      element, e.g., because they call an external code that computes the beam self-fields or
+      plasma wakefields.
+      If ``True``, ImpactX applies no additional collective effect kicks (space charge,
+      wakefields, CSR, ISR) for this element, so these effects are not applied twice.
+      If ``False`` (default), ImpactX applies the enabled collective effects to this element
+      like to any other element of finite length.
 
    .. note::
 

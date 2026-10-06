@@ -11,6 +11,7 @@
 #define IMPACTX_ELEMENTS_MIXIN_TRAITS_H
 
 #include "alignment.H"
+#include "includescollectiveeffects.H"
 #include "named.H"
 #include "pipeaperture.H"
 #include "spintransport.H"
@@ -68,6 +69,15 @@ namespace impactx::elements::mixin
     template<typename T_Element>
     inline constexpr bool has_synchrotron_radiation_v =
         std::is_base_of_v<SynchrotronRadiation, std::decay_t<T_Element>>;
+
+    /** Does this element carry the ``includes_collective_effects`` flag
+     *  (@see IncludesCollectiveEffects)?
+     *
+     * @see includes_collective_effects in helper/Accessors.H for the run-time value.
+     */
+    template<typename T_Element>
+    inline constexpr bool has_includes_collective_effects_flag_v =
+        std::is_base_of_v<IncludesCollectiveEffects, std::decay_t<T_Element>>;
 
     namespace detail
     {

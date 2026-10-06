@@ -7,6 +7,30 @@ This guide covers the changes that need attention when moving an existing script
 build to a newer ImpactX version: changed behavior, replaced APIs, and raised
 requirements. Newest release first.
 
+26.11
+-----
+
+``Programmable``: ``nslice`` and ``name`` moved to the 3rd and 4th argument
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+:py:class:`~impactx.elements.Programmable` takes the new ``includes_collective_effects`` as its
+2nd argument, so ``nslice`` and ``name`` moved back by one position.
+
+**What to check in your scripts:** a ``Programmable(...)`` call that passes ``nslice`` or
+``name`` by position raises a ``TypeError``. Pass them by keyword:
+
+.. code-block:: python
+
+   pge = elements.Programmable(0.5, 2)                # before
+   pge = elements.Programmable(ds=0.5, nslice=2)      # preferred by name, works as before
+
+New in this release
+"""""""""""""""""""
+
+- :py:attr:`Programmable.includes_collective_effects <impactx.elements.Programmable.includes_collective_effects>`
+  declares that a push already models collective effects, e.g., by calling an external code.
+  ImpactX then applies no additional space charge, wakefield, CSR or ISR kicks for this element.
+
 26.10
 -----
 
