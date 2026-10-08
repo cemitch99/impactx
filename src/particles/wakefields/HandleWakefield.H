@@ -143,6 +143,7 @@ namespace impactx::particles::wakefields
                 amrex::Gpu::DeviceVector<amrex::Real> source_data(charge_distribution.size() - 1, 0.0);
                 amrex::Gpu::DeviceVector<amrex::Real> wake_function(num_bins*2, 0.0);
                 amrex::Real *const dptr_wake_function = wake_function.data();
+                amrex::Real *const dptr_source_data = source_data.data();
 
                 // Derivative of the line density is required for the CSR wake
                 if (apply_csr){
@@ -151,7 +152,7 @@ namespace impactx::particles::wakefields
                                                                    GetNumberDensity); // Use number derivatives for convolution with CSR
                 }
 
-                // Slice mean transverse position is required for the short range structure wake
+                // Both the line density and the slice mean transverse position are required for the short range structure wake
                 if (apply_short_range_wake){
                     // Call the mean transverse position function
                     impactx::particles::wakefields::MeanTransversePosition(particle_container, mean_x, mean_y, bin_min,
@@ -185,6 +186,7 @@ namespace impactx::particles::wakefields
                         if (i < num_bins) {
                             amrex::Real const s = static_cast<amrex::Real>(i) * bin_size;
                             dptr_wake_function[i] = impactx::particles::wakefields::w_user(s, wake.wake_z, wake.n_data, bin_min, bin_size);
+                            dptr_source_data[i] = charge_distribution[i];
                         }
                         else if (i > num_bins) {
                             amrex::Real const s = static_cast<amrex::Real>(i - 2*num_bins) * bin_size;
