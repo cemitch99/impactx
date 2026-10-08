@@ -34,7 +34,7 @@ ref = sim.beam.ref
 ref.set_species("electron").set_kin_energy_MeV(kin_energy_MeV)
 
 #   particle bunch
-#distr = distribution.Waterbag(
+# distr = distribution.Waterbag(
 distr = distribution.Triangle(
     lambdaX=0.352498964601e-3,
     lambdaY=0.207443478142e-3,
@@ -64,15 +64,21 @@ ncoef = 25
 # wake_z_data = wake_data_in[:, 3]
 
 # specify the RF cavity short-range structure wake data using an expression (option 2)
-zmin = 0.0  # lower value of longitudinal separation used in the wake function (in meters)
-zmax = 0.01  # upper value of longitudinal separation used in the wake function (in meters)
+zmin = (
+    0.0  # lower value of longitudinal separation used in the wake function (in meters)
+)
+zmax = (
+    0.01  # upper value of longitudinal separation used in the wake function (in meters)
+)
 nz = 5000  # number of longitudinal separation sampling points to be used
 K0 = 4.30355e13  # first fitted parameter
 s0 = 0.00175  # second fitted parameter (in meters)
 z_wake = np.linspace(zmin, zmax, nz)
 wake_x_data = np.zeros(nz)
 wake_y_data = np.zeros(nz)
-wake_z_data = K0 * np.exp(-np.sqrt(z_wake / s0)) # TODO document ... analytical wake from ...
+wake_z_data = K0 * np.exp(
+    -np.sqrt(z_wake / s0)
+)  # TODO document ... analytical wake from ...
 
 #   Drift elements
 dr1 = elements.Drift(name="dr1", ds=0.4, nslice=1)
