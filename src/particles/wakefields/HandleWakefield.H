@@ -44,7 +44,7 @@ namespace impactx::particles::wakefields
         impactx::ImpactXParticleContainer& particle_container,
         T_Element const& element_variant,
         amrex::Real slice_ds,
-        bool print_wakefield = false
+        bool print_wakefield = true
     )
     {
         if (slice_ds == 0.0) { return; }
@@ -176,10 +176,11 @@ namespace impactx::particles::wakefields
                     convolved_wakefield = impactx::particles::wakefields::convolve_fft(source_data, wake_function, bin_size);
                 }
                 if (apply_short_range_wake){
-                    // TODO:  This section needs to be updated to use the interpolated data from
-                    //        short_range_wake.z, short_range_wake.wake_z, etc.
                     // Construct wake function on 2N support
                     auto const wake = *short_range_wake;  // trivially copyable view, captured by value
+                    amrex::Print() << "wake.wake_z[0] = " << wake.wake_z[0] << "\n";
+                    amrex::Print() << "wake.wake_z[1] = " << wake.wake_z[1] << "\n";
+                    amrex::Print() << "wake.wake_z by value = " << *wake.wake_z << "\n";
                     amrex::ParallelFor(num_bins*2, [=] AMREX_GPU_DEVICE(int i) {
                         if (i < num_bins) {
                             amrex::Real const s = static_cast<amrex::Real>(i) * bin_size;
