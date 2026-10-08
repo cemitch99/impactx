@@ -15,7 +15,7 @@ sim = ImpactX()
 # set numerical parameters and IO control
 sim.space_charge = False
 sim.short_range_wakefields = True
-sim.wake_bins = 4
+sim.wake_bins = 100
 # sim.diagnostics = False  # benchmarking
 sim.slice_step_diagnostics = False
 
@@ -34,7 +34,8 @@ ref = sim.beam.ref
 ref.set_species("electron").set_kin_energy_MeV(kin_energy_MeV)
 
 #   particle bunch
-distr = distribution.Waterbag(
+#distr = distribution.Waterbag(
+distr = distribution.Triangle(
     lambdaX=0.352498964601e-3,
     lambdaY=0.207443478142e-3,
     lambdaT=0.70399950746e-4,
@@ -55,15 +56,23 @@ z = data_in[:, 0]
 ez_onaxis = data_in[:, 1]
 ncoef = 25
 
-# access RF cavity short-range structure wake data
-wake_data_in = np.loadtxt("wake_data.in")
-z_wake = wake_data_in[:, 0]
-wake_x_data = wake_data_in[:, 1]
-wake_y_data = wake_data_in[:, 2]
-wake_z_data = wake_data_in[:, 3]
+# access RF cavity short-range structure wake data from an external file (option 1)
+# wake_data_in = np.loadtxt("wake_data.in")
+# z_wake = wake_data_in[:, 0]
+# wake_x_data = wake_data_in[:, 1]
+# wake_y_data = wake_data_in[:, 2]
+# wake_z_data = wake_data_in[:, 3]
 
-print("z_wake = ")
-print(z_wake)
+# specify the RF cavity short-range structure wake data using an expression (option 2)
+zmin = 0.0  # lower value of longitudinal separation used in the wake function (in meters)
+zmax = 0.01  # upper value of longitudinal separation used in the wake function (in meters)
+nz = 5000  # number of longitudinal separation sampling points to be used
+K0 = 4.30355e13  # first fitted parameter
+s0 = 0.00175  # second fitted parameter (in meters)
+z_wake = np.linspace(zmin, zmax, nz)
+wake_x_data = np.zeros(nz)
+wake_y_data = np.zeros(nz)
+wake_z_data = K0 * np.exp(-np.sqrt(z_wake / s0)) # TODO document ... analytical wake from ...
 
 #   Drift elements
 dr1 = elements.Drift(name="dr1", ds=0.4, nslice=1)
