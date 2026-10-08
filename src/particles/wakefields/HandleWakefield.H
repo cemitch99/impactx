@@ -21,6 +21,7 @@
 #include <AMReX_GpuDevice.H>
 #include <AMReX_GpuParallelReduce.H>
 
+#include <algorithm>
 #include <cmath>
 #include <stdexcept>
 #include <string>
@@ -179,14 +180,22 @@ namespace impactx::particles::wakefields
                 if (apply_short_range_wake){
                     // Construct wake function on 2N support
                     auto const wake = *short_range_wake;  // trivially copyable view, captured by value
-                    amrex::Print() << "wake.wake_z[0] = " << wake.wake_z[0] << "\n";
-                    amrex::Print() << "wake.wake_z[1] = " << wake.wake_z[1] << "\n";
-                    amrex::Print() << "wake.wake_z by value = " << *wake.wake_z << "\n";
+
+                    // the view points into device memory: copy to the host before printing
+                    std::vector<amrex::ParticleReal> h_wake_z(wake.n_data);
+                    amrex::Gpu::dtoh_memcpy(h_wake_z.data(), wake.wake_z,
+                                            wake.n_data * sizeof(amrex::ParticleReal));
+                    for (int j = 0; j < std::min(wake.n_data, 2); ++j) {
+                        amrex::Print() << "wake.wake_z[" << j << "] = " << h_wake_z[j] << "\n";
+                    }
+
+                    // device pointers for the kernel: a DeviceVector itself cannot be used there
+                    amrex::Real const * const dptr_charge_distribution = charge_distribution.data();
                     amrex::ParallelFor(num_bins*2, [=] AMREX_GPU_DEVICE(int i) {
                         if (i < num_bins) {
                             amrex::Real const s = static_cast<amrex::Real>(i) * bin_size;
                             dptr_wake_function[i] = impactx::particles::wakefields::w_user(s, wake.wake_z, wake.n_data, bin_min, bin_size);
-                            dptr_source_data[i] = charge_distribution[i];
+                            dptr_source_data[i] = dptr_charge_distribution[i];
                         }
                         else if (i > num_bins) {
                             amrex::Real const s = static_cast<amrex::Real>(i - 2*num_bins) * bin_size;
