@@ -117,6 +117,7 @@ namespace impactx::particles::wakefields
             amrex::Real const bin_min = t_min;
             amrex::Real const bin_max = t_max;
             amrex::Real const bin_size = (bin_max - bin_min) / (num_bins - 1);  // number of evaluation points
+            amrex::Print() << "bin_min, bin_size initial = " << bin_min << " " << bin_size << "\n";
 
             // Allocate memory for the charge profile
             amrex::Gpu::DeviceVector<amrex::Real> charge_distribution(num_bins + 1, 0.0);
@@ -194,12 +195,12 @@ namespace impactx::particles::wakefields
                     amrex::ParallelFor(num_bins*2, [=] AMREX_GPU_DEVICE(int i) {
                         if (i < num_bins) {
                             amrex::Real const s = static_cast<amrex::Real>(i) * bin_size;
-                            dptr_wake_function[i] = impactx::particles::wakefields::w_user(s, wake.wake_z, wake.n_data, bin_min, bin_size);
+                            dptr_wake_function[i] = ablastr::constant::SI::q_e * impactx::particles::wakefields::w_user(s, wake.wake_z, wake.n_data, bin_size);
                             dptr_source_data[i] = dptr_charge_distribution[i];
                         }
                         else if (i > num_bins) {
                             amrex::Real const s = static_cast<amrex::Real>(i - 2*num_bins) * bin_size;
-                            dptr_wake_function[i] = impactx::particles::wakefields::w_user(s, wake.wake_z, wake.n_data, bin_min, bin_size);
+                            dptr_wake_function[i] = ablastr::constant::SI::q_e * impactx::particles::wakefields::w_user(s, wake.wake_z, wake.n_data, bin_size);
                         }
                     });
 
@@ -227,9 +228,13 @@ namespace impactx::particles::wakefields
                                         convolved_wakefield.size() * sizeof(amrex::Real));
                 std::cout << "Convolved wakefield: ";
                 std::ofstream outfile("convolved_wakefield.txt");
+                int count = 0;
+                amrex::Real zlocal = 0.0;
                 for (amrex::Real const val : h_wakefield) {
-                    std::cout << val << " ";
-                    outfile << val << "\n";
+                    zlocal = bin_min + count*bin_size;
+                    std::cout << zlocal << " " << val << " ";
+                    outfile << zlocal << " " << val << "\n";
+                    count = count + 1;
                 }
                 std::cout << "\n";
                 outfile.close();

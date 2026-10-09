@@ -107,13 +107,12 @@ namespace impactx::particles::wakefields
         amrex::Real s,
         amrex::ParticleReal const * wake_data,
         int const n_data,
-        amrex::Real const z_min,
         amrex::Real const bin_size
     )
     {
         using namespace amrex::literals;
 
-        amrex::Real const pos = (s - z_min) / bin_size;
+        amrex::Real const pos = s / bin_size;
 
         // outside the tabulated range the wake function is not defined: it is taken as zero
         if (pos < 0_rt) { return 0_rt; }
