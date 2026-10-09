@@ -97,7 +97,6 @@ namespace impactx::particles::wakefields
      * @param[in] s value along s [m]
      * @param[in] wake_data tabulated single-particle wake function supplied by user [V/(C*m)]
      * @param[in] n_data number of tabulated values in wake_data
-     * @param[in] z_min lower bound of grid for deposition [m]
      * @param[in] bin_size bin size [m]
      * @return value wake function [V/(C*m)], zero outside the tabulated range
      */
