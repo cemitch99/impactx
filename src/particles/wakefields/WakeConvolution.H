@@ -99,7 +99,7 @@ namespace impactx::particles::wakefields
      * @param[in] n_data number of tabulated values in wake_data
      * @param[in] z_min lower bound of grid for deposition [m]
      * @param[in] bin_size bin size [m]
-     * @return interpolated value wake function [V/m/pC/mm], zero outside the tabulated range
+     * @return value wake function [V/(C*m)], zero outside the tabulated range
      */
     AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE
     amrex::Real
