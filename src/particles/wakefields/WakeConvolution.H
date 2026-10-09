@@ -95,7 +95,7 @@ namespace impactx::particles::wakefields
      *       z_data of the user-supplied wake is not taken into account yet.
      *
      * @param[in] s value along s [m]
-     * @param[in] wake_data tabulated wake data supplied by user [V/m/pC/mm]
+     * @param[in] wake_data tabulated single-particle wake function supplied by user [V/(C*m)]
      * @param[in] n_data number of tabulated values in wake_data
      * @param[in] z_min lower bound of grid for deposition [m]
      * @param[in] bin_size bin size [m]
