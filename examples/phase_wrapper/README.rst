@@ -5,11 +5,11 @@ Test of Periodic Phase-Wrapper
 
 This example tests the application of a periodic (longitudinal) particle boundary condition.
 
-For systems involving bunches that are long relative to the local size of the RF bucket, it is often necessary to capture the effect of particle 
-slippage between adjacent buckets. To handle this effectively without tracking multiple bunches, the longitudinal phase can be treated modulo 2pi. 
+For systems involving bunches that are long relative to the local size of the RF bucket, it is often necessary to capture the effect of particle
+slippage between adjacent buckets. To handle this effectively without tracking multiple bunches, the longitudinal phase can be treated modulo 2pi.
 This requires applying a wrap-around mapping to the temporal coordinate t, to handle particles that move outside the RF bucket.
 
-In this test, the bucket length (in m) is specified as a property of the beam.  During tracking, two monitor elements are specified. 
+In this test, the bucket length (in m) is specified as a property of the beam.  During tracking, two monitor elements are specified.
 Since the boundary condition is applied once per slice, the boundary condition here is applied between the two monitors.
 
 For the analysis comparison, the longitudinal coordinates found in the initial particle distribution are updated after application of the periodic
