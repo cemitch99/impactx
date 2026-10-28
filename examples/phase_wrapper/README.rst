@@ -32,7 +32,7 @@ For `MPI-parallel <https://www.mpi-forum.org>`__ runs, prefix these lines with `
 
        .. literalinclude:: run_phase_wrap.py
           :language: python3
-          :caption: You can copy this file from ``examples/phase_wrap/run_phase_wrap.py``.
+          :caption: You can copy this file from ``examples/phase_wrapper/run_phase_wrap.py``.
 
    .. tab-item:: Executable: Input File
 
