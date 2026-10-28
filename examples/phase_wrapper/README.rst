@@ -1,7 +1,7 @@
 .. _examples-phase-wrap:
 
 Test of Periodic Phase-Wrapper
-===============================
+==============================
 
 This example tests the application of a periodic (longitudinal) particle boundary condition.
 
