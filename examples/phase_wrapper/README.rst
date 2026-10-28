@@ -38,7 +38,7 @@ For `MPI-parallel <https://www.mpi-forum.org>`__ runs, prefix these lines with `
 
        .. literalinclude:: input_phase_wrap.in
           :language: ini
-          :caption: You can copy this file from ``examples/phase_wrap/input_phase_wrap.in``.
+          :caption: You can copy this file from ``examples/phase_wrapper/input_phase_wrap.in``.
 
 
 Analyze
