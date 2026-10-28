@@ -50,4 +50,4 @@ We run the following script to analyze correctness:
 
    .. literalinclude:: analysis_phase_wrap.py
       :language: python3
-      :caption: You can copy this file from ``examples/phase_wrap/analysis_phase_wrap.py``.
+      :caption: You can copy this file from ``examples/phase_wrapper/analysis_phase_wrap.py``.
