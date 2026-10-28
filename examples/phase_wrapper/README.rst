@@ -53,13 +53,3 @@ We run the following script to analyze correctness:
       :caption: You can copy this file from ``examples/phase_wrap/analysis_phase_wrap.py``.
 
 
-Visualize
----------
-
-You can run the following script to visualize the beam evolution over time:
-
-.. dropdown:: Script ``plot_phase_wrap.py``
-
-   .. literalinclude:: plot_phase_wrap.py
-      :language: python3
-      :caption: You can copy this file from ``examples/phase_wrap/plot_phase_wrap.py``.
