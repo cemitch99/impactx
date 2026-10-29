@@ -76,7 +76,7 @@ Short-Range Wakefields
 .. toctree::
    :maxdepth: 1
 
-   examples/wake_csr_kick/README.rst
+   examples/wake_csr_kick/README_wake.rst   
    examples/rfcavity/README_wake_sc.rst
 
 Coherent Synchrotron Radiation (CSR)
@@ -86,7 +86,7 @@ Coherent Synchrotron Radiation (CSR)
    :maxdepth: 1
 
    examples/chicane/README_csr.rst
-   examples/wake_csr_kick/README.rst
+   examples/wake_csr_kick/README_csr.rst
 
 Quantum Excitation
 --------------------
