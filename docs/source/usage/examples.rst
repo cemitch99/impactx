@@ -70,6 +70,15 @@ Space Charge
    examples/fodo_space_charge/README.rst
    examples/space_charge_gaussian_kick/README.rst
 
+Short-Range Wakefields
+""""""""""""""""""""""
+   
+.. toctree::
+   :maxdepth: 1
+
+   examples/wake_csr_kick/README.rst   
+   examples/rfcavity/README_wake_sc.rst
+
 Coherent Synchrotron Radiation (CSR)
 """"""""""""""""""""""""""""""""""""
 
