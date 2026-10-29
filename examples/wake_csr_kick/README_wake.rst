@@ -6,9 +6,11 @@ Momentum Kick in a 1D User-Specified Longitudinal Wake Model
 The test compares the energy change due to a short-range wakefield in a TESLA 9-cell (1.3 GHz) RF cavity against the analytical result for the case of a bunch with
 a uniform current profile.
 
-A single slice is used, resulting in a single wakefield kick.  The bunch is initialized with zero momentum spread and zero transverse size, to avoid dynamical evolution during$
+A single slice is used, resulting in a single wakefield kick.  The bunch is initialized with zero momentum spread and zero transverse size, to avoid dynamical 
+evolution during the half-step in the dipole field before the wakefield kick is applied.
 
-In this test, the final momentum of every particle is compared against its predicted value.  Both the maximum error and its rms value over the bunch population are returned.  $
+In this test, the final momentum of every particle is compared against its predicted value.  Both the maximum error and its rms value over the bunch population are 
+returned.  Both values must be zero within a small tolerance.
 
 
 Run
