@@ -45,7 +45,7 @@ namespace impactx::particles::wakefields
         impactx::ImpactXParticleContainer& particle_container,
         T_Element const& element_variant,
         amrex::Real slice_ds,
-        bool print_wakefield = true
+        bool print_wakefield = false
     )
     {
         if (slice_ds == 0.0) { return; }
@@ -118,7 +118,6 @@ namespace impactx::particles::wakefields
             amrex::Real const bin_min = t_min;
             amrex::Real const bin_max = t_max;
             amrex::Real const bin_size = (bin_max - bin_min) / (num_bins - 1);  // number of evaluation points
-            amrex::Print() << "bin_min, bin_size initial = " << bin_min << " " << bin_size << "\n";
 
             // Allocate memory for the charge profile: num_bins bins and one empty bin above bin_max
             amrex::Gpu::DeviceVector<amrex::Real> charge_distribution(num_bins + 1, 0.0);
@@ -202,9 +201,6 @@ namespace impactx::particles::wakefields
                     std::vector<amrex::ParticleReal> h_wake_z(wake.n_data);
                     amrex::Gpu::dtoh_memcpy(h_wake_z.data(), wake.wake_z,
                                             wake.n_data * sizeof(amrex::ParticleReal));
-                    for (int j = 0; j < std::min(wake.n_data, 2); ++j) {
-                        amrex::Print() << "wake.wake_z[" << j << "] = " << h_wake_z[j] << "\n";
-                    }
                     amrex::Real const bin_size_user = wake.dz;
 
                     // The wake function is per unit source charge and positive where it
