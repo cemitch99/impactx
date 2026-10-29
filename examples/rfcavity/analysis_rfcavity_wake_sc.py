@@ -72,7 +72,6 @@ emittance_t = rbc["emittance_t"]
 
 length = len(s) - 1
 
-sf = s.iloc[length]
 sig_xf = sigma_x.iloc[length]
 sig_yf = sigma_y.iloc[length]
 sig_tf = sigma_t.iloc[length]
