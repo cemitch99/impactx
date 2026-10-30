@@ -124,6 +124,9 @@ print(f"  s={sf:e} gamma={gammaf:e}")
 
 atol = 0.0  # ignored
 rtol = 1.0e-5
+if not is_double:
+    # FIXME: single precision requires somewhat relaxed tolerance
+    rtol = 1.0e-4
 print(f"  rtol={rtol} (ignored: atol~={atol})")
 
 assert np.allclose(
