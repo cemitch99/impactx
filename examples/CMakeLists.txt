@@ -2300,4 +2300,3 @@ add_impactx_test(rfcavity-wake-sc.MPI.py
     OFF  # no plot script yet
 )
 label_impactx_test(rfcavity-wake-sc.MPI.py slow)
-
