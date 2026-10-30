@@ -2806,7 +2806,7 @@ Currently, the data used to specify the short-range wakefield is attached to the
     :optional:
     :default: ``150``
 
-    The number of longitudinal bins used for the short-range wakefield calculation. 
+    The number of longitudinal bins used for the short-range wakefield calculation.
 
 .. note::
 
